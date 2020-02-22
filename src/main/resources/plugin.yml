@@ -1,0 +1,7 @@
+name: CustomItems
+version: 1.0
+author: Jim
+description: Custom Items
+
+main: uk.co.notnull.CustomItems.CustomItems
+api-version: "1.15"

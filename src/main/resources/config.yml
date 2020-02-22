@@ -1,0 +1,23 @@
+claimChestLocation:
+  ==: org.bukkit.Location
+  world: world
+  x: 4
+  y: 74
+  z: -75
+items:
+  detailing_participant:
+    item: GOLDEN_HOE
+    damage: 1
+    name: 'Detailing Contest Participant'
+    lore:
+      - Awarded to {player} for
+      - Participating in the Chunk Detailing
+      - Contest
+  detailing_winner:
+    item: GOLDEN_HOE
+    damage: 2
+    name: 'Detailing Contest Winner'
+    lore:
+      - Awarded to {player} for
+      - submitting a winning entry
+      - in the Chunk Detailing Contest
