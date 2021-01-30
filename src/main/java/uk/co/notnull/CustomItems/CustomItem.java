@@ -9,16 +9,18 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CustomItem {
-	private String id;
-	private Material item;
-	private int damage;
-	private String name;
-	private List<String> lore;
+	private final String id;
+	private final Material item;
+	private final int damage;
+	private final int model;
+	private final String name;
+	private final List<String> lore;
 
-	public CustomItem(String id, Material item, int damage, String name, List<String> lore) {
+	public CustomItem(String id, Material item, int damage, int model, String name, List<String> lore) {
 		this.id = id;
 		this.item = item;
 		this.damage = damage;
+		this.model = model;
 		this.name = ChatColor.translateAlternateColorCodes('&', name);
 		this.lore = lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
 	}
@@ -33,6 +35,10 @@ public class CustomItem {
 
 	public int getDamage() {
 		return damage;
+	}
+
+	public int getModel() {
+		return model;
 	}
 
 	public String getName() {
@@ -65,6 +71,7 @@ public class CustomItem {
 				"id='" + id + '\'' +
 				", item=" + item +
 				", damage=" + damage +
+				", model=" + model +
 				", name='" + name + '\'' +
 				", lore=" + lore +
 				'}';
@@ -76,6 +83,7 @@ public class CustomItem {
 		if (o == null || getClass() != o.getClass()) return false;
 		CustomItem that = (CustomItem) o;
 		return Float.compare(that.getDamage(), getDamage()) == 0 &&
+				Float.compare(that.getModel(), getModel()) == 0 &&
 				getId().equals(that.getId()) &&
 				getItem().equals(that.getItem()) &&
 				getName().equals(that.getName()) &&
@@ -84,7 +92,7 @@ public class CustomItem {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getId(), getItem(), getDamage(), getName(), getLore());
+		return Objects.hash(getId(), getItem(), getDamage(), getModel(), getName(), getLore());
 	}
 }
 

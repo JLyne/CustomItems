@@ -49,6 +49,7 @@ public class ItemManager {
 		config.getKeys(false).forEach(id -> {
 			String item = config.getString(id + ".item");
 			int damage = config.getInt(id + ".damage", 0);
+			int model = config.getInt(id + ".custom-model-data", 0);
 			String name = config.getString(id + ".name");
 			List<String> lore = config.getStringList(id + ".lore");
 
@@ -64,7 +65,7 @@ public class ItemManager {
 				return;
 			}
 
-			items.put(id, new CustomItem(id, material, damage, name, lore));
+			items.put(id, new CustomItem(id, material, damage, model, name, lore));
 		});
 	}
 
@@ -85,6 +86,7 @@ public class ItemManager {
 			((Damageable) meta).setDamage(customItem.getDamage());
 		}
 
+		meta.setCustomModelData(customItem.getModel());
 		meta.getPersistentDataContainer().set(dataVersion, PersistentDataType.INTEGER, 1);
 		meta.getPersistentDataContainer().set(customItemKey, PersistentDataType.STRING, id);
 
