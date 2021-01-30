@@ -30,6 +30,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.intellij:annotations:+@jar'
     compileOnly "com.destroystokyo.paper:paper-api:1.14.4-R0.1-SNAPSHOT"
     compile "co.aikar:acf-paper:0.5.0-SNAPSHOT"
 }

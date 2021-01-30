@@ -4,7 +4,6 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import uk.co.notnull.CustomItems.CustomItem;
@@ -18,10 +17,11 @@ public class CustomItemsCommand extends BaseCommand {
     @Dependency
     private CustomItems plugin;
 
+    @CommandPermission("customitems.give")
     @Subcommand("give")
     @Description("Immediately gives a custom item to a player")
     @CommandCompletion("@players @itemids *")
-    public void onGiveItem(CommandSender sender, OnlinePlayer player, String id, int amount) {
+    public void onGiveItem(CommandSender sender, OnlinePlayer player, String id, @Default("1") int amount) {
         if(!plugin.getItemManager().isValidId(id)) {
             plugin.getCommandManager().sendMessage(getCurrentCommandIssuer(), MessageType.ERROR,
                                                    Messages.COMMAND__INVALID_ITEM, "{item}", id);
@@ -39,39 +39,27 @@ public class CustomItemsCommand extends BaseCommand {
     }
 
     @Subcommand("grant")
+    @CommandPermission("customitems.grant")
     @Description("Grants a custom item to a player, which they must collect themselves")
-    @CommandCompletion("* @itemids *")
-    public void onGrantItem(CommandSender sender, String uuid, String id, int amount) {
+    @CommandCompletion("@players @itemids *")
+    public void onGrantItem(CommandSender sender, OfflinePlayer target, String id, @Default("1") int amount) {
         if(!plugin.getItemManager().isValidId(id)) {
             plugin.getCommandManager().sendMessage(getCurrentCommandIssuer(), MessageType.ERROR,
                                                    Messages.COMMAND__INVALID_ITEM, "{item}", id);
         } else {
             CustomItem item = plugin.getItemManager().getById(id);
-            try {
-                OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 
-                if(!player.hasPlayedBefore()) {
-                    plugin.getCommandManager().sendMessage(getCurrentCommandIssuer(), MessageType.ERROR,
-                                                   Messages.COMMAND__INVALID_PLAYER);
+            plugin.getItemManager().grantItem(target, id, amount);
 
-                    return;
-                }
-
-                plugin.getItemManager().grantItem(player, id, amount);
-
-                plugin.getCommandManager().sendMessage(getCurrentCommandIssuer(),
+            plugin.getCommandManager().sendMessage(getCurrentCommandIssuer(),
                                                    MessageType.INFO, Messages.COMMAND__GRANT_SUCCESS,
-                                                   "{player}", player.getName(),
+                                                   "{player}", target.getName(),
                                                    "{amount}", "" + amount,
-                                                   "{item}", item.getName(player.getPlayer()));
+                                                   "{item}", item.getName(target.getPlayer()));
 
-                if(player.isOnline()) {
-                    plugin.getCommandManager().getCommandIssuer(player).sendMessage(MessageType.INFO,
-												   Messages.JOIN__UNCLAIMED_ITEMS_AVAILABLE);
-                }
-            } catch(IllegalArgumentException e) {
-                plugin.getCommandManager().sendMessage(getCurrentCommandIssuer(), MessageType.ERROR,
-                                                   Messages.COMMAND__INVALID_UUID, "{uuid}", uuid);
+            if (target.isOnline()) {
+                plugin.getCommandManager().getCommandIssuer(target).sendMessage(MessageType.INFO,
+                                                                                Messages.JOIN__UNCLAIMED_ITEMS_AVAILABLE);
             }
         }
     }

@@ -20,14 +20,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ItemManager {
-	private NamespacedKey customItemKey;
-    private NamespacedKey grantedToKey;
-    private NamespacedKey dataVersion;
+	private final NamespacedKey customItemKey;
+    private final NamespacedKey grantedToKey;
+    private final NamespacedKey dataVersion;
 
 	Map<String, CustomItem> items;
 	Map<UUID, List<GrantedItem>> unclaimed;
 
-	private CustomItems plugin;
+	private final CustomItems plugin;
 
 	public ItemManager(CustomItems plugin, ConfigurationSection config) {
 		this.plugin = plugin;

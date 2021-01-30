@@ -1,10 +1,10 @@
 join:
   unclaimed-items-available: |-
     You have some <c2>unclaimed items</c2> to collect.
-    Please visit the <c2>Item Distribution Point</c2>, Ground Floor, Spawn Building.
+    Please visit the <c2>Item Distribution Point</c2> at spawn.
 command:
   invalid-item: Item <c2>{item}</c2> is invalid
-  invalid-player: Unknown player
-  invalid-uuid: Invalid UUID <c2>{uuid}</c2>
+  invalid-player: Unknown player <c2>{player}</c2>
+  invalid-uuid:  UUID <c2>{uuid}</c2> does not match an existing player
   grant-success: Granted <c2>{player}</c2> {amount}x<c3>{item}</c3>
   give-success: Given <c2>{player}</c2> {amount}x<c3>{item}</c3>
