@@ -178,13 +178,9 @@ public class ItemManager {
 		ArrayList<GrantedItem> items = new ArrayList<>();
 
 		if (pending != null) {
-			plugin.getLogger().info(pending.toString());
-
 			for (Object item : pending) {
 				items.add((GrantedItem) item);
 			}
-		} else {
-			plugin.getLogger().warning("Pending is null");
 		}
 
 		unclaimed = items.stream().collect(Collectors.groupingBy(GrantedItem::getPlayer));

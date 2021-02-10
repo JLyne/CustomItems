@@ -31,12 +31,6 @@ public class ClaimGui implements InventoryHolder, Listener {
 		int rows = grantedItems.size() / 9 + ((grantedItems.size() % 9 == 0) ? 0 : 1);
 		int inventorySize = Math.max(1, Math.min(rows, 6)) * 9;
 
-		Bukkit.getLogger().info("" + grantedItems.size());
-		Bukkit.getLogger().info("" + grantedItems.size() / 9);
-		Bukkit.getLogger().info("" + Math.min(grantedItems.size() / 9, 6));
-		Bukkit.getLogger().info("" + Math.max(1, Math.min(grantedItems.size() / 9, 6)));
-		Bukkit.getLogger().info("" + inventorySize);
-
 		this.plugin = plugin;
 		this.grantedItems = grantedItems;
 		this.player = player;
@@ -87,7 +81,6 @@ public class ClaimGui implements InventoryHolder, Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onInventoryClose(InventoryCloseEvent event) {
-		Bukkit.getLogger().info("InventoryCloseEvent");
 		if(event.getInventory() != inventory) {
 			return;
 		}
