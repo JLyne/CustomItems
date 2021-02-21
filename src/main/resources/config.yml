@@ -6,18 +6,28 @@ claimChestLocation:
   z: -75
 items:
   detailing_participant:
-    item: GOLDEN_HOE
-    damage: 1
+    item: FEATHER
+    model: 1
     name: 'Detailing Contest Participant'
     lore:
       - Awarded to {player} for
       - Participating in the Chunk Detailing
       - Contest
   detailing_winner:
-    item: GOLDEN_HOE
-    damage: 2
+    item: FEATHER
+    model: 2
     name: 'Detailing Contest Winner'
     lore:
       - Awarded to {player} for
       - submitting a winning entry
       - in the Chunk Detailing Contest
+  cano3:
+    item: FEATHER
+    model: 1037
+    name: 'Cano3'
+    lore:
+      - By whoever made cano3
+    loot:
+      tier: 3
+      category: 'emotes'
+      stamp: false

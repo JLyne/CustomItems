@@ -4,7 +4,9 @@ join:
     Please visit the <c2>Item Distribution Point</c2> at spawn.
 command:
   invalid-item: Item <c2>{item}</c2> is invalid
+  invalid-category: Category <c2>{category}</c2> is invalid
   invalid-player: Unknown player <c2>{player}</c2>
   invalid-uuid:  UUID <c2>{uuid}</c2> does not match an existing player
   grant-success: Granted <c2>{player}</c2> {amount}x<c3>{item}</c3>
   give-success: Given <c2>{player}</c2> {amount}x<c3>{item}</c3>
+  give-category-success: Given <c2>{player}</c2> all items in <c3>{category}</c3>

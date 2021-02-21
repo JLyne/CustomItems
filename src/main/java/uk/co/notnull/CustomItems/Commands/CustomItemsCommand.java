@@ -38,6 +38,23 @@ public class CustomItemsCommand extends BaseCommand {
         }
     }
 
+    @CommandPermission("customitems.givecategory")
+    @Subcommand("givecategory")
+    @Description("Immediately gives all custom items in a category to a player")
+    @CommandCompletion("@players @categories")
+    public void onGiveCategory(CommandSender sender, OnlinePlayer player, String category) {
+        if(!plugin.getItemManager().isValidCategory(category)) {
+            plugin.getCommandManager().sendMessage(getCurrentCommandIssuer(), MessageType.ERROR,
+                                                   Messages.COMMAND__INVALID_CATEGORY, "{item}", category);
+        } else {
+            plugin.getItemManager().giveCategory(player.getPlayer(), category);
+            plugin.getCommandManager().sendMessage(getCurrentCommandIssuer(),
+                                                   MessageType.INFO, Messages.COMMAND__GIVE_CATEGORY_SUCCESS,
+                                                   "{player}", player.getPlayer().getDisplayName(),
+                                                   "{category}", category);
+        }
+    }
+
     @Subcommand("grant")
     @CommandPermission("customitems.grant")
     @Description("Grants a custom item to a player, which they must collect themselves")

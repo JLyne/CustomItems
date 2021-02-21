@@ -2,7 +2,6 @@ package uk.co.notnull.CustomItems;
 
 import co.aikar.commands.PaperCommandManager;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -10,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import uk.co.notnull.CustomItems.Commands.CustomItemsCommand;
 import uk.co.notnull.CustomItems.Listeners.Inventories;
 import uk.co.notnull.CustomItems.Listeners.Join;
+import uk.co.notnull.CustomItems.Listeners.Loot;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +32,7 @@ public class CustomItems extends JavaPlugin implements Listener {
         itemManager = new ItemManager(this, getConfig().getConfigurationSection("items"));
 		getServer().getPluginManager().registerEvents(new Inventories(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
+		getServer().getPluginManager().registerEvents(new Loot(this), this);
 
         registerCommands();
     }
@@ -53,6 +54,9 @@ public class CustomItems extends JavaPlugin implements Listener {
         commandManager.enableUnstableAPI("help");
         commandManager.getCommandCompletions().registerAsyncCompletion("itemids", c ->
                itemManager.getItemIds()
+        );
+        commandManager.getCommandCompletions().registerAsyncCompletion("categories", c ->
+               itemManager.getCategories()
         );
         commandManager.registerCommand(new CustomItemsCommand());
     }

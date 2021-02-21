@@ -12,6 +12,7 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven {
         url "https://papermc.io/repo/repository/maven-public/"
     }
@@ -31,7 +32,8 @@ repositories {
 
 dependencies {
     implementation 'com.intellij:annotations:+@jar'
-    compileOnly "com.destroystokyo.paper:paper-api:1.14.4-R0.1-SNAPSHOT"
+    compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
+    compileOnly "com.google.guava:guava:21.0"
     compile "co.aikar:acf-paper:0.5.0-SNAPSHOT"
 }
 
