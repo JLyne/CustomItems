@@ -27,7 +27,7 @@ public class Wearables implements Listener {
 
     @EventHandler()
     public void onInventoryClick(InventoryClickEvent event) {
-        if(event.getClickedInventory() == null || !event.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+        if(!event.getInventory().getType().equals(InventoryType.CRAFTING)) {
             return;
         }
 

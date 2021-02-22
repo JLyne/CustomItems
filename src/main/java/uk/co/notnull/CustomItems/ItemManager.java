@@ -297,7 +297,7 @@ public class ItemManager {
 	}
 
 	public boolean isPlaceholder(ItemStack item) {
-        if(item == null) {
+        if(item == null || !item.hasItemMeta()) {
             return false;
         }
 
@@ -331,7 +331,7 @@ public class ItemManager {
 	}
 
 	public CustomItem getCustomItem(ItemStack item) {
-		if(item == null) {
+		if(item == null || !item.hasItemMeta()) {
             return null;
         }
 
