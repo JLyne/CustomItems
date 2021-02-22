@@ -114,14 +114,9 @@ public class Loot implements Listener {
 
     private void handleInventory(Inventory inventory, Player player) {
         ItemStack[] items = inventory.getContents();
-        plugin.getLogger().info(Arrays.toString(items));
 
         for(int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
-
-            if(item != null) {
-                plugin.getLogger().info(item.toString());
-            }
 
             if(manager.isPlaceholder(item)) {
                 inventory.setItem(i, manager.generateLoot(item, player));

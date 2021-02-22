@@ -25,6 +25,7 @@ items:
     item: FEATHER
     model: 1037
     name: 'Cano3'
+    wearable: true
     lore:
       - By whoever made cano3
     loot:

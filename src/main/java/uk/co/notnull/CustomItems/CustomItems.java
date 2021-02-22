@@ -10,6 +10,7 @@ import uk.co.notnull.CustomItems.Commands.CustomItemsCommand;
 import uk.co.notnull.CustomItems.Listeners.Inventories;
 import uk.co.notnull.CustomItems.Listeners.Join;
 import uk.co.notnull.CustomItems.Listeners.Loot;
+import uk.co.notnull.CustomItems.Listeners.Wearables;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class CustomItems extends JavaPlugin implements Listener {
 
         itemManager = new ItemManager(this, getConfig().getConfigurationSection("items"));
 		getServer().getPluginManager().registerEvents(new Inventories(this), this);
+		getServer().getPluginManager().registerEvents(new Wearables(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
 		getServer().getPluginManager().registerEvents(new Loot(this), this);
 

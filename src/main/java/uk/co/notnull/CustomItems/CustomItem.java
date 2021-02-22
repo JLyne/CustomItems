@@ -15,22 +15,24 @@ public class CustomItem {
 	private final String name;
 	private final List<String> lore;
 
+	private boolean wearable;
 	private boolean loot = false;
 	private LootTier lootTier = null;
 	private boolean stamp = true;
 	private String lootCategory = null;
 
-	public CustomItem(String id, Material item, int model, String name, List<String> lore) {
+	public CustomItem(String id, Material item, int model, String name, List<String> lore, boolean wearable) {
 		this.id = id;
 		this.item = item;
 		this.model = model;
 		this.name = ChatColor.translateAlternateColorCodes('&', name);
 		this.lore = lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
+		this.wearable = wearable;
 	}
 
-	public CustomItem(String id, Material item, int model, String name, List<String> lore, String lootCategory,
-					  LootTier lootTier, boolean stamp) {
-		this(id, item, model, name, lore);
+	public CustomItem(String id, Material item, int model, String name, List<String> lore, boolean wearable,
+					  String lootCategory, LootTier lootTier, boolean stamp) {
+		this(id, item, model, name, lore, wearable);
 
 		this.lootCategory = lootCategory;
 		this.loot = true;
@@ -90,21 +92,41 @@ public class CustomItem {
 		return lootCategory;
 	}
 
+	public boolean isWearable() {
+		return wearable;
+	}
+
+	@Override
+	public String toString() {
+		return "CustomItem{" +
+				"id='" + id + '\'' +
+				", item=" + item +
+				", model=" + model +
+				", name='" + name + '\'' +
+				", wearable=" + wearable +
+				", loot=" + loot +
+				", lootTier=" + lootTier +
+				", stamp=" + stamp +
+				", lootCategory='" + lootCategory + '\'' +
+				'}';
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		CustomItem that = (CustomItem) o;
-		return getModel() == that.getModel() && isLoot() == that.isLoot() && isStamp() == that.isStamp() && getId().equals(
-				that.getId()) && getItem() == that.getItem() && getName().equals(that.getName()) && getLore().equals(
-				that.getLore()) && Objects.equals(getLootTier(), that.getLootTier()) && Objects.equals(
+		return getModel() == that.getModel() && isWearable() == that.isWearable() && isLoot() == that.isLoot() && isStamp() == that.isStamp() && Objects.equals(
+				getId(), that.getId()) && getItem() == that.getItem() && Objects.equals(getName(),
+																						that.getName()) && Objects.equals(
+				getLore(), that.getLore()) && getLootTier() == that.getLootTier() && Objects.equals(
 				getLootCategory(), that.getLootCategory());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getId(), getItem(), getModel(), getName(), getLore(), isLoot(), getLootTier(), isStamp(),
-							getLootCategory());
+		return Objects.hash(getId(), getItem(), getModel(), getName(), getLore(), isWearable(), isLoot(), getLootTier(),
+							isStamp(), getLootCategory());
 	}
 }
 

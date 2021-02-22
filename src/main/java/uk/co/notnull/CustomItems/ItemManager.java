@@ -67,6 +67,7 @@ public class ItemManager {
 			int model = config.getInt(id + ".custom-model-data", 0);
 			String name = config.getString(id + ".name");
 			List<String> lore = config.getStringList(id + ".lore");
+			boolean wearable = config.getBoolean(id + ".wearable", false);
 
 			if(materialName == null) {
 				plugin.getLogger().severe("No material specified for " + id + ", skipping.");
@@ -99,16 +100,14 @@ public class ItemManager {
 					return;
 				}
 
-				CustomItem item = new CustomItem(id, material, model, name, lore, category, tier, stamp);
+				CustomItem item = new CustomItem(id, material, model, name, lore, wearable, category, tier, stamp);
 				items.put(id, item);
 				addLoot(item);
 			} else {
 				plugin.getLogger().severe(id + " is not loot");
-				items.put(id, new CustomItem(id, material, model, name, lore));
+				items.put(id, new CustomItem(id, material, model, name, lore, wearable));
 			}
 		});
-
-		plugin.getLogger().info(loot.toString());
 	}
 
 	private void addLoot(CustomItem item) {
@@ -323,6 +322,32 @@ public class ItemManager {
 		LootTier tier = data.get(placeholderTier, lootTierTag);
 
 		return tier != null && !tier.equals(LootTier.INVALID);
+	}
+
+	public boolean isWearable(ItemStack item) {
+		CustomItem customItem = getCustomItem(item);
+
+		return customItem != null && customItem.isWearable();
+	}
+
+	public CustomItem getCustomItem(ItemStack item) {
+		if(item == null) {
+            return null;
+        }
+
+        ItemMeta meta = item.getItemMeta();
+		PersistentDataContainer data = meta.getPersistentDataContainer();
+
+		if(itemDataNeedsUpdate(data)) {
+			updateItemData(data);
+			item.setItemMeta(meta);
+		}
+
+		if(!data.has(customItemKey, PersistentDataType.STRING)) {
+			return null;
+		}
+
+		return items.get(data.get(customItemKey, PersistentDataType.STRING));
 	}
 
     public ItemStack generateLoot(ItemStack placeholder, Player player) {
