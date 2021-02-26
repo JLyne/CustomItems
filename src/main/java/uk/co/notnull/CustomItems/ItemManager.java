@@ -155,8 +155,8 @@ public class ItemManager {
 		}
 
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-		meta.setDisplayName(customItem.getName(player));
-		meta.setLore(customItem.getLore(player));
+		meta.displayName(customItem.getDisplayName(player));
+		meta.lore(customItem.getLore(player));
 		item.setItemMeta(meta);
 
 		return item;

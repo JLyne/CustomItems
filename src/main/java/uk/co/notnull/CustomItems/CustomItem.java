@@ -1,5 +1,7 @@
 package uk.co.notnull.CustomItems;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -15,11 +17,13 @@ public class CustomItem {
 	private final String name;
 	private final List<String> lore;
 
-	private boolean wearable;
+	private final boolean wearable;
 	private boolean loot = false;
 	private LootTier lootTier = null;
 	private boolean stamp = true;
 	private String lootCategory = null;
+
+	private static final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.legacyAmpersand();
 
 	public CustomItem(String id, Material item, int model, String name, List<String> lore, boolean wearable) {
 		this.id = id;
@@ -64,15 +68,30 @@ public class CustomItem {
 		return name;
 	}
 
-	public List<String> getLore() {
-		return lore;
+	public Component getDisplayName() {
+		return legacySerializer.deserialize(name);
 	}
 
-	public List<String> getLore(OfflinePlayer player) {
+	public Component getDisplayName(OfflinePlayer player) {
 		if(player != null && player.getName() != null) {
-			return lore.stream().map(line -> line.replace("{player}", player.getName())).collect(Collectors.toList());
+			return legacySerializer.deserialize(name.replace("{player}", player.getName()));
+		}
+
+		return legacySerializer.deserialize(name);
+	}
+
+	public List<Component> getLore() {
+		return lore.stream().map(legacySerializer::deserialize).collect(Collectors.toList());
+	}
+
+	public List<Component> getLore(OfflinePlayer player) {
+		if(player != null && player.getName() != null) {
+			return lore.stream().map(line -> {
+				line = line.replace("{player}", player.getName());
+				return legacySerializer.deserialize(line);
+			}).collect(Collectors.toList());
 		} else {
-			return lore;
+			return getLore();
 		}
 	}
 
