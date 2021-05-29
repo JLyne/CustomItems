@@ -70,7 +70,7 @@ public class ItemManager {
 			boolean wearable = config.getBoolean(id + ".wearable", false);
 
 			if(materialName == null) {
-				plugin.getLogger().severe("No material specified for " + id + ", skipping.");
+				plugin.getLogger().warning("No material specified for " + id + ", skipping.");
 				return;
 			}
 
@@ -78,25 +78,24 @@ public class ItemManager {
 
 
 			if(material == null) {
-				plugin.getLogger().severe("Material " + materialName + " specified for " + id + " does not exist, skipping.");
+				plugin.getLogger().warning("Material " + materialName + " specified for " + id + " does not exist, skipping.");
 				return;
 			}
 
 			if(material.isBlock()) {
-				plugin.getLogger().severe("Material " + materialName + " specified for " + id + " is a placeable block. This would cause item data to be lost. Skipping.");
+				plugin.getLogger().warning("Material " + materialName + " specified for " + id + " is a placeable block. This would cause item data to be lost. Skipping.");
 				return;
 			}
 
 			ConfigurationSection lootConfig = config.getConfigurationSection(id + ".loot");
 
 			if(lootConfig != null) {
-				plugin.getLogger().severe(id + " is loot");
 				String category = lootConfig.getString("category", "none");
 				LootTier tier = LootTier.valueOf(lootConfig.getInt("tier", 1));
 				boolean stamp = lootConfig.getBoolean("stamp", false);
 
 				if(tier.equals(LootTier.INVALID)) {
-					plugin.getLogger().severe("Invalid loot tier specified for " + id + ", skipping.");
+					plugin.getLogger().warning("Invalid loot tier specified for " + id + ", skipping.");
 					return;
 				}
 
@@ -104,7 +103,6 @@ public class ItemManager {
 				items.put(id, item);
 				addLoot(item);
 			} else {
-				plugin.getLogger().severe(id + " is not loot");
 				items.put(id, new CustomItem(id, material, model, name, lore, wearable));
 			}
 		});
