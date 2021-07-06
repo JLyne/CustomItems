@@ -10,8 +10,6 @@ import uk.co.notnull.CustomItems.CustomItem;
 import uk.co.notnull.CustomItems.CustomItems;
 import uk.co.notnull.CustomItems.Messages;
 
-import java.util.UUID;
-
 @CommandAlias("customitems|ci|citems")
 public class CustomItemsCommand extends BaseCommand {
     @Dependency

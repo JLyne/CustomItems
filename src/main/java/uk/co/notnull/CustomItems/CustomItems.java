@@ -76,6 +76,7 @@ public class CustomItems extends JavaPlugin implements Listener {
      * Create a file to be used in the plugin
      * @param name the name of the file
      */
+    @SuppressWarnings({"SameParameterValue", "ResultOfMethodCallIgnored", "ConstantConditions"})
     private void createFile(String name) {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();

@@ -10,7 +10,7 @@ import uk.co.notnull.CustomItems.CustomItems;
 import uk.co.notnull.CustomItems.Messages;
 
 public class Join implements Listener {
-    private CustomItems plugin;
+    private final CustomItems plugin;
 
     public Join(CustomItems plugin) {
         this.plugin = plugin;

@@ -19,11 +19,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Loot implements Listener {
-    private final CustomItems plugin;
     private final ItemManager manager;
 
     public Loot(CustomItems plugin) {
-        this.plugin = plugin;
         this.manager = plugin.getItemManager();
     }
 

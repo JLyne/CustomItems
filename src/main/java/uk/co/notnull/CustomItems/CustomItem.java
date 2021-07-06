@@ -68,10 +68,6 @@ public class CustomItem {
 		return name;
 	}
 
-	public Component getDisplayName() {
-		return legacySerializer.deserialize(name);
-	}
-
 	public Component getDisplayName(OfflinePlayer player) {
 		if(player != null && player.getName() != null) {
 			return legacySerializer.deserialize(name.replace("{player}", player.getName()));

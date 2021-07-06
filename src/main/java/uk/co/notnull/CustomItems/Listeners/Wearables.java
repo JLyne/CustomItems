@@ -17,11 +17,9 @@ import uk.co.notnull.CustomItems.CustomItems;
 import uk.co.notnull.CustomItems.ItemManager;
 
 public class Wearables implements Listener {
-    private CustomItems plugin;
-    private ItemManager manager;
+    private final ItemManager manager;
 
     public Wearables(CustomItems plugin) {
-        this.plugin = plugin;
         this.manager = plugin.getItemManager();
     }
 
@@ -40,82 +38,74 @@ public class Wearables implements Listener {
         ItemStack equip;
 
         switch (action) {
-            case PLACE_ALL:
-            case PLACE_ONE:
-            case PLACE_SOME:
+            case PLACE_ALL, PLACE_ONE, PLACE_SOME -> {
                 //Helmet slot only
-                if(event.getRawSlot() != 5 || event.getCursor() == null) {
+                if (event.getRawSlot() != 5 || event.getCursor() == null) {
                     return;
                 }
 
                 //Wearables only of course
-                if(!manager.isWearable(event.getCursor())) {
+                if (!manager.isWearable(event.getCursor())) {
                     return;
                 }
-
                 event.setCancelled(true);
 
                 //Equip item
                 equip = event.getCursor().clone();
                 equip.setAmount(1);
-
                 event.getWhoClicked().getEquipment().setHelmet(equip);
 
                 //Reduce cursor by 1 if multiple, otherwise remove
-                if(event.getCursor().getAmount() > 1) {
+                if (event.getCursor().getAmount() > 1) {
                     event.getCursor().setAmount(event.getCursor().getAmount() - 1);
                 } else {
+                    //noinspection deprecation
                     event.setCursor(null);
                 }
-
                 ((Player) event.getWhoClicked()).updateInventory();
-
-                break;
-
-            case SWAP_WITH_CURSOR:
-            case NOTHING: //Needed for swapping in armor slots it seems
+            }
+            case SWAP_WITH_CURSOR, NOTHING -> { //Needed for swapping in armor slots it seems
                 //Helmet slot only
-                if(event.getRawSlot() != 5 || event.getCursor() == null) {
+                if (event.getRawSlot() != 5 || event.getCursor() == null) {
                     return;
                 }
 
                 //Wearables only of course
-                if(!manager.isWearable(event.getCursor())) {
+                if (!manager.isWearable(event.getCursor())) {
                     return;
                 }
 
                 //Don't allow swaps if stack is on cursor
-                if(event.getCursor().getAmount() > 1) {
+                if (event.getCursor().getAmount() > 1) {
                     return;
                 }
 
                 //Swap items
                 event.setCancelled(true);
                 equip = event.getCursor().clone();
+                //noinspection deprecation
                 event.setCursor(event.getCurrentItem());
                 event.getWhoClicked().getEquipment().setHelmet(equip);
-
-                break;
-
-            case MOVE_TO_OTHER_INVENTORY:
+            }
+            case MOVE_TO_OTHER_INVENTORY -> {
                 //Ignore shift clicks slots outside of actual inv (i.e crafting area)
-                if(!slotType.equals(InventoryType.SlotType.CONTAINER)
+                if (!slotType.equals(InventoryType.SlotType.CONTAINER)
                         && !slotType.equals(InventoryType.SlotType.QUICKBAR)) {
                     return;
                 }
 
                 //Ignore shift clicks if destination slot is already full
-                if(event.getWhoClicked().getEquipment().getHelmet() != null) {
+                if (event.getWhoClicked().getEquipment().getHelmet() != null) {
                     return;
                 }
 
                 //Ignore shift clicks for stacked items (like beacon)
-                if(event.getCurrentItem() == null || event.getCurrentItem().getAmount() > 1) {
+                if (event.getCurrentItem() == null || event.getCurrentItem().getAmount() > 1) {
                     return;
                 }
 
                 //Ignore non wearables of course
-                if(!manager.isWearable(event.getCurrentItem())) {
+                if (!manager.isWearable(event.getCurrentItem())) {
                     return;
                 }
 
@@ -123,8 +113,7 @@ public class Wearables implements Listener {
                 event.setCancelled(true);
                 event.getWhoClicked().getEquipment().setHelmet(event.getCurrentItem());
                 event.setCurrentItem(null);
-
-                break;
+            }
         }
     }
 

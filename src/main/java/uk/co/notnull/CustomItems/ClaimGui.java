@@ -20,11 +20,11 @@ import java.util.List;
 
 public class ClaimGui implements InventoryHolder, Listener {
 	private final CustomItems plugin;
-	private Inventory inventory;
-	private Player player;
+	private final Inventory inventory;
+	private final Player player;
 
-	private ArrayList<ItemStack> items;
-	private List<GrantedItem> grantedItems;
+	private final ArrayList<ItemStack> items;
+	private final List<GrantedItem> grantedItems;
 
 	public ClaimGui(CustomItems plugin, Player player, List<GrantedItem> grantedItems) {
 

@@ -121,10 +121,6 @@ public class ItemManager {
 		this.loot.put(category, tier, loot);
 	}
 
-	public ItemStack createItem(String id, OfflinePlayer player) {
-		return createItem(id, player, 1);
-	}
-
 	public ItemStack createItem(String id, OfflinePlayer player, int amount) {
 		if(!isValidId(id)) {
 			plugin.getLogger().warning("Refusing to create invalid item " + id);
@@ -160,6 +156,7 @@ public class ItemManager {
 		return item;
 	}
 
+	@SuppressWarnings("UnusedReturnValue")
 	public boolean giveItem(Player player, String id, int amount) {
         ItemStack part = createItem(id, player, amount);
 
@@ -178,7 +175,8 @@ public class ItemManager {
         return true;
     }
 
-    public boolean grantItem(OfflinePlayer player, String id, int amount) {
+    @SuppressWarnings("UnusedReturnValue")
+	public boolean grantItem(OfflinePlayer player, String id, int amount) {
 		if(!isValidId(id)) {
 			plugin.getLogger().warning("Refusing to grant invalid item " + id);
 
@@ -193,7 +191,8 @@ public class ItemManager {
         return true;
     }
 
-    public boolean giveCategory(Player player, String category) {
+    @SuppressWarnings("UnusedReturnValue")
+	public boolean giveCategory(Player player, String category) {
 		if(!isValidCategory(category)) {
 			plugin.getLogger().warning("Refusing to give invalid category " + category);
 
@@ -236,6 +235,7 @@ public class ItemManager {
 		return items.containsKey(id);
 	}
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean isValidCategory(String category) {
 		return loot.containsRow(category);
 	}
@@ -275,6 +275,7 @@ public class ItemManager {
 		unclaimed = items.stream().collect(Collectors.groupingBy(GrantedItem::getPlayer));
 	}
 
+	@SuppressWarnings("UnusedReturnValue")
 	public boolean saveUnclaimedItems() {
 		File unclaimedFile = new File(plugin.getDataFolder(), "unclaimed.yml");
 		List<GrantedItem> items = unclaimed.values().stream()
@@ -386,7 +387,8 @@ public class ItemManager {
         }
 
         if(data.has(dataVersion, PersistentDataType.INTEGER)) {
-            version = data.get(dataVersion, PersistentDataType.INTEGER);
+			//noinspection ConstantConditions
+			version = data.get(dataVersion, PersistentDataType.INTEGER);
         }
 
         return version < currentVersion;
@@ -396,7 +398,8 @@ public class ItemManager {
         int version = 1;
 
         if(data.has(dataVersion, PersistentDataType.INTEGER)) {
-            version = data.get(dataVersion, PersistentDataType.INTEGER);
+			//noinspection ConstantConditions
+			version = data.get(dataVersion, PersistentDataType.INTEGER);
         }
 
         version = Math.max(1, version);
@@ -406,8 +409,8 @@ public class ItemManager {
         }
     }
 
-    @SuppressWarnings({"unchecked", "SwitchStatementWithTooFewBranches"})
-    private void updateItemDataVersion(PersistentDataContainer data, int version) {
+    @SuppressWarnings("unused")
+	private void updateItemDataVersion(PersistentDataContainer data, int version) {
 
     }
 }

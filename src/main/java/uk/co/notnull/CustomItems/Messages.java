@@ -8,12 +8,9 @@ public enum Messages implements MessageKeyProvider {
     JOIN__UNCLAIMED_ITEMS_AVAILABLE,
     COMMAND__INVALID_ITEM,
     COMMAND__INVALID_CATEGORY,
-    COMMAND__INVALID_UUID,
-    COMMAND__INVALID_PLAYER,
     COMMAND__GRANT_SUCCESS,
     COMMAND__GIVE_SUCCESS,
-    COMMAND__GIVE_CATEGORY_SUCCESS,
-    RELOAD__SUCCESS;
+    COMMAND__GIVE_CATEGORY_SUCCESS;
 
     /**
      * Message keys that grab from the config to send messages
