@@ -21,6 +21,12 @@ public class GrantedItem implements ConfigurationSerializable {
 		this.player = player;
 	}
 
+	public GrantedItem(Map<String, Object> data) {
+		this.item = data.get("item").toString();
+		this.player = UUID.fromString(data.get("player").toString());
+		this.amount = Integer.parseInt(data.get("amount").toString());
+	}
+
 	public String getItem() {
 		return item;
 	}
