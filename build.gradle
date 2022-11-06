@@ -22,8 +22,8 @@ dependencies {
     implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
 
     compileOnly 'com.intellij:annotations:12.0@jar'
-    compileOnly "io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT"
-    compileOnly 'com.google.guava:guava:21.0'
+    compileOnly "io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT"
+    compileOnly 'com.google.guava:guava:31.1-jre'
 }
 
 group 'uk.co.notnull'

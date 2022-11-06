@@ -5,4 +5,4 @@ description: Custom Items
 load: POSTWORLD
 
 main: uk.co.notnull.CustomItems.CustomItems
-api-version: 1.17
+api-version: 1.19
