@@ -15,8 +15,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class ClaimGui implements InventoryHolder, Listener {
 	private final CustomItems plugin;
@@ -25,6 +27,8 @@ public class ClaimGui implements InventoryHolder, Listener {
 
 	private final ArrayList<ItemStack> items;
 	private final List<GrantedItem> grantedItems;
+
+	private static final Set<Player> viewers = new HashSet<>();
 
 	public ClaimGui(CustomItems plugin, Player player, List<GrantedItem> grantedItems) {
 
@@ -50,6 +54,19 @@ public class ClaimGui implements InventoryHolder, Listener {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
+	private void addViewer(Player player) {
+		viewers.add(player);
+		plugin.getChestManager().openChest();
+	}
+
+	private void removeViewer(Player player) {
+		viewers.remove(player);
+
+		if(viewers.isEmpty()) {
+			plugin.getChestManager().closeChest();
+		}
+	}
+
 	@NotNull
 	@Override
 	public Inventory getInventory() {
@@ -58,6 +75,7 @@ public class ClaimGui implements InventoryHolder, Listener {
 
 	// You can open the inventory with this
     public void openInventory() {
+		addViewer(player);
         player.openInventory(inventory);
     }
 
@@ -117,5 +135,6 @@ public class ClaimGui implements InventoryHolder, Listener {
 		}
 
 		HandlerList.unregisterAll(this);
+		removeViewer(player);
 	}
 }

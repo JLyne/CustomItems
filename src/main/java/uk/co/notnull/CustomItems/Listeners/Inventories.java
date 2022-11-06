@@ -1,23 +1,20 @@
 package uk.co.notnull.CustomItems.Listeners;
 
-import org.bukkit.Location;
-import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.BlockInventoryHolder;
+import uk.co.notnull.CustomItems.ChestManager;
 import uk.co.notnull.CustomItems.CustomItems;
-import uk.co.notnull.CustomItems.ItemManager;
 
 
 public class Inventories implements Listener {
-    private final ItemManager manager;
-    private final Location chestLocation;
+    private final ChestManager manager;
 
     public Inventories(CustomItems plugin) {
-        this.manager = plugin.getItemManager();
-        this.chestLocation = plugin.getConfig().getLocation("claimChestLocation");
+        this.manager = plugin.getChestManager();
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -28,13 +25,11 @@ public class Inventories implements Listener {
             return;
         }
 
-        if(!(event.getInventory().getHolder() instanceof Container)) {
+        if(!(event.getInventory().getHolder() instanceof BlockInventoryHolder block)) {
             return;
         }
 
-        Location blockLocation = ((Container) event.getInventory().getHolder()).getLocation();
-
-        if(chestLocation == null || !chestLocation.equals(blockLocation)) {
+        if(!manager.isChestLocation(block.getBlock().getLocation())) {
             return;
         }
 

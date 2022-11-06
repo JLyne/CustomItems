@@ -216,13 +216,6 @@ public class ItemManager {
         return true;
 	}
 
-    public void showClaimGUI(Player player) {
-		List<GrantedItem> unclaimedItems = getUnclaimedItems(player);
-
-		ClaimGui gui = new ClaimGui(plugin, player, unclaimedItems);
-		gui.openInventory();
-	}
-
     public Set<String> getItemIds() {
 		return items.keySet();
 	}

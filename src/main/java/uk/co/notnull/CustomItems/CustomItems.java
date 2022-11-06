@@ -21,6 +21,7 @@ import java.util.Objects;
 
 public class CustomItems extends JavaPlugin implements Listener {
     ItemManager itemManager;
+    ChestManager chestManager;
     private PaperCommandManager commandManager;
 
     @Override
@@ -31,6 +32,7 @@ public class CustomItems extends JavaPlugin implements Listener {
 		ConfigurationSerialization.registerClass(GrantedItem.class, "GrantedItem");
 
         itemManager = new ItemManager(this, getConfig().getConfigurationSection("items"));
+        chestManager = new ChestManager(this, getConfig());
 		getServer().getPluginManager().registerEvents(new Inventories(this), this);
 		getServer().getPluginManager().registerEvents(new Wearables(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
@@ -47,6 +49,10 @@ public class CustomItems extends JavaPlugin implements Listener {
 
     public ItemManager getItemManager() {
         return itemManager;
+    }
+
+    public ChestManager getChestManager() {
+        return chestManager;
     }
 
     private void registerCommands() {
