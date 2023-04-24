@@ -1,0 +1,12 @@
+join:
+  unclaimed-items-available: |-
+    You have some unclaimed items to collect.
+    Please visit the Item Distribution Point at spawn.
+command:
+  invalid-item: Item <item> is invalid
+  invalid-category: Category <category> is invalid
+  invalid-player: Unknown player <player>
+  invalid-uuid:  UUID <uuid> does not match an existing player
+  grant-success: Granted <player> <amount>x<item>
+  give-success: Given <player> <amount>x<item>
+  give-category-success: Given <player> all items in <category>

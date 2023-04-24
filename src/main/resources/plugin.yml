@@ -1,6 +1,6 @@
 name: CustomItems
 version: @project.version@
-author: Jim (NotKatuen)
+author: Jim (AnEnragedPigeon)
 description: Custom Items
 load: POSTWORLD
 

@@ -1,4 +1,4 @@
-package uk.co.notnull.CustomItems.Listeners;
+package uk.co.notnull.CustomItems.listeners;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;

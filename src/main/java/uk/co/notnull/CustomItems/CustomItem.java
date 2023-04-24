@@ -1,7 +1,7 @@
 package uk.co.notnull.CustomItems;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -14,7 +14,7 @@ public class CustomItem {
 	private final String id;
 	private final Material item;
 	private final int model;
-	private final String name;
+	private final String rawName;
 	private final List<String> lore;
 
 	private final boolean wearable;
@@ -23,13 +23,13 @@ public class CustomItem {
 	private boolean stamp = true;
 	private String lootCategory = null;
 
-	private static final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.legacyAmpersand();
+	private static final MiniMessage miniMessage = MiniMessage.builder().build();
 
 	public CustomItem(String id, Material item, int model, String name, List<String> lore, boolean wearable) {
 		this.id = id;
 		this.item = item;
 		this.model = model;
-		this.name = ChatColor.translateAlternateColorCodes('&', name);
+		this.rawName = name;
 		this.lore = lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
 		this.wearable = wearable;
 	}
@@ -56,35 +56,35 @@ public class CustomItem {
 		return model;
 	}
 
-	public String getName() {
-		return name;
+	public Component getName() {
+		return miniMessage.deserialize(rawName);
 	}
 
-	public String getName(OfflinePlayer player) {
+	public Component getName(OfflinePlayer player) {
 		if(player != null && player.getName() != null) {
-			return name.replace("{player}", player.getName());
+			return miniMessage.deserialize(rawName.replace("<player>", player.getName()));
 		}
 
-		return name;
+		return miniMessage.deserialize(rawName);
 	}
 
 	public Component getDisplayName(OfflinePlayer player) {
 		if(player != null && player.getName() != null) {
-			return legacySerializer.deserialize(name.replace("{player}", player.getName()));
+			return miniMessage.deserialize(rawName.replace("<player>", player.getName()));
 		}
 
-		return legacySerializer.deserialize(name);
+		return miniMessage.deserialize(rawName);
 	}
 
 	public List<Component> getLore() {
-		return lore.stream().map(legacySerializer::deserialize).collect(Collectors.toList());
+		return lore.stream().map(miniMessage::deserialize).collect(Collectors.toList());
 	}
 
 	public List<Component> getLore(OfflinePlayer player) {
 		if(player != null && player.getName() != null) {
 			return lore.stream().map(line -> {
-				line = line.replace("{player}", player.getName());
-				return legacySerializer.deserialize(line);
+				line = line.replace("<player>", player.getName());
+				return miniMessage.deserialize(line);
 			}).collect(Collectors.toList());
 		} else {
 			return getLore();
@@ -117,7 +117,7 @@ public class CustomItem {
 				"id='" + id + '\'' +
 				", item=" + item +
 				", model=" + model +
-				", name='" + name + '\'' +
+				", rawName='" + rawName + '\'' +
 				", wearable=" + wearable +
 				", loot=" + loot +
 				", lootTier=" + lootTier +

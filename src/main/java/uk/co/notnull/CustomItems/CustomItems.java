@@ -1,33 +1,38 @@
 package uk.co.notnull.CustomItems;
 
-import co.aikar.commands.PaperCommandManager;
-import org.bukkit.configuration.InvalidConfigurationException;
+import cloud.commandframework.CommandManager;
+import cloud.commandframework.annotations.AnnotationParser;
+import cloud.commandframework.execution.CommandExecutionCoordinator;
+import cloud.commandframework.meta.SimpleCommandMeta;
+import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
+import cloud.commandframework.paper.PaperCommandManager;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import uk.co.notnull.CustomItems.Commands.CustomItemsCommand;
-import uk.co.notnull.CustomItems.Listeners.Inventories;
-import uk.co.notnull.CustomItems.Listeners.Join;
-import uk.co.notnull.CustomItems.Listeners.Loot;
-import uk.co.notnull.CustomItems.Listeners.Wearables;
+import uk.co.notnull.CustomItems.listeners.Inventories;
+import uk.co.notnull.CustomItems.listeners.Join;
+import uk.co.notnull.CustomItems.listeners.Loot;
+import uk.co.notnull.CustomItems.listeners.Wearables;
+import uk.co.notnull.CustomItems.messages.Messages;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.function.Function;
 
 public class CustomItems extends JavaPlugin implements Listener {
     ItemManager itemManager;
     ChestManager chestManager;
-    private PaperCommandManager commandManager;
 
     @Override
     public void onEnable() {
 		initConfig();
-		createFile("languages/en-US.yml");
+		createFile("messages.yml");
 
 		ConfigurationSerialization.registerClass(GrantedItem.class, "GrantedItem");
 
@@ -38,7 +43,14 @@ public class CustomItems extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new Join(this), this);
 		getServer().getPluginManager().registerEvents(new Loot(this), this);
 
-        registerCommands();
+        try {
+            ConfigurationSection messages = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "messages.yml"));
+            Messages.set(messages);
+
+            registerCommands();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -55,28 +67,35 @@ public class CustomItems extends JavaPlugin implements Listener {
         return chestManager;
     }
 
-    private void registerCommands() {
-        commandManager = new PaperCommandManager(this);
-        registerLanguages();
+    private void registerCommands() throws Exception {
+        CommandManager<CommandSender> manager = new PaperCommandManager<>(
+                this,
+                CommandExecutionCoordinator.simpleCoordinator(),
+                Function.identity(),
+                Function.identity());
 
-        commandManager.enableUnstableAPI("help");
-        commandManager.getCommandCompletions().registerAsyncCompletion("itemids", c ->
-               itemManager.getItemIds()
+        new MinecraftExceptionHandler<CommandSender>()
+            .withArgumentParsingHandler()
+            .withInvalidSenderHandler()
+            .withInvalidSyntaxHandler()
+            .withNoPermissionHandler()
+            .withCommandExecutionHandler()
+            .withDecorator(message -> message)
+            .apply(manager, p -> p);
+
+        AnnotationParser<CommandSender> annotationParser = new AnnotationParser<>(
+                manager,
+                CommandSender.class,
+                parameters -> SimpleCommandMeta.empty()
         );
-        commandManager.getCommandCompletions().registerAsyncCompletion("categories", c ->
-               itemManager.getCategories()
-        );
-        commandManager.registerCommand(new CustomItemsCommand());
+
+        annotationParser.parse(new Commands(this, manager));
     }
 
     private void initConfig() {
     	getConfig();
         saveDefaultConfig();
 	}
-
-    public PaperCommandManager getCommandManager() {
-        return commandManager;
-    }
 
     /**
      * Create a file to be used in the plugin
@@ -87,10 +106,6 @@ public class CustomItems extends JavaPlugin implements Listener {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }
-        File languageFolder = new File(getDataFolder(), "languages");
-        if (!languageFolder.exists()) {
-            languageFolder.mkdirs();
-        }
 
         File file = new File(getDataFolder(), name);
 
@@ -100,27 +115,6 @@ public class CustomItems extends JavaPlugin implements Listener {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        }
-    }
-
-    /**
-     * Load all the language files for the plugin
-     */
-    public void registerLanguages() {
-        try {
-            File languageFolder = new File(getDataFolder(), "languages");
-            for (File file : Objects.requireNonNull(languageFolder.listFiles())) {
-                if (file.isFile()) {
-                    if (file.getName().endsWith(".yml")) {
-                        String updatedName = file.getName().replace(".yml", "");
-                        commandManager.addSupportedLanguage(Locale.forLanguageTag(updatedName));
-                        commandManager.getLocales().loadYamlLanguageFile(new File(languageFolder, file.getName()), Locale.forLanguageTag(updatedName));
-                    }
-                }
-            }
-            commandManager.getLocales().setDefaultLocale(Locale.forLanguageTag("en-US"));
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
         }
     }
 }
