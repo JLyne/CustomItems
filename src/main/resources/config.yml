@@ -10,7 +10,7 @@ items:
     model: 1
     name: 'Detailing Contest Participant'
     lore:
-      - Awarded to {player} for
+      - Awarded to <player> for
       - Participating in the Chunk Detailing
       - Contest
   detailing_winner:
@@ -18,7 +18,7 @@ items:
     model: 2
     name: 'Detailing Contest Winner'
     lore:
-      - Awarded to {player} for
+      - Awarded to <player> for
       - submitting a winning entry
       - in the Chunk Detailing Contest
   cano3:
@@ -28,7 +28,8 @@ items:
     wearable: true
     lore:
       - By whoever made cano3
-    loot:
-      tier: 3
-      category: 'emotes'
-      stamp: false
+    stamp: false
+
+loot:
+  emotes:
+    - cano3

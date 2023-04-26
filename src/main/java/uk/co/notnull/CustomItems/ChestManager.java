@@ -10,9 +10,9 @@ import java.util.List;
 
 public class ChestManager {
 	private Location chestLocation;
-	private final CustomItems plugin;
+	private final CustomItemsImpl plugin;
 
-	public ChestManager(CustomItems plugin, ConfigurationSection config) {
+	public ChestManager(CustomItemsImpl plugin, ConfigurationSection config) {
 		this.plugin = plugin;
 		chestLocation = config.getLocation("claimChestLocation");
 

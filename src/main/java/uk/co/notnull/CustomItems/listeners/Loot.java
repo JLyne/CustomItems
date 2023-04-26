@@ -12,17 +12,17 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import uk.co.notnull.CustomItems.CustomItems;
-import uk.co.notnull.CustomItems.ItemManager;
+import uk.co.notnull.CustomItems.CustomItemsImpl;
+import uk.co.notnull.CustomItems.loot.LootManagerImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Loot implements Listener {
-    private final ItemManager manager;
+    private final LootManagerImpl manager;
 
-    public Loot(CustomItems plugin) {
-        this.manager = plugin.getItemManager();
+    public Loot(CustomItemsImpl plugin) {
+        this.manager = plugin.getLootManager();
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

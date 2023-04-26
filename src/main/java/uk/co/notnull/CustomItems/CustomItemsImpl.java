@@ -13,10 +13,13 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import uk.co.notnull.CustomItems.api.CustomItems;
+import uk.co.notnull.CustomItems.commands.Commands;
 import uk.co.notnull.CustomItems.listeners.Inventories;
 import uk.co.notnull.CustomItems.listeners.Join;
 import uk.co.notnull.CustomItems.listeners.Loot;
 import uk.co.notnull.CustomItems.listeners.Wearables;
+import uk.co.notnull.CustomItems.loot.LootManagerImpl;
 import uk.co.notnull.CustomItems.messages.Messages;
 
 import java.io.File;
@@ -25,8 +28,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.function.Function;
 
-public class CustomItems extends JavaPlugin implements Listener {
-    ItemManager itemManager;
+public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener {
+    ItemManagerImpl itemManager;
+    LootManagerImpl lootManager;
     ChestManager chestManager;
 
     @Override
@@ -36,7 +40,8 @@ public class CustomItems extends JavaPlugin implements Listener {
 
 		ConfigurationSerialization.registerClass(GrantedItem.class, "GrantedItem");
 
-        itemManager = new ItemManager(this, getConfig().getConfigurationSection("items"));
+        lootManager = new LootManagerImpl(this, getConfig().getConfigurationSection("loot"));
+        itemManager = new ItemManagerImpl(this, lootManager, getConfig().getConfigurationSection("items"));
         chestManager = new ChestManager(this, getConfig());
 		getServer().getPluginManager().registerEvents(new Inventories(this), this);
 		getServer().getPluginManager().registerEvents(new Wearables(this), this);
@@ -59,8 +64,12 @@ public class CustomItems extends JavaPlugin implements Listener {
         getItemManager().saveUnclaimedItems();
     }
 
-    public ItemManager getItemManager() {
+    public ItemManagerImpl getItemManager() {
         return itemManager;
+    }
+
+    public LootManagerImpl getLootManager() {
+        return lootManager;
     }
 
     public ChestManager getChestManager() {

@@ -5,13 +5,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import uk.co.notnull.CustomItems.CustomItems;
+import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.messages.Message;
 
 public class Join implements Listener {
-    private final CustomItems plugin;
+    private final CustomItemsImpl plugin;
 
-    public Join(CustomItems plugin) {
+    public Join(CustomItemsImpl plugin) {
         this.plugin = plugin;
     }
 

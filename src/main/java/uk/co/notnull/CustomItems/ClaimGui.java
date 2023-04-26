@@ -12,6 +12,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import uk.co.notnull.CustomItems.api.items.CreationContext;
+import uk.co.notnull.CustomItems.api.items.CreationReason;
+import uk.co.notnull.CustomItems.items.CreationContextImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,28 +24,33 @@ import java.util.List;
 import java.util.Set;
 
 public class ClaimGui implements InventoryHolder, Listener {
-	private final CustomItems plugin;
+	private final CustomItemsImpl plugin;
 	private final Inventory inventory;
 	private final Player player;
-
 	private final ArrayList<ItemStack> items;
 	private final List<GrantedItem> grantedItems;
-
 	private static final Set<Player> viewers = new HashSet<>();
+	private final ItemManagerImpl manager;
 
-	public ClaimGui(CustomItems plugin, Player player, List<GrantedItem> grantedItems) {
-
+	public ClaimGui(CustomItemsImpl plugin, Player player, List<GrantedItem> grantedItems) {
 		int rows = grantedItems.size() / 9 + ((grantedItems.size() % 9 == 0) ? 0 : 1);
 		int inventorySize = Math.max(1, Math.min(rows, 6)) * 9;
 
 		this.plugin = plugin;
+		this.manager = plugin.getItemManager();
 		this.grantedItems = grantedItems;
 		this.player = player;
 
 		items = new ArrayList<>();
+		CreationContext context = new CreationContextImpl(player, CreationReason.GRANTED);
 
 		for (GrantedItem unclaimedItem : grantedItems) {
-			items.add(plugin.getItemManager().createItem(unclaimedItem.getItem(), player, unclaimedItem.getAmount()));
+			if(manager.isValidId(unclaimedItem.getItem())) {
+				items.add(manager.createItem(unclaimedItem.getItem(), context, unclaimedItem.getAmount()));
+			} else {
+				ItemStack air = new ItemStack(Material.AIR, 1);
+				items.add(air);
+			}
 		}
 
 		inventory = Bukkit.getServer().createInventory(player, inventorySize);
@@ -114,7 +122,7 @@ public class ClaimGui implements InventoryHolder, Listener {
 
 			if(!finalContents.contains(item)) {
 				Bukkit.getLogger().info("Claiming item " + grantedItems.get(index));
-				plugin.getItemManager().claimItem(grantedItems.get(index));
+				manager.claimItem(grantedItems.get(index));
 			} else {
 				finalContents.remove(item);
 			}
@@ -123,7 +131,7 @@ public class ClaimGui implements InventoryHolder, Listener {
 			grantedItems.remove(index);
 		}
 
-		//Drop items that shouldn't be in inventory (player added etc)
+		//Drop items that shouldn't be in inventory (player added etc.)
 		for (ItemStack item : finalContents) {
 			if(item == null || item.getType() == Material.AIR) {
 				continue;

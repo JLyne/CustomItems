@@ -13,23 +13,19 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import uk.co.notnull.CustomItems.CustomItems;
-import uk.co.notnull.CustomItems.ItemManager;
+import uk.co.notnull.CustomItems.CustomItemsImpl;
+import uk.co.notnull.CustomItems.ItemManagerImpl;
 
 public class Wearables implements Listener {
-    private final ItemManager manager;
+    private final ItemManagerImpl manager;
 
-    public Wearables(CustomItems plugin) {
+    public Wearables(CustomItemsImpl plugin) {
         this.manager = plugin.getItemManager();
     }
 
     @EventHandler()
     public void onInventoryClick(InventoryClickEvent event) {
         if(!event.getInventory().getType().equals(InventoryType.CRAFTING)) {
-            return;
-        }
-
-        if(event.getWhoClicked().getEquipment() == null) {
             return;
         }
 
@@ -135,7 +131,7 @@ public class Wearables implements Listener {
 
         EntityEquipment equipment = player.getEquipment();
 
-        if(manager.isWearable(event.getItem()) && equipment != null && equipment.getHelmet() == null) {
+        if(manager.isWearable(event.getItem()) && equipment.getHelmet() == null) {
             ItemStack mainHand = equipment.getItemInMainHand();
 
             ItemStack equip = mainHand.clone();

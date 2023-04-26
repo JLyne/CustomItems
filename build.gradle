@@ -6,19 +6,37 @@ plugins {
     id 'maven-publish'
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
+rootProject.ext.mavenUserName=""
+rootProject.ext.mavenPassword=""
 
-    maven {
-        url "https://papermc.io/repo/repository/maven-public/"
+if (file("./build.gradle.local").exists()) {
+    apply from: "./build.gradle.local"
+}
+
+allprojects {
+    group 'uk.co.notnull'
+    version '1.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+
+        maven {
+            url "https://papermc.io/repo/repository/maven-public/"
+        }
+        maven {
+            url "https://repo.aikar.co/content/groups/aikar/"
+        }
     }
-    maven {
-        url "https://repo.aikar.co/content/groups/aikar/"
+
+    compileJava {
+        options.compilerArgs += ["-Xlint:all", "-Xlint:-processing"]
+        options.encoding = 'UTF-8'
     }
 }
 
 dependencies {
+    implementation project(':CustomItemsAPI')
     implementation 'cloud.commandframework:cloud-paper:1.7.1'
     implementation 'cloud.commandframework:cloud-minecraft-extras:1.7.1'
     implementation 'cloud.commandframework:cloud-annotations:1.7.1'
@@ -26,10 +44,8 @@ dependencies {
     compileOnly 'com.intellij:annotations:12.0@jar'
     compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
     compileOnly 'com.google.guava:guava:31.1-jre'
-}
 
-group 'uk.co.notnull'
-version '1.0-SNAPSHOT'
+}
 
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
@@ -48,14 +64,10 @@ tasks {
         }
     }
 
-    compileJava {
-        options.compilerArgs += ["-Xlint:all", "-Xlint:-processing"]
-        options.encoding = 'UTF-8'
-    }
-
     shadowJar {
         archiveClassifier.set('')
-        relocate 'co.aikar.commands', 'uk.co.notnull.CustomItems.shaded.acf'
+        relocate 'cloud.commandframework', 'uk.co.notnull.CustomItems.shaded.cloud'
+        relocate 'io.leangen.geantyref', 'uk.co.notnull.CustomItems.shaded.typetoken'
     }
 
     build {

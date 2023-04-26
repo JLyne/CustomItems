@@ -7,13 +7,13 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.BlockInventoryHolder;
 import uk.co.notnull.CustomItems.ChestManager;
-import uk.co.notnull.CustomItems.CustomItems;
+import uk.co.notnull.CustomItems.CustomItemsImpl;
 
 
 public class Inventories implements Listener {
     private final ChestManager manager;
 
-    public Inventories(CustomItems plugin) {
+    public Inventories(CustomItemsImpl plugin) {
         this.manager = plugin.getChestManager();
     }
 

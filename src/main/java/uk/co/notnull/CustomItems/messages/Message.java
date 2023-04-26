@@ -29,7 +29,7 @@ public class Message {
 		String result = prefixed ? Messages.getPrefix(type) + Messages.get(id) : Messages.get(id);
 
 		for(Map.Entry<String, String> replacement: stringReplacements.entrySet()) {
-			result.replaceAll(replacement.getKey(), replacement.getValue());
+			result = result.replaceAll(replacement.getKey(), replacement.getValue());
 		}
 
 		return result;
@@ -69,8 +69,8 @@ public class Message {
 		private final String id;
 		private boolean prefixed = false;
 		private MessageType type = MessageType.INFO;
-		private Map<String, String> stringReplacements = new HashMap<>();
-		private Map<String, ComponentLike> componentReplacements = new HashMap<>();
+		private final Map<String, String> stringReplacements = new HashMap<>();
+		private final Map<String, ComponentLike> componentReplacements = new HashMap<>();
 
 		public Builder(String id) {
 			this.id = id;

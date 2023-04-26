@@ -4,5 +4,5 @@ author: Jim (AnEnragedPigeon)
 description: Custom Items
 load: POSTWORLD
 
-main: uk.co.notnull.CustomItems.CustomItems
+main: uk.co.notnull.CustomItems.CustomItemsImpl
 api-version: 1.19

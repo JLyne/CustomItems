@@ -40,9 +40,7 @@ public class Messages {
             return "";
         }
 
-        String message = messages.getString(id, "Message " + id + " does not exist");
-
-        return message;
+        return messages.getString(id, "Message " + id + " does not exist");
     }
 
     public static String getPrefix(Message.MessageType messageType) {
