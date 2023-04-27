@@ -79,6 +79,10 @@ public class ItemManagerImpl implements ItemManager {
 	}
 
 	private void addItem(CustomItem item) {
+		if(isValidId(item.getId())) {
+			throw new IllegalArgumentException("An item with id " + item.getId() + " is already registered");
+		}
+
 		items.put(item.getId(), item);
 		lootManager.addItem(item);
 	}
