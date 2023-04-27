@@ -8,16 +8,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.ItemDataManager;
-import uk.co.notnull.CustomItems.api.CustomItems;
 import uk.co.notnull.CustomItems.api.items.CreationReason;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
 import uk.co.notnull.CustomItems.api.loot.LootManager;
 import uk.co.notnull.CustomItems.items.CreationContextImpl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LootManagerImpl implements LootManager {
 
@@ -30,7 +29,7 @@ public class LootManagerImpl implements LootManager {
 
 	private final Map<String, LootPool> pools = new HashMap<>();
 
-	private final Map<String, List<String>> configuredPools = new HashMap<>();
+	private final Map<String, List<NamespacedKey>> configuredPools = new HashMap<>();
 
 
 	public LootManagerImpl(CustomItemsImpl plugin, ConfigurationSection lootConfig) {
@@ -45,7 +44,9 @@ public class LootManagerImpl implements LootManager {
 		configuredPools.clear();
 
 		config.getKeys(false).forEach(pool -> {
-			List<String> items = config.getStringList(pool);
+			List<NamespacedKey> items = config.getStringList(pool).stream()
+					.map(item -> NamespacedKey.fromString(item, plugin))
+					.collect(Collectors.toList());
 			configuredPools.put(pool, items);
 			pools.put(pool, new LootPool());
 		});
@@ -97,7 +98,7 @@ public class LootManagerImpl implements LootManager {
 
 			return generateLoot(category, player, placeholder.getAmount());
 		} else {
-			String item = data.get(placeholderItem, PersistentDataType.STRING);
+			NamespacedKey item = NamespacedKey.fromString(data.get(placeholderItem, PersistentDataType.STRING), plugin);
 
 			if(!plugin.getItemManager().isValidId(item)) {
 				return null;

@@ -29,12 +29,15 @@ import java.nio.file.Files;
 import java.util.function.Function;
 
 public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener {
+    private static CustomItemsImpl instance;
     ItemManagerImpl itemManager;
     LootManagerImpl lootManager;
     ChestManager chestManager;
 
     @Override
     public void onEnable() {
+        instance = this;
+
 		initConfig();
 		createFile("messages.yml");
 
@@ -56,6 +59,10 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static CustomItemsImpl getInstance() {
+        return instance;
     }
 
     @Override

@@ -2,6 +2,7 @@ package uk.co.notnull.CustomItems;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ItemManagerImpl implements ItemManager {
-	private final Map<String, CustomItem> items;
+	private final Map<NamespacedKey, CustomItem> items;
 	private Map<UUID, List<GrantedItem>> unclaimed;
 	private final Map<CustomItemProvider, List<CustomItem>> providers;
 
@@ -92,7 +93,7 @@ public class ItemManagerImpl implements ItemManager {
 		lootManager.removeItem(item);
 	}
 
-	public ItemStack createItem(String id, CreationContext context, int amount) {
+	public ItemStack createItem(NamespacedKey id, CreationContext context, int amount) {
 		if(!isValidId(id)) {
 			throw new IllegalArgumentException("Item id " + id + " is not registered");
 		}
@@ -100,7 +101,7 @@ public class ItemManagerImpl implements ItemManager {
 		return items.get(id).createItem(context, amount);
 	}
 
-	public void giveItem(Player player, String id, int amount) {
+	public void giveItem(Player player, NamespacedKey id, int amount) {
         ItemStack item = createItem(id, new CreationContextImpl(player, CreationReason.GIVEN), amount);
 
         Inventory inventory = player.getInventory();
@@ -120,7 +121,7 @@ public class ItemManagerImpl implements ItemManager {
 		giveItem(player, item.getId(), amount);
 	}
 
-	public void grantItem(OfflinePlayer player, String id, int amount) {
+	public void grantItem(OfflinePlayer player, NamespacedKey id, int amount) {
 		if(!isValidId(id)) {
 			throw new IllegalArgumentException("Unknown item " + id);
 		}
@@ -162,11 +163,11 @@ public class ItemManagerImpl implements ItemManager {
         map.values().forEach((ItemStack item) -> player.getWorld().dropItemNaturally(player.getLocation(), item));
 	}
 
-    public Set<String> getItemIds() {
+    public Set<NamespacedKey> getItemIds() {
 		return items.keySet();
 	}
 
-	public boolean isValidId(String id) {
+	public boolean isValidId(NamespacedKey id) {
 		return items.containsKey(id);
 	}
 
@@ -193,7 +194,7 @@ public class ItemManagerImpl implements ItemManager {
 		providers.remove(provider).forEach(this::removeItem);
 	}
 
-	public CustomItem getItem(String id) {
+	public CustomItem getItem(NamespacedKey id) {
 		return items.get(id);
 	}
 
@@ -208,7 +209,7 @@ public class ItemManagerImpl implements ItemManager {
 		ItemDataManager.updateItemData(data);
 		item.setItemMeta(meta);
 
-		String id = ItemDataManager.getItemId(data);
+		NamespacedKey id = ItemDataManager.getItemId(data);
 
 		if(id != null) {
 			return items.get(id);

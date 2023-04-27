@@ -1,6 +1,7 @@
 package uk.co.notnull.CustomItems.api.items;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 @SuppressWarnings("unused")
@@ -9,7 +10,7 @@ public interface CustomItem {
 		return CustomItemBuilder.builder();
 	}
 
-	String getId();
+	NamespacedKey getId();
 
 	Component getDisplayName();
 

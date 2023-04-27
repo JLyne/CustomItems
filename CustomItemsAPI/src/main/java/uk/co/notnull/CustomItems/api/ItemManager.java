@@ -1,5 +1,6 @@
 package uk.co.notnull.CustomItems.api;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,25 +18,25 @@ public interface ItemManager {
 
 	boolean isRegistered(CustomItem item);
 
-	CustomItem getItem(String id);
+	CustomItem getItem(NamespacedKey id);
 
 	CustomItem getItem(ItemStack item);
 
-	ItemStack createItem(String id, CreationContext context, int amount);
+	ItemStack createItem(NamespacedKey id, CreationContext context, int amount);
 
-	void giveItem(Player player, String id, int amount);
+	void giveItem(Player player, NamespacedKey id, int amount);
 
 	void giveItem(Player player, CustomItem item, int amount);
 
-  	void grantItem(OfflinePlayer player, String id, int amount);
+  	void grantItem(OfflinePlayer player, NamespacedKey id, int amount);
 
   	void grantItem(OfflinePlayer player, CustomItem item, int amount);
 
 	void giveCategory(Player player, String category);
 
-    Set<String> getItemIds();
+    Set<NamespacedKey> getItemIds();
 
-	boolean isValidId(String id);
+	boolean isValidId(NamespacedKey id);
 
 	boolean isWearable(ItemStack item);
 }

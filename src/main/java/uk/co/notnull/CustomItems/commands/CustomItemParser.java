@@ -34,8 +34,10 @@ import cloud.commandframework.exceptions.parsing.ParserException;
 import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
+
+import org.bukkit.NamespacedKey;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import uk.co.notnull.CustomItems.api.CustomItems;
+import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.api.ItemManager;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
 
@@ -50,10 +52,12 @@ public final class CustomItemParser<C> implements ArgumentParser<C, CustomItem> 
 	public static final Caption ARGUMENT_PARSE_FAILURE_CUSTOM_ITEM =
 			Caption.of("argument.parse.failure.custom_item");
 
+	private final CustomItemsImpl plugin;
 	private final ItemManager itemManager;
 
-	public CustomItemParser(CustomItems plugin) {
-		itemManager = plugin.getItemManager();
+	public CustomItemParser(CustomItemsImpl plugin) {
+		this.plugin = plugin;
+		this.itemManager = plugin.getItemManager();
 	}
 
     @Override
@@ -70,12 +74,14 @@ public final class CustomItemParser<C> implements ArgumentParser<C, CustomItem> 
             ));
         }
 
-		if(!itemManager.isValidId(input)) {
+		NamespacedKey id = NamespacedKey.fromString(input, plugin);
+
+		if(!itemManager.isValidId(id)) {
 			return ArgumentParseResult.failure(new CustomItemParseException(input, commandContext));
 		}
 
         inputQueue.remove();
-        return ArgumentParseResult.success(itemManager.getItem(input));
+        return ArgumentParseResult.success(itemManager.getItem(id));
     }
 
     @Override
@@ -83,7 +89,10 @@ public final class CustomItemParser<C> implements ArgumentParser<C, CustomItem> 
             final @NonNull CommandContext<C> commandContext,
             final @NonNull String input
     ) {
-        return itemManager.getItemIds().stream().filter(id -> id.startsWith(input)).collect(Collectors.toList());
+        return itemManager.getItemIds().stream()
+				.filter(id -> id.getKey().startsWith(input) || id.getNamespace().startsWith(input))
+				.map(NamespacedKey::toString)
+				.collect(Collectors.toList());
     }
 
     @Override

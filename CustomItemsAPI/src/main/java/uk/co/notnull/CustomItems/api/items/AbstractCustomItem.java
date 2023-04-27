@@ -1,23 +1,23 @@
 package uk.co.notnull.CustomItems.api.items;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class AbstractCustomItem implements CustomItem {
-	protected final String id;
+	protected final NamespacedKey id;
 	protected final Component displayName;
 	protected final boolean wearable;
-	protected boolean stamp;
+	protected final boolean stamp;
 
-	public AbstractCustomItem(String id, Component displayName, boolean wearable, boolean stamp) {
+	public AbstractCustomItem(NamespacedKey id, Component displayName, boolean wearable, boolean stamp) {
 		this.id = id;
 		this.wearable = wearable;
 		this.displayName = displayName;
 		this.stamp = stamp;
 	}
 
-	public String getId() {
+	public NamespacedKey getId() {
 		return id;
 	}
 

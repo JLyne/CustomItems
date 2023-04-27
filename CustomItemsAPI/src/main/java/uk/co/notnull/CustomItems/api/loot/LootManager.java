@@ -7,5 +7,5 @@ import javax.annotation.Nullable;
 
 public interface LootManager {
 	@Nullable ItemStack generateLoot(String pool, Player player, int amount);
-	public boolean isValidCategory(String category);
+	boolean isValidCategory(String category);
 }

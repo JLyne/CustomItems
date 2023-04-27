@@ -3,10 +3,12 @@ package uk.co.notnull.CustomItems.items;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.ItemDataManager;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.AbstractCustomItem;
@@ -22,7 +24,7 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 	private static final MiniMessage miniMessage = MiniMessage.builder().build();
 
 	public ConfigCustomItem(String id, Material item, int model, Component name, List<String> lore, boolean wearable, boolean stamp) {
-		super(id, name, wearable, stamp);
+		super(new NamespacedKey(CustomItemsImpl.getInstance(), id), name, wearable, stamp);
 		this.item = item;
 		this.model = model;
 		this.lore = lore;

@@ -13,17 +13,17 @@ import io.leangen.geantyref.TypeToken;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import uk.co.notnull.CustomItems.api.CustomItems;
+import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
 import uk.co.notnull.CustomItems.messages.Message;
 import uk.co.notnull.CustomItems.messages.Messages;
 
 
 public class Commands {
-    private final CustomItems plugin;
+    private final CustomItemsImpl plugin;
     private final MinecraftHelp<CommandSender> minecraftHelp;
 
-    public Commands(CustomItems plugin, CommandManager<CommandSender> commandManager) {
+    public Commands(CustomItemsImpl plugin, CommandManager<CommandSender> commandManager) {
 		this.plugin = plugin;
         this.minecraftHelp = new MinecraftHelp<>("/queue", p -> p, commandManager);
 

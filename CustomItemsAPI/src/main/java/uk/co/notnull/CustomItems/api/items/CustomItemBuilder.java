@@ -1,6 +1,7 @@
 package uk.co.notnull.CustomItems.api.items;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.BiFunction;
@@ -12,7 +13,7 @@ public final class CustomItemBuilder {
 	}
 
 	public interface IDStep {
-		DisplayNameStep id(String id);
+		DisplayNameStep id(NamespacedKey id);
 	}
 
 	public interface DisplayNameStep {
@@ -32,7 +33,7 @@ public final class CustomItemBuilder {
 	}
 
 	private static class Steps implements IDStep, DisplayNameStep, GeneratorStep, BuildStep {
-		private String id;
+		private NamespacedKey id;
 		private Component displayName;
 		private BiFunction<CreationContext, Integer, ItemStack> generator;
 		private boolean wearable = false;
@@ -42,7 +43,7 @@ public final class CustomItemBuilder {
 			return new ExternalCustomItem(id, displayName, generator, wearable, stamp);
 		}
 
-		public DisplayNameStep id(String id) {
+		public DisplayNameStep id(NamespacedKey id) {
 			this.id = id;
 			return this;
 		}

@@ -15,19 +15,20 @@ public final class ItemDataManager {
 
 	public static void populateItemData(PersistentDataContainer data, CustomItem item, @Nullable OfflinePlayer granted) {
 		data.set(dataVersion, PersistentDataType.INTEGER, 1);
-		data.set(customItemKey, PersistentDataType.STRING, item.getId());
+		data.set(customItemKey, PersistentDataType.STRING, item.getId().getKey());
 
 		if(granted != null && item.isStamp()) {
 			data.set(grantedToKey, PersistentDataType.STRING, granted.getUniqueId().toString());
 		}
 	}
 
-	public static String getItemId(PersistentDataContainer data) {
+	public static NamespacedKey getItemId(PersistentDataContainer data) {
 		if(!data.has(customItemKey, PersistentDataType.STRING)) {
 			return null;
 		}
 
-		return data.get(customItemKey, PersistentDataType.STRING);
+		//noinspection DataFlowIssue
+		return NamespacedKey.fromString(data.get(customItemKey, PersistentDataType.STRING), CustomItemsImpl.getInstance());
 	}
 
     public static void updateItemData(PersistentDataContainer data) {
