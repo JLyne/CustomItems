@@ -74,7 +74,7 @@ public final class CustomItemParser<C> implements ArgumentParser<C, CustomItem> 
             ));
         }
 
-		NamespacedKey id = NamespacedKey.fromString(input, plugin);
+		NamespacedKey id = NamespacedKey.fromString(input.toLowerCase(), plugin);
 
 		if(!itemManager.isValidId(id)) {
 			return ArgumentParseResult.failure(new CustomItemParseException(input, commandContext));
@@ -89,8 +89,9 @@ public final class CustomItemParser<C> implements ArgumentParser<C, CustomItem> 
             final @NonNull CommandContext<C> commandContext,
             final @NonNull String input
     ) {
+		String search = input.toLowerCase();
         return itemManager.getItemIds().stream()
-				.filter(id -> id.getKey().startsWith(input) || id.getNamespace().startsWith(input))
+				.filter(id -> id.toString().startsWith(search) || id.getKey().startsWith(search))
 				.map(NamespacedKey::toString)
 				.collect(Collectors.toList());
     }

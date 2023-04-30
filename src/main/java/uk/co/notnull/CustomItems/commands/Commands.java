@@ -8,6 +8,7 @@ import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.annotations.specifier.Greedy;
 import cloud.commandframework.captions.CaptionRegistry;
 import cloud.commandframework.captions.FactoryDelegatingCaptionRegistry;
+import cloud.commandframework.execution.CommandSuggestionProcessor;
 import cloud.commandframework.minecraft.extras.MinecraftHelp;
 import io.leangen.geantyref.TypeToken;
 import org.bukkit.OfflinePlayer;
@@ -26,6 +27,8 @@ public class Commands {
     public Commands(CustomItemsImpl plugin, CommandManager<CommandSender> commandManager) {
 		this.plugin = plugin;
         this.minecraftHelp = new MinecraftHelp<>("/queue", p -> p, commandManager);
+
+        commandManager.commandSuggestionProcessor(CommandSuggestionProcessor.passThrough());
 
         commandManager.parserRegistry().registerParserSupplier(
                 TypeToken.get(CustomItem.class),
