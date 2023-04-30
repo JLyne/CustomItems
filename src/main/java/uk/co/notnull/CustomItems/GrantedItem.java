@@ -68,7 +68,7 @@ public class GrantedItem implements ConfigurationSerializable {
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("item", item);
+		map.put("item", item.toString());
 		map.put("amount", amount);
 		map.put("player", player.toString());
 		return map;
