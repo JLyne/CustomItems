@@ -85,6 +85,21 @@ public class LootManagerImpl implements LootManager {
 				|| data.has(placeholderItem, PersistentDataType.STRING);
 	}
 
+	public String getPlaceholderTarget(ItemStack item) {
+		if (!isPlaceholder(item)) {
+			return null;
+		}
+
+		ItemMeta meta = item.getItemMeta();
+		PersistentDataContainer data = meta.getPersistentDataContainer();
+
+		if(data.has(placeholderPool, PersistentDataType.STRING)) {
+			return data.get(placeholderPool, PersistentDataType.STRING);
+		} else {
+			return data.get(placeholderItem, PersistentDataType.STRING);
+		}
+	}
+
 	public ItemStack generateLoot(ItemStack placeholder, Player player) {
 		if (!isPlaceholder(placeholder)) {
 			return null;

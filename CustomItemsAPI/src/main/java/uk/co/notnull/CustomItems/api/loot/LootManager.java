@@ -8,4 +8,6 @@ import javax.annotation.Nullable;
 public interface LootManager {
 	@Nullable ItemStack generateLoot(String pool, Player player, int amount);
 	boolean isValidCategory(String category);
+	boolean isPlaceholder(ItemStack item);
+	String getPlaceholderTarget(ItemStack item);
 }
