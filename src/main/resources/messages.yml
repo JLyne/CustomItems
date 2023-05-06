@@ -8,7 +8,7 @@ join:
     Please visit the Item Distribution Point at spawn.
 command:
   invalid-item: "'{input}' is not a valid item"
-  invalid-category: "'{input}' is not a valid category"
+  invalid-pool: "'{input}' is not a valid loot pool"
   grant-success: Granted <player> <amount>x<item>
   give-success: Given <player> <amount>x<item>
-  give-category-success: Given <player> all items in <category>
+  give-pool-success: Given <player> all items in <pool>

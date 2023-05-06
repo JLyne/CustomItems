@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -60,6 +61,14 @@ public class LootManagerImpl implements LootManager {
 		});
 	}
 
+	public List<CustomItem> getItems(String pool) {
+		if(!pools.containsKey(pool)) {
+			throw new IllegalArgumentException("Unknown loot pool " + pool);
+		}
+
+		return new ArrayList<>(pools.get(pool));
+	}
+
 	public void removeItem(CustomItem item) {
 		pools.values().forEach(pool -> pool.remove(item));
 	}
@@ -109,9 +118,9 @@ public class LootManagerImpl implements LootManager {
 		PersistentDataContainer data = meta.getPersistentDataContainer();
 
 		if(data.has(placeholderPool, PersistentDataType.STRING)) {
-			String category = data.get(placeholderPool, PersistentDataType.STRING);
+			String pool = data.get(placeholderPool, PersistentDataType.STRING);
 
-			return generateLoot(category, player, placeholder.getAmount());
+			return generateLoot(pool, player, placeholder.getAmount());
 		} else {
 			NamespacedKey item = NamespacedKey.fromString(data.get(placeholderItem, PersistentDataType.STRING), plugin);
 
@@ -132,12 +141,33 @@ public class LootManagerImpl implements LootManager {
 		return pools.get(pool).generateItem(player, amount);
 	}
 
-	public Collection<String> getCategories() {
+	public Collection<String> getLootPools() {
 		return pools.keySet();
 	}
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	public boolean isValidCategory(String category) {
-		return pools.containsKey(category);
+	public boolean isValidLootPool(String pool) {
+		return pools.containsKey(pool);
 	}
+
+	@SuppressWarnings("UnusedReturnValue")
+	public void givePoolContents(Player player, String pool) {
+		if(!isValidLootPool(pool)) {
+			throw new IllegalArgumentException("Unknown loot pool " + pool);
+		}
+
+		List<ItemStack> created = new ArrayList<>();
+		CreationContextImpl context = new CreationContextImpl(player, CreationReason.GIVEN);
+
+		getItems(pool).forEach((CustomItem item) -> {
+			created.add(item.createItem(context));
+		});
+
+		Inventory inventory = player.getInventory();
+
+        final Map<Integer, ItemStack> map = inventory.addItem(created.toArray(new ItemStack[0]));
+
+        map.values().forEach((ItemStack item) -> player.getWorld().dropItemNaturally(player.getLocation(), item));
+	}
+
 }

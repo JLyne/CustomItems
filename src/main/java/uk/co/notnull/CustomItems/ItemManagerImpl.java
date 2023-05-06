@@ -141,28 +141,6 @@ public class ItemManagerImpl implements ItemManager {
 		grantItem(player, item.getId(), amount);
 	}
 
-	@SuppressWarnings("UnusedReturnValue")
-	public void giveCategory(Player player, String category) {
-		if(!lootManager.isValidCategory(category)) {
-			throw new IllegalArgumentException("Unknown category " + category);
-		}
-
-		List<ItemStack> created = new ArrayList<>();
-		CreationContextImpl context = new CreationContextImpl(player, CreationReason.GIVEN);
-
-//		this.items.values().forEach((CustomItem item) -> {
-//			if(item.isLoot() && item.getLootCategory().equals(category)) {
-//				created.add(item.createItem(context));
-//			}
-//		});
-
-		Inventory inventory = player.getInventory();
-
-        final Map<Integer, ItemStack> map = inventory.addItem(created.toArray(new ItemStack[0]));
-
-        map.values().forEach((ItemStack item) -> player.getWorld().dropItemNaturally(player.getLocation(), item));
-	}
-
     public Set<NamespacedKey> getItemIds() {
 		return items.keySet();
 	}

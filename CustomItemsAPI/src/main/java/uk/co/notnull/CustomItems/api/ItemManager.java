@@ -32,8 +32,6 @@ public interface ItemManager {
 
   	void grantItem(OfflinePlayer player, CustomItem item, int amount);
 
-	void giveCategory(Player player, String category);
-
     Set<NamespacedKey> getItemIds();
 
 	boolean isValidId(NamespacedKey id);

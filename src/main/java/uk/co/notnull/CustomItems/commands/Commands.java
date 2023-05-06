@@ -8,6 +8,7 @@ import cloud.commandframework.annotations.CommandPermission;
 import cloud.commandframework.annotations.specifier.Greedy;
 import cloud.commandframework.captions.CaptionRegistry;
 import cloud.commandframework.captions.FactoryDelegatingCaptionRegistry;
+import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.execution.CommandSuggestionProcessor;
 import cloud.commandframework.minecraft.extras.MinecraftHelp;
 import io.leangen.geantyref.TypeToken;
@@ -19,6 +20,8 @@ import uk.co.notnull.CustomItems.api.items.CustomItem;
 import uk.co.notnull.CustomItems.messages.Message;
 import uk.co.notnull.CustomItems.messages.Messages;
 
+import java.util.stream.Collectors;
+
 
 public class Commands {
     private final CustomItemsImpl plugin;
@@ -29,6 +32,13 @@ public class Commands {
         this.minecraftHelp = new MinecraftHelp<>("/queue", p -> p, commandManager);
 
         commandManager.commandSuggestionProcessor(CommandSuggestionProcessor.passThrough());
+
+        commandManager.parserRegistry().registerSuggestionProvider("lootpools", (
+        		CommandContext<CommandSender> commandContext,
+                String input
+        ) -> plugin.getLootManager().getLootPools().stream()
+                .filter(pool -> pool.startsWith(input))
+                .collect(Collectors.toList()));
 
         commandManager.parserRegistry().registerParserSupplier(
                 TypeToken.get(CustomItem.class),
@@ -65,22 +75,23 @@ public class Commands {
                 .build().send(sender);
     }
 
-    @CommandPermission("customitems.givecategory")
-    @CommandMethod("customitems givecategory <player> <category>")
-    @CommandDescription("Immediately gives all custom items in a category to a player")
-    public void onGiveCategory(CommandSender sender, @Argument("player") Player player, @Argument("category") String category) {
-        if(!plugin.getLootManager().isValidCategory(category)) {
-            Message.builder("command.invalid-category")
+    @CommandPermission("customitems.givepool")
+    @CommandMethod("customitems givepool <player> <pool>")
+    @CommandDescription("Immediately gives all custom items in a loot pool to a player")
+    public void onGivePool(CommandSender sender, @Argument("player") Player player,
+                           @Argument(value = "pool", suggestions = "lootpools") String pool) {
+        if(!plugin.getLootManager().isValidLootPool(pool)) {
+            Message.builder("command.invalid-pool")
                     .prefixed()
                     .type(Message.MessageType.ERROR)
-                    .replacement("category", category)
+                    .replacement("pool", pool)
                     .build().send(sender);
         } else {
-            plugin.getItemManager().giveCategory(player.getPlayer(), category);
-            Message.builder("command.give-category-success")
+            plugin.getLootManager().givePoolContents(player.getPlayer(), pool);
+            Message.builder("command.give-pool-success")
                     .prefixed()
                     .replacement("player", player.getName())
-                    .replacement("category", category)
+                    .replacement("pool", pool)
                     .build().send(sender);
         }
     }
