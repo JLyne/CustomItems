@@ -20,7 +20,7 @@ import uk.co.notnull.CustomItems.listeners.Join;
 import uk.co.notnull.CustomItems.listeners.Loot;
 import uk.co.notnull.CustomItems.listeners.Wearables;
 import uk.co.notnull.CustomItems.loot.LootManagerImpl;
-import uk.co.notnull.CustomItems.messages.Messages;
+import uk.co.notnull.messageshelper.MessagesHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
 
         try {
             ConfigurationSection messages = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "messages.yml"));
-            Messages.set(messages);
+            MessagesHelper.setMessages(messages);
 
             registerCommands();
         } catch (Exception e) {

@@ -17,8 +17,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
-import uk.co.notnull.CustomItems.messages.Message;
-import uk.co.notnull.CustomItems.messages.Messages;
+import uk.co.notnull.messageshelper.Message;
+import uk.co.notnull.messageshelper.MessagesHelper;
 
 import java.util.stream.Collectors;
 
@@ -48,7 +48,7 @@ public class Commands {
         if (registry instanceof final FactoryDelegatingCaptionRegistry<CommandSender> factoryRegistry) {
             factoryRegistry.registerMessageFactory(
                     CustomItemParser.ARGUMENT_PARSE_FAILURE_CUSTOM_ITEM,
-                    (context, key) -> Messages.get("command.invalid-item")
+                    (context, key) -> MessagesHelper.get("command.invalid-item")
             );
         }
 	}
@@ -67,12 +67,12 @@ public class Commands {
     public void onGiveItem(CommandSender sender, @Argument("player") Player player, @Argument("item") CustomItem item,
                            @Argument(value = "amount", defaultValue = "1") int amount) {
         plugin.getItemManager().giveItem(player.getPlayer(), item, amount);
-        Message.builder("command.give-success")
+        MessagesHelper.send(sender, Message.builder("command.give-success")
                 .prefixed()
                 .replacement("player", player.getName())
                 .replacement("amount", String.valueOf(amount))
                 .replacement("item", item.getDisplayName())
-                .build().send(sender);
+                .build());
     }
 
     @CommandPermission("customitems.givepool")
@@ -81,18 +81,18 @@ public class Commands {
     public void onGivePool(CommandSender sender, @Argument("player") Player player,
                            @Argument(value = "pool", suggestions = "lootpools") String pool) {
         if(!plugin.getLootManager().isValidLootPool(pool)) {
-            Message.builder("command.invalid-pool")
+            MessagesHelper.send(sender, Message.builder("command.invalid-pool")
                     .prefixed()
                     .type(Message.MessageType.ERROR)
                     .replacement("pool", pool)
-                    .build().send(sender);
+                    .build());
         } else {
             plugin.getLootManager().givePoolContents(player.getPlayer(), pool);
-            Message.builder("command.give-pool-success")
+            MessagesHelper.send(sender, Message.builder("command.give-pool-success")
                     .prefixed()
                     .replacement("player", player.getName())
                     .replacement("pool", pool)
-                    .build().send(sender);
+                    .build());
         }
     }
 
@@ -103,15 +103,15 @@ public class Commands {
                             @Argument(value = "amount", defaultValue = "1") int amount) {
         plugin.getItemManager().grantItem(target, item, amount);
 
-        Message.builder("command.grant-success")
+        MessagesHelper.send(sender, Message.builder("command.grant-success")
                 .prefixed()
                 .replacement("player", target.getName())
                 .replacement("amount", String.valueOf(amount))
                 .replacement("item", item.getDisplayName())
-                .build().send(sender);
+                .build());
 
         if (target.isOnline()) {
-            Message.builder("join.unclaimed-items-available").build().send((Player) target);
+            MessagesHelper.send((Player) target, Message.builder("join.unclaimed-items-available").build());
         }
     }
 }

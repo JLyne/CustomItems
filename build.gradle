@@ -22,6 +22,9 @@ allprojects {
         mavenLocal()
 
         maven {
+            url 'https://repo.not-null.co.uk/snapshots/'
+        }
+        maven {
             url "https://papermc.io/repo/repository/maven-public/"
         }
         maven {
@@ -40,6 +43,7 @@ dependencies {
     implementation 'cloud.commandframework:cloud-paper:1.8.0'
     implementation 'cloud.commandframework:cloud-minecraft-extras:1.8.0'
     implementation 'cloud.commandframework:cloud-annotations:1.8.0'
+    implementation 'uk.co.notnull:MessagesHelper-paper:1.0-SNAPSHOT'
 
     compileOnly 'com.intellij:annotations:12.0@jar'
     compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"

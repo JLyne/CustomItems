@@ -20,7 +20,7 @@ import uk.co.notnull.CustomItems.api.items.CustomItemProvider;
 import uk.co.notnull.CustomItems.items.ConfigCustomItem;
 import uk.co.notnull.CustomItems.items.CreationContextImpl;
 import uk.co.notnull.CustomItems.loot.LootManagerImpl;
-import uk.co.notnull.CustomItems.messages.Messages;
+import uk.co.notnull.messageshelper.MessagesHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class ItemManagerImpl implements ItemManager {
 		config.getKeys(false).forEach(id -> {
 			String materialName = config.getString(id + ".material");
 			int model = config.getInt(id + ".custom-model-data", 0);
-			Component name = Messages.miniMessage.deserialize(config.getString(id + ".name", ""));
+			Component name = MessagesHelper.miniMessage.deserialize(config.getString(id + ".name", ""));
 			List<String> lore = config.getStringList(id + ".lore");
 			boolean wearable = config.getBoolean(id + ".wearable", false);
 			boolean stamp = config.getBoolean(id + ".stamp", false);
