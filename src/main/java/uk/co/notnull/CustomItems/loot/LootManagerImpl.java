@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -49,7 +48,7 @@ public class LootManagerImpl implements LootManager {
 					.map(item -> NamespacedKey.fromString(item, plugin))
 					.collect(Collectors.toList());
 			configuredPools.put(pool, items);
-			pools.put(pool, new LootPool());
+			pools.put(pool, new LootPool(pool));
 		});
 	}
 
@@ -145,6 +144,14 @@ public class LootManagerImpl implements LootManager {
 		return pools.keySet();
 	}
 
+	public LootPool getLootPool(String id) {
+		if(!pools.containsKey(id)) {
+			throw new IllegalArgumentException("Unknown loot pool " + id);
+		}
+
+		return pools.get(id);
+	}
+
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean isValidLootPool(String pool) {
 		return pools.containsKey(pool);
@@ -156,18 +163,6 @@ public class LootManagerImpl implements LootManager {
 			throw new IllegalArgumentException("Unknown loot pool " + pool);
 		}
 
-		List<ItemStack> created = new ArrayList<>();
-		CreationContextImpl context = new CreationContextImpl(player, CreationReason.GIVEN);
-
-		getItems(pool).forEach((CustomItem item) -> {
-			created.add(item.createItem(context));
-		});
-
-		Inventory inventory = player.getInventory();
-
-        final Map<Integer, ItemStack> map = inventory.addItem(created.toArray(new ItemStack[0]));
-
-        map.values().forEach((ItemStack item) -> player.getWorld().dropItemNaturally(player.getLocation(), item));
+		pools.get(pool).giveContents(player);
 	}
-
 }

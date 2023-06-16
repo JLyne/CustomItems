@@ -17,6 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
+import uk.co.notnull.CustomItems.loot.LootPool;
 import uk.co.notnull.messageshelper.Message;
 import uk.co.notnull.messageshelper.MessagesHelper;
 
@@ -46,11 +47,20 @@ public class Commands {
                 TypeToken.get(CustomItem.class),
                 options -> new CustomItemParser<>(plugin));
 
+        commandManager.parserRegistry().registerParserSupplier(
+                TypeToken.get(LootPool.class),
+                options -> new LootPoolParser<>(plugin));
+
         final CaptionRegistry<CommandSender> registry = commandManager.captionRegistry();
         if (registry instanceof final FactoryDelegatingCaptionRegistry<CommandSender> factoryRegistry) {
             factoryRegistry.registerMessageFactory(
                     CustomItemParser.ARGUMENT_PARSE_FAILURE_CUSTOM_ITEM,
                     (context, key) -> messagesHelper.getString("command.invalid-item")
+            );
+
+            factoryRegistry.registerMessageFactory(
+                    LootPoolParser.ARGUMENT_PARSE_FAILURE_LOOT_POOL,
+                    (context, key) -> messagesHelper.getString("command.invalid-pool")
             );
         }
 	}
@@ -80,22 +90,13 @@ public class Commands {
     @CommandPermission("customitems.givepool")
     @CommandMethod("customitems givepool <player> <pool>")
     @CommandDescription("Immediately gives all custom items in a loot pool to a player")
-    public void onGivePool(CommandSender sender, @Argument("player") Player player,
-                           @Argument(value = "pool", suggestions = "lootpools") String pool) {
-        if(!plugin.getLootManager().isValidLootPool(pool)) {
-            messagesHelper.send(sender, Message.builder("command.invalid-pool")
-                    .prefixed()
-                    .type(Message.MessageType.ERROR)
-                    .replacement("pool", pool)
-                    .build());
-        } else {
-            plugin.getLootManager().givePoolContents(player.getPlayer(), pool);
-            messagesHelper.send(sender, Message.builder("command.give-pool-success")
-                    .prefixed()
-                    .replacement("player", player.getName())
-                    .replacement("pool", pool)
-                    .build());
-        }
+    public void onGivePool(CommandSender sender, @Argument("player") Player player, @Argument("pool") LootPool pool) {
+        pool.giveContents(player);
+        messagesHelper.send(sender, Message.builder("command.give-pool-success")
+                .prefixed()
+                .replacement("player", player.getName())
+                .replacement("pool", pool.getName())
+                .build());
     }
 
     @CommandMethod("customitems grant <player> <item> [amount]")
