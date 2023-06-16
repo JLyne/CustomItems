@@ -7,8 +7,6 @@ import cloud.commandframework.meta.SimpleCommandMeta;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import cloud.commandframework.paper.PaperCommandManager;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -53,8 +51,7 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
 		getServer().getPluginManager().registerEvents(new Loot(this), this);
 
         try {
-            ConfigurationSection messages = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "messages.yml"));
-            messagesHelper.setMessages(messages);
+            messagesHelper.loadMessages(new File(getDataFolder(), "messages.yml"));
 
             registerCommands();
         } catch (Exception e) {
