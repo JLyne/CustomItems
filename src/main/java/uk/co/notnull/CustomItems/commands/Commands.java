@@ -48,7 +48,7 @@ public class Commands {
         if (registry instanceof final FactoryDelegatingCaptionRegistry<CommandSender> factoryRegistry) {
             factoryRegistry.registerMessageFactory(
                     CustomItemParser.ARGUMENT_PARSE_FAILURE_CUSTOM_ITEM,
-                    (context, key) -> MessagesHelper.get("command.invalid-item")
+                    (context, key) -> MessagesHelper.getString("command.invalid-item")
             );
         }
 	}
