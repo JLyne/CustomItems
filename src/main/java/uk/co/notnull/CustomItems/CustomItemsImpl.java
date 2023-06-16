@@ -33,6 +33,7 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
     ItemManagerImpl itemManager;
     LootManagerImpl lootManager;
     ChestManager chestManager;
+    MessagesHelper messagesHelper = MessagesHelper.getInstance();
 
     @Override
     public void onEnable() {
@@ -53,7 +54,7 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
 
         try {
             ConfigurationSection messages = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "messages.yml"));
-            MessagesHelper.setMessages(messages);
+            messagesHelper.setMessages(messages);
 
             registerCommands();
         } catch (Exception e) {
@@ -81,6 +82,10 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
 
     public ChestManager getChestManager() {
         return chestManager;
+    }
+
+    public MessagesHelper getMessagesHelper() {
+        return messagesHelper;
     }
 
     private void registerCommands() throws Exception {

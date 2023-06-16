@@ -7,7 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.messageshelper.Message;
-import uk.co.notnull.messageshelper.MessagesHelper;
 
 public class Join implements Listener {
     private final CustomItemsImpl plugin;
@@ -21,7 +20,7 @@ public class Join implements Listener {
         Player player = event.getPlayer();
 
         if(plugin.getItemManager().hasUnclaimedItems(player)) {
-            MessagesHelper.send(player, Message.builder("join.unclaimed-items-available").build());
+            plugin.getMessagesHelper().send(player, Message.builder("join.unclaimed-items-available").build());
 		}
     }
 }
