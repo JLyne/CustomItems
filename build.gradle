@@ -72,6 +72,7 @@ tasks {
         archiveClassifier.set('')
         relocate 'cloud.commandframework', 'uk.co.notnull.CustomItems.shaded.cloud'
         relocate 'io.leangen.geantyref', 'uk.co.notnull.CustomItems.shaded.typetoken'
+        relocate 'uk.co.notnull.messageshelper', 'uk.co.notnull.CustomItems.shaded.messageshelper'
     }
 
     build {
