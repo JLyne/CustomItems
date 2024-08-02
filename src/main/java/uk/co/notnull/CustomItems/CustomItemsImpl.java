@@ -1,18 +1,14 @@
 package uk.co.notnull.CustomItems;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.annotations.AnnotationParser;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.meta.SimpleCommandMeta;
-import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
-import cloud.commandframework.paper.PaperCommandManager;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import uk.co.notnull.CustomItems.api.CustomItems;
-import uk.co.notnull.CustomItems.commands.Commands;
+import uk.co.notnull.CustomItems.commands.CommandHandler;
 import uk.co.notnull.CustomItems.listeners.Inventories;
 import uk.co.notnull.CustomItems.listeners.Join;
 import uk.co.notnull.CustomItems.listeners.Loot;
@@ -24,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.function.Function;
 
 public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener {
     private static CustomItemsImpl instance;
@@ -52,8 +47,8 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
 
         try {
             messagesHelper.loadMessages(new File(getDataFolder(), "messages.yml"));
-
-            registerCommands();
+            LifecycleEventManager<Plugin> manager = getLifecycleManager();
+            manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> new CommandHandler(this, event.registrar()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,31 +78,6 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
 
     public MessagesHelper getMessagesHelper() {
         return messagesHelper;
-    }
-
-    private void registerCommands() throws Exception {
-        CommandManager<CommandSender> manager = new PaperCommandManager<>(
-                this,
-                CommandExecutionCoordinator.simpleCoordinator(),
-                Function.identity(),
-                Function.identity());
-
-        new MinecraftExceptionHandler<CommandSender>()
-            .withArgumentParsingHandler()
-            .withInvalidSenderHandler()
-            .withInvalidSyntaxHandler()
-            .withNoPermissionHandler()
-            .withCommandExecutionHandler()
-            .withDecorator(message -> message)
-            .apply(manager, p -> p);
-
-        AnnotationParser<CommandSender> annotationParser = new AnnotationParser<>(
-                manager,
-                CommandSender.class,
-                parameters -> SimpleCommandMeta.empty()
-        );
-
-        annotationParser.parse(new Commands(this, manager));
     }
 
     private void initConfig() {

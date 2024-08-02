@@ -36,9 +36,6 @@ allprojects {
 
 dependencies {
     implementation project(':CustomItemsAPI')
-    implementation 'cloud.commandframework:cloud-paper:1.8.3'
-    implementation 'cloud.commandframework:cloud-minecraft-extras:1.8.3'
-    implementation 'cloud.commandframework:cloud-annotations:1.8.3'
     implementation 'uk.co.notnull:MessagesHelper-paper:1.0-SNAPSHOT'
 
     compileOnly 'org.jetbrains:annotations:24.0.1'
@@ -65,8 +62,6 @@ tasks {
 
     shadowJar {
         archiveClassifier.set('')
-        relocate 'cloud.commandframework', 'uk.co.notnull.CustomItems.shaded.cloud'
-        relocate 'io.leangen.geantyref', 'uk.co.notnull.CustomItems.shaded.typetoken'
         relocate 'uk.co.notnull.messageshelper', 'uk.co.notnull.CustomItems.shaded.messageshelper'
     }
 

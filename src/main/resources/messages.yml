@@ -7,8 +7,9 @@ join:
     You have some unclaimed items to collect.
     Please visit the Item Distribution Point at spawn.
 command:
-  invalid-item: "'{input}' is not a valid item"
-  invalid-pool: "'{input}' is not a valid loot pool"
+  invalid-item: <input> is not a valid item
+  invalid-pool: <input> is not a valid loot pool
+  invalid-player: <input> is not a known player
   grant-success: Granted <player> <amount>x<item>
   give-success: Given <player> <amount>x<item>
   give-pool-success: Given <player> all items in <pool>
