@@ -1,7 +1,7 @@
 prefix:
-  info: '<bold><green>Custom Items > '
-  warning: '<bold><yellow>Custom Items > '
-  error: '<bold><red>Custom Items > '
+  info: '<bold><green>Custom Items > <reset><light_purple>'
+  warning: '<bold><yellow>Custom Items > <reset><orange>'
+  error: '<bold><red>Custom Items > <reset><yellow>'
 join:
   unclaimed-items-available: |-
     You have some unclaimed items to collect.
@@ -13,3 +13,5 @@ command:
   grant-success: Granted <player> <amount>x<item>
   give-success: Given <player> <amount>x<item>
   give-pool-success: Given <player> all items in <pool>
+  reload-success: Config has been reloaded
+  reload-error: An error occurred while reloading the config. Check the console for details.

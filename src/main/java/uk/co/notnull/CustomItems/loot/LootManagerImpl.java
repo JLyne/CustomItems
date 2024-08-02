@@ -32,16 +32,18 @@ public class LootManagerImpl implements LootManager {
 	private final Map<String, List<NamespacedKey>> configuredPools = new HashMap<>();
 
 
-	public LootManagerImpl(CustomItemsImpl plugin, ConfigurationSection lootConfig) {
+	public LootManagerImpl(CustomItemsImpl plugin) {
 		this.plugin = plugin;
 		placeholderPool = new NamespacedKey(plugin, "loot-pool"); //Pool of loot to generate from placeholder item
 		placeholderItem = new NamespacedKey(plugin, "loot-item"); //Specific custom item to generate from placeholder item
-
-		loadLootConfig(lootConfig);
 	}
 
 	public void loadLootConfig(ConfigurationSection config) {
 		configuredPools.clear();
+
+		if(config == null) {
+			return;
+		}
 
 		config.getKeys(false).forEach(pool -> {
 			List<NamespacedKey> items = config.getStringList(pool).stream()

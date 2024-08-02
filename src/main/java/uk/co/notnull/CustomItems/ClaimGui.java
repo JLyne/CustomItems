@@ -3,43 +3,30 @@ package uk.co.notnull.CustomItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import uk.co.notnull.CustomItems.api.ItemManager;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.CreationReason;
 import uk.co.notnull.CustomItems.items.CreationContextImpl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-public class ClaimGui implements InventoryHolder, Listener {
-	private final CustomItemsImpl plugin;
+public final class ClaimGui implements InventoryHolder, Listener {
 	private final Inventory inventory;
-	private final Player player;
 	private final ArrayList<ItemStack> items;
 	private final List<GrantedItem> grantedItems;
-	private static final Set<Player> viewers = new HashSet<>();
-	private final ItemManagerImpl manager;
 
 	public ClaimGui(CustomItemsImpl plugin, Player player, List<GrantedItem> grantedItems) {
 		int rows = grantedItems.size() / 9 + ((grantedItems.size() % 9 == 0) ? 0 : 1);
 		int inventorySize = Math.max(1, Math.min(rows, 6)) * 9;
 
-		this.plugin = plugin;
-		this.manager = plugin.getItemManager();
+		ItemManager manager = plugin.getItemManager();
 		this.grantedItems = grantedItems;
-		this.player = player;
 
 		items = new ArrayList<>();
 		CreationContext context = new CreationContextImpl(player, CreationReason.GRANTED);
@@ -62,87 +49,17 @@ public class ClaimGui implements InventoryHolder, Listener {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	private void addViewer(Player player) {
-		viewers.add(player);
-		plugin.getChestManager().openChest();
-	}
-
-	private void removeViewer(Player player) {
-		viewers.remove(player);
-
-		if(viewers.isEmpty()) {
-			plugin.getChestManager().closeChest();
-		}
-	}
-
 	@NotNull
 	@Override
 	public Inventory getInventory() {
 		return inventory;
 	}
 
-	// You can open the inventory with this
-    public void openInventory() {
-		addViewer(player);
-        player.openInventory(inventory);
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onInventoryDrag(InventoryDragEvent event) {
-		if(event.getInventory() == inventory) {
-			event.setCancelled(true);
-		}
+	public List<GrantedItem> getGrantedItems() {
+		return grantedItems;
 	}
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onInventoryClick(InventoryClickEvent event) {
-		if(event.getClickedInventory() == inventory) {
-			InventoryAction action = event.getAction();
-
-			if(action == InventoryAction.CLONE_STACK) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onInventoryClose(InventoryCloseEvent event) {
-		if(event.getInventory() != inventory) {
-			return;
-		}
-
-		ArrayList<ItemStack> finalContents = new ArrayList<>(Arrays.asList(inventory.getContents()));
-
-		//Mark items that are no longer in inventory as claimed
-		Iterator<ItemStack> it = items.iterator();
-
-		while (it.hasNext()) {
-			ItemStack item = it.next();
-			int index = items.indexOf(item);
-
-			if(!finalContents.contains(item)) {
-				Bukkit.getLogger().info("Claiming item " + grantedItems.get(index));
-				manager.claimItem(grantedItems.get(index));
-			} else {
-				finalContents.remove(item);
-			}
-
-			it.remove();
-			grantedItems.remove(index);
-		}
-
-		//Drop items that shouldn't be in inventory (player added etc.)
-		for (ItemStack item : finalContents) {
-			if(item == null || item.getType() == Material.AIR) {
-				continue;
-			}
-
-			event.getPlayer().getWorld()
-					.dropItemNaturally(plugin.getConfig().getLocation("claimChestLocation",
-															event.getPlayer().getLocation()), item);
-		}
-
-		HandlerList.unregisterAll(this);
-		removeViewer(player);
+	public List<ItemStack> getItems() {
+		return items;
 	}
 }

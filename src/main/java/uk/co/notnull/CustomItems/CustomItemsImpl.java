@@ -2,6 +2,7 @@ package uk.co.notnull.CustomItems;
 
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -32,23 +33,21 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
     public void onEnable() {
         instance = this;
 
-		initConfig();
-		createFile("messages.yml");
-
 		ConfigurationSerialization.registerClass(GrantedItem.class, "GrantedItem");
 
-        lootManager = new LootManagerImpl(this, getConfig().getConfigurationSection("loot"));
-        itemManager = new ItemManagerImpl(this, lootManager, getConfig().getConfigurationSection("items"));
-        chestManager = new ChestManager(this, getConfig());
+        lootManager = new LootManagerImpl(this);
+        itemManager = new ItemManagerImpl(this, lootManager);
+        chestManager = new ChestManager(this);
 		getServer().getPluginManager().registerEvents(new Inventories(this), this);
 		getServer().getPluginManager().registerEvents(new Wearables(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
 		getServer().getPluginManager().registerEvents(new Loot(this), this);
 
+        LifecycleEventManager<Plugin> manager = getLifecycleManager();
+        manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> new CommandHandler(this, event.registrar()));
+
         try {
-            messagesHelper.loadMessages(new File(getDataFolder(), "messages.yml"));
-            LifecycleEventManager<Plugin> manager = getLifecycleManager();
-            manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> new CommandHandler(this, event.registrar()));
+            initConfig();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,9 +79,22 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
         return messagesHelper;
     }
 
-    private void initConfig() {
-    	getConfig();
+    public void initConfig() {
+    	reloadConfig();
         saveDefaultConfig();
+
+        createFile("messages.yml");
+        messagesHelper.loadMessages(new File(getDataFolder(), "messages.yml"));
+
+        lootManager.loadLootConfig(getConfig().getConfigurationSection("loot"));
+        itemManager.loadItemConfig(getConfig().getConfigurationSection("items"));
+
+        try {
+            Location chestLocation = getConfig().getLocation("claimChestLocation");
+            chestManager.setChestLocation(chestLocation);
+        } catch (IllegalArgumentException e) {
+            getLogger().warning("Invalid claim chest location: " + e.getMessage());
+        }
 	}
 
     /**

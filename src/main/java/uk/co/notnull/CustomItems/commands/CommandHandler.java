@@ -41,6 +41,7 @@ public class CommandHandler {
         commandManager.register(this.createGiveItem(), "Immediately gives a custom item to a player");
         commandManager.register(this.createGrantItem(), "Grants a custom item to a player, which they must collect themselves");
         commandManager.register(this.createGivePool(), "Immediately gives all custom items in a loot pool to a player");
+        commandManager.register(this.createReload(), "Reloads the config");
     }
 
     private LiteralCommandNode<CommandSourceStack> createGiveItem() {
@@ -118,6 +119,17 @@ public class CommandHandler {
                 .build();
     }
 
+    private LiteralCommandNode<CommandSourceStack> createReload() {
+        return Commands.literal("reload")
+                .requires(commandSourceStack ->
+                                  commandSourceStack.getSender().hasPermission("customitems.reload"))
+                .executes(ctx -> {
+                    onReload(ctx.getSource());
+                    return Command.SINGLE_SUCCESS;
+                })
+                .build();
+    }
+
     private void onGiveItem(CommandSourceStack source, PlayerSelectorArgumentResolver target, CustomItem item, int amount) throws CommandSyntaxException {
         List<Player> players = target.resolve(source);
 
@@ -167,6 +179,19 @@ public class CommandHandler {
                     .prefixed()
                     .replacement("player", player.getName())
                     .replacement("pool", pool.getName())
+                    .build());
+        }
+	}
+
+    private void onReload(CommandSourceStack source) {
+        try {
+		    plugin.initConfig();
+            messagesHelper.send(source.getSender(), Message.builder("command.reload-success").prefixed().build());
+        } catch(Exception ex) {
+            plugin.getLogger().warning("Error while reloading config" + ex.getMessage());
+            messagesHelper.send(source.getSender(), Message.builder("command.reload-error")
+                    .prefixed()
+                    .type(Message.MessageType.ERROR)
                     .build());
         }
 	}

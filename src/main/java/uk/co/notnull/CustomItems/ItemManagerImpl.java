@@ -27,28 +27,34 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ItemManagerImpl implements ItemManager {
+public final class ItemManagerImpl implements ItemManager {
 	private final Map<NamespacedKey, CustomItem> items;
+	private final Map<NamespacedKey, CustomItem> externalItems;
 	private Map<UUID, List<GrantedItem>> unclaimed;
 	private final Map<CustomItemProvider, List<CustomItem>> providers;
 
 	private final CustomItemsImpl plugin;
 	private final LootManagerImpl lootManager;
 
-	public ItemManagerImpl(CustomItemsImpl plugin, LootManagerImpl lootManager, ConfigurationSection config) {
+	public ItemManagerImpl(CustomItemsImpl plugin, LootManagerImpl lootManager) {
 		this.plugin = plugin;
 		this.lootManager = lootManager;
 
 		items = new HashMap<>();
+		externalItems = new HashMap<>();
 		unclaimed = new HashMap<>();
 		providers = new HashMap<>();
 
-		loadItemConfig(config);
 		loadUnclaimedItems();
 	}
 
 	public void loadItemConfig(ConfigurationSection config) {
 		items.clear();
+		items.putAll(externalItems);
+
+		if(config == null) {
+			return;
+		}
 
 		config.getKeys(false).forEach(id -> {
 			String materialName = config.getString(id + ".material");
@@ -84,12 +90,17 @@ public class ItemManagerImpl implements ItemManager {
 			throw new IllegalArgumentException("An item with id " + item.getId() + " is already registered");
 		}
 
+		if(!(item instanceof ConfigCustomItem)) {
+			externalItems.put(item.getId(), item);
+		}
+
 		items.put(item.getId(), item);
 		lootManager.addItem(item);
 	}
 
 	private void removeItem(CustomItem item) {
 		items.remove(item.getId());
+		externalItems.remove(item.getId());
 		lootManager.removeItem(item);
 	}
 
