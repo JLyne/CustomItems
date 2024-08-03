@@ -24,14 +24,19 @@ import uk.co.notnull.messageshelper.MessagesHelper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public final class ItemManagerImpl implements ItemManager {
 	private final Map<NamespacedKey, CustomItem> items;
 	private final Map<NamespacedKey, CustomItem> externalItems;
-	private Map<UUID, List<GrantedItem>> unclaimed;
+	private final Map<UUID, Map<NamespacedKey, GrantedItem>> unclaimed;
 	private final Map<CustomItemProvider, List<CustomItem>> providers;
 
 	private final CustomItemsImpl plugin;
@@ -145,9 +150,12 @@ public final class ItemManagerImpl implements ItemManager {
 			chestManager.closeChestClaimGUI(onlinePlayer);
 		}
 
-        List<GrantedItem> items = unclaimed.getOrDefault(player.getUniqueId(), new ArrayList<>());
+        Map<NamespacedKey, GrantedItem> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
 
-        items.add(new GrantedItem(id, amount, player.getUniqueId()));
+		items.compute(id, (key, item) -> {
+			int finalAmount = item != null ? amount + item.getAmount() : amount;
+			return new GrantedItem(id, finalAmount, player.getUniqueId());
+		});
         unclaimed.put(player.getUniqueId(), items);
     }
 
@@ -171,15 +179,16 @@ public final class ItemManagerImpl implements ItemManager {
 
 		AtomicInteger amount = new AtomicInteger(0);
 
-        List<GrantedItem> items = unclaimed.getOrDefault(player.getUniqueId(), new ArrayList<>());
-		items = items.stream().filter(item -> {
+       	Map<NamespacedKey, GrantedItem> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
+
+		items = items.values().stream().filter(item -> {
 			if(item.getItem().equals(id)) {
 				amount.addAndGet(item.getAmount());
 				return false;
 			} else {
 				return true;
 			}
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toMap(GrantedItem::getItem, grantedItem -> grantedItem));
 
         unclaimed.put(player.getUniqueId(), items);
 		return amount.get();
@@ -257,17 +266,17 @@ public final class ItemManagerImpl implements ItemManager {
 	}
 
 	public List<GrantedItem> getUnclaimedItems(OfflinePlayer player) {
-		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new ArrayList<>()).stream()
+		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).values().stream()
 				.filter(item -> isValidId(item.getItem())).collect(Collectors.toList());
 	}
 
 	public boolean hasUnclaimedItems(OfflinePlayer player) {
-		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new ArrayList<>()).stream()
+		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).values().stream()
 				.anyMatch(item -> isValidId(item.getItem()));
 	}
 
 	public void claimItem(GrantedItem item) {
-		unclaimed.computeIfAbsent(item.getPlayer(), uuid -> new ArrayList<>()).remove(item);
+		unclaimed.computeIfAbsent(item.getPlayer(), uuid -> new HashMap<>()).remove(item.getItem());
 	}
 
 	public void loadUnclaimedItems() {
@@ -276,23 +285,32 @@ public final class ItemManagerImpl implements ItemManager {
 		FileConfiguration data = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "unclaimed.yml"));
 
 		List<?> pending  = data.getList("pending");
-		ArrayList<GrantedItem> items = new ArrayList<>();
 
 		if (pending != null) {
 			for (Object item : pending) {
-				items.add((GrantedItem) item);
+				if(item instanceof GrantedItem grantedItem) {
+					Map<NamespacedKey, GrantedItem> playerItems = unclaimed.computeIfAbsent(grantedItem.getPlayer(),
+																						key -> new HashMap<>());
+
+					// Add amount to existing GrantedItem if it exists
+					playerItems.compute(grantedItem.getItem(), (key, value) -> {
+						if(value != null) {
+							return new GrantedItem(key, value.getAmount() + grantedItem.getAmount(), grantedItem.getPlayer());
+						}
+
+						return grantedItem;
+					});
+				}
 			}
 		}
-
-		unclaimed = items.stream().collect(Collectors.groupingBy(GrantedItem::getPlayer));
 	}
 
 	@SuppressWarnings("UnusedReturnValue")
 	public boolean saveUnclaimedItems() {
 		File unclaimedFile = new File(plugin.getDataFolder(), "unclaimed.yml");
-		List<GrantedItem> items = unclaimed.values().stream()
-                            .flatMap(Collection::stream)
-                            .collect(Collectors.toList());
+		List<GrantedItem> items = new ArrayList<>();
+
+		unclaimed.values().stream().map(Map::values).forEach(items::addAll);
 
 		FileConfiguration data = new YamlConfiguration();
 
