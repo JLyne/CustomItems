@@ -34,6 +34,6 @@ public class Inventories implements Listener {
         }
 
         event.setCancelled(true);
-        manager.showClaimGUI(player);
+        manager.openChestClaimGUI(player);
     }
 }

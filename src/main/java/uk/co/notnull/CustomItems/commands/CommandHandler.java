@@ -41,6 +41,7 @@ public class CommandHandler {
         commandManager.register(this.createGiveItem(), "Immediately gives a custom item to a player");
         commandManager.register(this.createGrantItem(), "Grants a custom item to a player, which they must collect themselves");
         commandManager.register(this.createGivePool(), "Immediately gives all custom items in a loot pool to a player");
+        commandManager.register(this.createViewUnclaimed(), "View the unclaimed items for a player");
         commandManager.register(this.createReload(), "Reloads the config");
     }
 
@@ -119,6 +120,27 @@ public class CommandHandler {
                 .build();
     }
 
+    private LiteralCommandNode<CommandSourceStack> createViewUnclaimed() {
+        return Commands.literal("viewunclaimed")
+                .requires(commandSourceStack ->
+                                  commandSourceStack.getSender() instanceof Player
+                                          && commandSourceStack.getSender().hasPermission("customitems.view"))
+                // customitems:viewunclaimed <player>
+                .then(Commands.argument("player", ArgumentTypes.player()).executes(ctx -> {
+                    onViewUnclaimed(ctx.getSource(),
+                                    ctx.getArgument("player", PlayerSelectorArgumentResolver.class));
+                    return Command.SINGLE_SUCCESS;
+                }))
+                // customitems:viewunclaimed offline <offline-player>
+                .then(Commands.literal("offline")
+                              .then(Commands.argument("offline-player", offlinePlayerArgumentType).executes(ctx -> {
+                                  onViewUnclaimed(ctx.getSource(),
+                                                  ctx.getArgument("offline-player", OfflinePlayer.class));
+                                  return Command.SINGLE_SUCCESS;
+                              })))
+                .build();
+    }
+
     private LiteralCommandNode<CommandSourceStack> createReload() {
         return Commands.literal("reload")
                 .requires(commandSourceStack ->
@@ -182,6 +204,25 @@ public class CommandHandler {
                     .build());
         }
 	}
+
+    // customitems:viewunclaimed <player>
+    private void onViewUnclaimed(CommandSourceStack source, PlayerSelectorArgumentResolver target) throws CommandSyntaxException {
+        onViewUnclaimed(source, target.resolve(source).getFirst());
+    }
+
+    // customitems:viewunclaimed <offline-player>
+    private void onViewUnclaimed(CommandSourceStack source, OfflinePlayer target) {
+        if(!plugin.getItemManager().hasUnclaimedItems(target)) {
+            messagesHelper.send(source.getSender(), Message.builder("command.no-unclaimed-items")
+                    .prefixed()
+                    .type(Message.MessageType.ERROR)
+                    .replacement("player", target.getName() != null ? target.getName() : target.getUniqueId().toString())
+                    .build());
+            return;
+        }
+
+        plugin.getChestManager().showCommandClaimGUI((Player) source.getSender(), target);
+    }
 
     private void onReload(CommandSourceStack source) {
         try {

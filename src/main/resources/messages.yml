@@ -10,6 +10,7 @@ command:
   invalid-item: <input> is not a valid item
   invalid-pool: <input> is not a valid loot pool
   invalid-player: <input> is not a known player
+  no-unclaimed-items: <player> has no unclaimed items
   grant-success: Granted <player> <amount>x<item>
   give-success: Given <player> <amount>x<item>
   give-pool-success: Given <player> all items in <pool>
