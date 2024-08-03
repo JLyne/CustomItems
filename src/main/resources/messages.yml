@@ -12,6 +12,8 @@ command:
   invalid-player: <input> is not a known player
   no-unclaimed-items: <player> has no unclaimed items
   grant-success: Granted <player> <amount>x<item>
+  revoke-success: Revoked <amount>x<item> from <player>
+  revoke-no-unclaimed: <player> has no unclaimed <item>
   give-success: Given <player> <amount>x<item>
   give-pool-success: Given <player> all items in <pool>
   reload-success: Config has been reloaded

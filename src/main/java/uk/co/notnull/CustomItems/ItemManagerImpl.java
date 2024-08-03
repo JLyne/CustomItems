@@ -25,6 +25,7 @@ import uk.co.notnull.messageshelper.MessagesHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public final class ItemManagerImpl implements ItemManager {
@@ -143,13 +144,41 @@ public final class ItemManagerImpl implements ItemManager {
         unclaimed.put(player.getUniqueId(), items);
     }
 
-	@Override
 	public void grantItem(OfflinePlayer player, CustomItem item, int amount) {
 		if(!isRegistered(item)) {
 			throw new IllegalArgumentException("Item id " + item.getId() + " is not registered");
 		}
 
 		grantItem(player, item.getId(), amount);
+	}
+
+	public int revokeItem(OfflinePlayer player, NamespacedKey id) {
+		if(!isValidId(id)) {
+			throw new IllegalArgumentException("Unknown item " + id);
+		}
+
+		AtomicInteger amount = new AtomicInteger(0);
+
+        List<GrantedItem> items = unclaimed.getOrDefault(player.getUniqueId(), new ArrayList<>());
+		items = items.stream().filter(item -> {
+			if(item.getItem().equals(id)) {
+				amount.addAndGet(item.getAmount());
+				return false;
+			} else {
+				return true;
+			}
+		}).collect(Collectors.toList());
+
+        unclaimed.put(player.getUniqueId(), items);
+		return amount.get();
+    }
+
+	public int revokeItem(OfflinePlayer player, CustomItem item) {
+		if(!isRegistered(item)) {
+			throw new IllegalArgumentException("Item id " + item.getId() + " is not registered");
+		}
+
+		return revokeItem(player, item.getId());
 	}
 
     public Set<NamespacedKey> getItemIds() {

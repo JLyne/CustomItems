@@ -41,6 +41,7 @@ public class CommandHandler {
         commandManager.register(this.createGiveItem(), "Immediately gives a custom item to a player");
         commandManager.register(this.createGrantItem(), "Grants a custom item to a player, which they must collect themselves");
         commandManager.register(this.createGivePool(), "Immediately gives all custom items in a loot pool to a player");
+        commandManager.register(this.createRevokeItem(), "Revokes previously granted unclaimed items from a player");
         commandManager.register(this.createViewUnclaimed(), "View the unclaimed items for a player");
         commandManager.register(this.createReload(), "Reloads the config");
     }
@@ -117,6 +118,35 @@ public class CommandHandler {
                                              ctx.getArgument("pool", LootPool.class));
                                   return Command.SINGLE_SUCCESS;
                               })))
+                .build();
+    }
+
+    private LiteralCommandNode<CommandSourceStack> createRevokeItem() {
+        // customitems:revokeitem <player> <item>
+        RequiredArgumentBuilder<CommandSourceStack, PlayerSelectorArgumentResolver> onlinePlayer =
+                Commands.argument("player", ArgumentTypes.players())
+                        .then(Commands.argument("item", itemArgumentType).executes(ctx -> {
+                            onRevokeItem(ctx.getSource(),
+                                        ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
+                                        ctx.getArgument("item", CustomItem.class));
+                            return Command.SINGLE_SUCCESS;
+                        }));
+
+        // customitems:revokeitem offline <offline-player> <item>
+        LiteralArgumentBuilder<CommandSourceStack> offlinePlayer =
+                Commands.literal("offline").then(
+                    Commands.argument("offline-player", offlinePlayerArgumentType)
+                            .then(Commands.argument("item", itemArgumentType).executes(ctx -> {
+                                 onRevokeItem(ctx.getSource(),
+                                             ctx.getArgument("offline-player", OfflinePlayer.class),
+                                             ctx.getArgument("item", CustomItem.class));
+                                 return Command.SINGLE_SUCCESS;
+                            })));
+
+        return Commands.literal("revokeitem")
+                .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission("customitems.revoke"))
+                .then(onlinePlayer)
+                .then(offlinePlayer)
                 .build();
     }
 
@@ -204,6 +234,36 @@ public class CommandHandler {
                     .build());
         }
 	}
+
+    // customitems:revokeitem <player> <item>
+    private void onRevokeItem(CommandSourceStack source, PlayerSelectorArgumentResolver target, CustomItem item) throws CommandSyntaxException {
+        List<Player> players = target.resolve(source);
+
+        for (Player player : players) {
+            onRevokeItem(source, player, item);
+        }
+    }
+
+    // customitems:revokeitem <offline-player> <item>
+    private void onRevokeItem(CommandSourceStack source, OfflinePlayer target, CustomItem item) {
+        int amount = plugin.getItemManager().revokeItem(target, item);
+
+        if(amount > 0) {
+            messagesHelper.send(source.getSender(), Message.builder("command.revoke-success")
+                    .prefixed()
+                    .replacement("player", target.getName() != null ? target.getName() : target.getUniqueId().toString())
+                    .replacement("amount", String.valueOf(amount))
+                    .replacement("item", item.getDisplayName())
+                    .build());
+        } else {
+            messagesHelper.send(source.getSender(), Message.builder("command.revoke-no-unclaimed")
+                    .prefixed()
+                    .type(Message.MessageType.ERROR)
+                    .replacement("player", target.getName() != null ? target.getName() : target.getUniqueId().toString())
+                    .replacement("item", item.getDisplayName())
+                    .build());
+        }
+    }
 
     // customitems:viewunclaimed <player>
     private void onViewUnclaimed(CommandSourceStack source, PlayerSelectorArgumentResolver target) throws CommandSyntaxException {

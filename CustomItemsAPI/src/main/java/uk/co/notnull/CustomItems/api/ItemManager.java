@@ -32,6 +32,10 @@ public interface ItemManager {
 
   	void grantItem(OfflinePlayer player, CustomItem item, int amount);
 
+	int revokeItem(OfflinePlayer player, NamespacedKey id);
+
+	int revokeItem(OfflinePlayer player, CustomItem item);
+
     Set<NamespacedKey> getItemIds();
 
 	boolean isValidId(NamespacedKey id);
