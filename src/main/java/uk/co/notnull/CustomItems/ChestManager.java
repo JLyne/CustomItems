@@ -2,6 +2,7 @@ package uk.co.notnull.CustomItems;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Lidded;
 import org.bukkit.entity.HumanEntity;
@@ -38,9 +39,7 @@ public final class ChestManager implements Listener {
 	}
 
 	public void openChestClaimGUI(Player player) {
-		List<GrantedItem> unclaimedItems = plugin.itemManager.getUnclaimedItems(player);
-
-		ClaimGui gui = new ClaimGui(plugin, player, unclaimedItems);
+		ClaimGui gui = new ClaimGui(plugin, player);
 		player.openInventory(gui.getInventory());
 		openChestGUIs.put(player, gui);
 		openChest();
@@ -53,9 +52,7 @@ public final class ChestManager implements Listener {
 	}
 
 	public void showCommandClaimGUI(Player viewer, OfflinePlayer target) {
-		List<GrantedItem> unclaimedItems = plugin.itemManager.getUnclaimedItems(target);
-
-		ClaimGui gui = new ClaimGui(plugin, target, unclaimedItems);
+		ClaimGui gui = new ClaimGui(plugin, target);
 		viewer.openInventory(gui.getInventory());
 		openCommandGUIs.put(target, gui);
 	}
@@ -118,30 +115,11 @@ public final class ChestManager implements Listener {
 			return;
 		}
 
-		ArrayList<ItemStack> finalContents = new ArrayList<>(Arrays.asList(inventory.getContents()));
-
-		//Mark items that are no longer in inventory as claimed
-		List<ItemStack> items = claimGui.getItems();
-		List<GrantedItem> grantedItems = claimGui.getUnclaimedItems();
-		Iterator<ItemStack> it = items.iterator();
-
-		while (it.hasNext()) {
-			ItemStack item = it.next();
-			int index = items.indexOf(item);
-
-			if(!finalContents.contains(item)) {
-				plugin.getLogger().info("Claiming item " + grantedItems.get(index));
-				plugin.itemManager.claimItem(grantedItems.get(index));
-			} else {
-				finalContents.remove(item);
-			}
-
-			it.remove();
-			grantedItems.remove(index);
-		}
+		//Mark unclaimed items that are no longer in inventory as claimed
+		claimGui.claimItems();
 
 		//Drop items that shouldn't be in inventory (player added etc.)
-		for (ItemStack item : finalContents) {
+		for (ItemStack item : inventory.getContents()) {
 			if(item == null || item.getType() == Material.AIR) {
 				continue;
 			}
@@ -153,8 +131,7 @@ public final class ChestManager implements Listener {
 
 		// Update any command inventories for this player
 		if(openCommandGUIs.containsKey(player)) {
-			List<GrantedItem> unclaimedItems = plugin.itemManager.getUnclaimedItems(player);
-			openCommandGUIs.get(player).setUnclaimedItems(unclaimedItems);
+			openCommandGUIs.get(player).updateContents();
 		}
 
 		if(openChestGUIs.isEmpty()) {

@@ -16,7 +16,10 @@ final class ExternalCustomItem extends AbstractCustomItem {
 
 	@Override
 	public ItemStack createItem(CreationContext context, int amount) {
-		return generator.apply(context, amount);
+		ItemStack item = generator.apply(context, amount);
+		item.setAmount(Math.min(item.getMaxStackSize(), amount));
+
+		return item;
 	}
 }
 

@@ -28,7 +28,10 @@ public class LootPool extends ArrayList<CustomItem> {
 	public ItemStack generateItem(Player player, int amount) {
 		CustomItem item = get(random.nextInt(size()));
 
-		return item.createItem(new CreationContextImpl(player, CreationReason.LOOT), amount);
+		ItemStack itemStack = item.createItem(new CreationContextImpl(player, CreationReason.LOOT), amount);
+		itemStack.setAmount(Math.min(amount, itemStack.getMaxStackSize()));
+
+		return itemStack;
 	}
 
 	public void giveContents(Player player) {

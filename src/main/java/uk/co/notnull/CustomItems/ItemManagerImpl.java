@@ -30,13 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public final class ItemManagerImpl implements ItemManager {
 	private final Map<NamespacedKey, CustomItem> items;
 	private final Map<NamespacedKey, CustomItem> externalItems;
-	private final Map<UUID, Map<NamespacedKey, GrantedItem>> unclaimed;
+	private final Map<UUID, Map<NamespacedKey, Integer>> unclaimed;
 	private final Map<CustomItemProvider, List<CustomItem>> providers;
 
 	private final CustomItemsImpl plugin;
@@ -121,14 +120,21 @@ public final class ItemManagerImpl implements ItemManager {
 	}
 
 	public void giveItem(Player player, NamespacedKey id, int amount) {
-        ItemStack item = createItem(id, new CreationContextImpl(player, CreationReason.GIVEN), amount);
+		List<ItemStack> items = new ArrayList<>();
+		CreationContext context = new CreationContextImpl(player, CreationReason.GIVEN);
+
+		while(amount > 0) {
+        	ItemStack item = createItem(id, context, amount);
+			amount -= item.getAmount();
+			items.add(item);
+		}
 
         Inventory inventory = player.getInventory();
 
-        final Map<Integer, ItemStack> map = inventory.addItem(item);
+        final Map<Integer, ItemStack> map = inventory.addItem(items.toArray(new ItemStack[0]));
 
         if(!map.isEmpty()) {
-            player.getWorld().dropItemNaturally(player.getLocation(), item);
+			map.values().forEach(item -> player.getWorld().dropItemNaturally(player.getLocation(), item));
         }
     }
 
@@ -150,13 +156,8 @@ public final class ItemManagerImpl implements ItemManager {
 			chestManager.closeChestClaimGUI(onlinePlayer);
 		}
 
-        Map<NamespacedKey, GrantedItem> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
-
-		items.compute(id, (key, item) -> {
-			int finalAmount = item != null ? amount + item.getAmount() : amount;
-			return new GrantedItem(id, finalAmount, player.getUniqueId());
-		});
-        unclaimed.put(player.getUniqueId(), items);
+        Map<NamespacedKey, Integer> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
+		items.compute(id, (key, oldAmount) -> oldAmount != null ? amount + oldAmount : amount);
     }
 
 	public void grantItem(OfflinePlayer player, CustomItem item, int amount) {
@@ -177,21 +178,10 @@ public final class ItemManagerImpl implements ItemManager {
 			chestManager.closeChestClaimGUI(onlinePlayer);
 		}
 
-		AtomicInteger amount = new AtomicInteger(0);
+       	Map<NamespacedKey, Integer> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
+		Integer amount = items.remove(id);
 
-       	Map<NamespacedKey, GrantedItem> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
-
-		items = items.values().stream().filter(item -> {
-			if(item.getItem().equals(id)) {
-				amount.addAndGet(item.getAmount());
-				return false;
-			} else {
-				return true;
-			}
-		}).collect(Collectors.toMap(GrantedItem::getItem, grantedItem -> grantedItem));
-
-        unclaimed.put(player.getUniqueId(), items);
-		return amount.get();
+		return amount != null ? amount : 0;
     }
 
 	public int revokeItem(OfflinePlayer player, CustomItem item) {
@@ -265,18 +255,22 @@ public final class ItemManagerImpl implements ItemManager {
 		return null;
 	}
 
-	public List<GrantedItem> getUnclaimedItems(OfflinePlayer player) {
-		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).values().stream()
-				.filter(item -> isValidId(item.getItem())).collect(Collectors.toList());
+	public Map<NamespacedKey, Integer> getUnclaimedItems(OfflinePlayer player) {
+		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).entrySet().stream()
+				.filter(entry -> isValidId(entry.getKey()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
-	public boolean hasUnclaimedItems(OfflinePlayer player) {
-		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).values().stream()
-				.anyMatch(item -> isValidId(item.getItem()));
+	public boolean hasUnclaimedItems(@NotNull OfflinePlayer player) {
+		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).keySet().stream()
+				.anyMatch(this::isValidId);
 	}
 
-	public void claimItem(GrantedItem item) {
-		unclaimed.computeIfAbsent(item.getPlayer(), uuid -> new HashMap<>()).remove(item.getItem());
+	public void claimItem(@NotNull OfflinePlayer player, NamespacedKey item, int amount) {
+		Map<NamespacedKey, Integer> playerItems = unclaimed.computeIfAbsent(
+				player.getUniqueId(), uuid -> new HashMap<>());
+
+		playerItems.computeIfPresent(item, (key, oldAmount) -> oldAmount - amount <= 0 ? null : oldAmount - amount);
 	}
 
 	public void loadUnclaimedItems() {
@@ -289,16 +283,16 @@ public final class ItemManagerImpl implements ItemManager {
 		if (pending != null) {
 			for (Object item : pending) {
 				if(item instanceof GrantedItem grantedItem) {
-					Map<NamespacedKey, GrantedItem> playerItems = unclaimed.computeIfAbsent(grantedItem.getPlayer(),
+					Map<NamespacedKey, Integer> playerItems = unclaimed.computeIfAbsent(grantedItem.getPlayer(),
 																						key -> new HashMap<>());
 
 					// Add amount to existing GrantedItem if it exists
-					playerItems.compute(grantedItem.getItem(), (key, value) -> {
-						if(value != null) {
-							return new GrantedItem(key, value.getAmount() + grantedItem.getAmount(), grantedItem.getPlayer());
+					playerItems.compute(grantedItem.getItem(), (key, oldAmount) -> {
+						if(oldAmount != null) {
+							return oldAmount + grantedItem.getAmount();
 						}
 
-						return grantedItem;
+						return grantedItem.getAmount();
 					});
 				}
 			}
@@ -310,7 +304,7 @@ public final class ItemManagerImpl implements ItemManager {
 		File unclaimedFile = new File(plugin.getDataFolder(), "unclaimed.yml");
 		List<GrantedItem> items = new ArrayList<>();
 
-		unclaimed.values().stream().map(Map::values).forEach(items::addAll);
+		unclaimed.forEach((uuid, value) -> value.forEach((id, amount) -> items.add(new GrantedItem(id, amount, uuid))));
 
 		FileConfiguration data = new YamlConfiguration();
 

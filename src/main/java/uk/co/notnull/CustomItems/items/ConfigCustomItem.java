@@ -95,6 +95,7 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 		meta.displayName(getDisplayName());
 		meta.lore(getLore(context.player()));
 		item.setItemMeta(meta);
+		item.setAmount(Math.min(item.getMaxStackSize(), amount));
 
 		return item;
 	}
