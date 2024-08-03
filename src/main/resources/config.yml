@@ -1,5 +1,4 @@
 claimChestLocation:
-  ==: org.bukkit.Location
   world: world
   x: 4
   y: 74

@@ -109,8 +109,7 @@ public final class ChestManager implements Listener {
 			}
 
 			event.getPlayer().getWorld()
-					.dropItemNaturally(plugin.getConfig().getLocation("claimChestLocation",
-															event.getPlayer().getLocation()), item);
+					.dropItemNaturally(chestLocation != null ? chestLocation : event.getPlayer().getLocation(), item);
 		}
 
 		openClaimGuis.remove(event.getPlayer().getUniqueId());

@@ -3,6 +3,7 @@ package uk.co.notnull.CustomItems;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -90,8 +91,15 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
         itemManager.loadItemConfig(getConfig().getConfigurationSection("items"));
 
         try {
-            Location chestLocation = getConfig().getLocation("claimChestLocation");
-            chestManager.setChestLocation(chestLocation);
+            ConfigurationSection chestLocationConfig = getConfig().getConfigurationSection("claimChestLocation");
+            Location location = new Location(
+                    getServer().getWorld(chestLocationConfig.getString("world", null)),
+                    chestLocationConfig.getInt("x", 0),
+                    chestLocationConfig.getInt("y", 0),
+                    chestLocationConfig.getInt("z", 0)
+            );
+
+            chestManager.setChestLocation(location);
         } catch (IllegalArgumentException e) {
             getLogger().warning("Invalid claim chest location: " + e.getMessage());
         }
