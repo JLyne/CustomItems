@@ -36,10 +36,12 @@ public final class ItemManagerImpl implements ItemManager {
 
 	private final CustomItemsImpl plugin;
 	private final LootManagerImpl lootManager;
+	private final ChestManager chestManager;
 
-	public ItemManagerImpl(CustomItemsImpl plugin, LootManagerImpl lootManager) {
+	public ItemManagerImpl(CustomItemsImpl plugin, LootManagerImpl lootManager, ChestManager chestManager) {
 		this.plugin = plugin;
 		this.lootManager = lootManager;
+		this.chestManager = chestManager;
 
 		items = new HashMap<>();
 		externalItems = new HashMap<>();
@@ -138,6 +140,11 @@ public final class ItemManagerImpl implements ItemManager {
 			throw new IllegalArgumentException("Unknown item " + id);
 		}
 
+		// Prevent further claiming of items before grant
+		if(player instanceof Player onlinePlayer) {
+			chestManager.closeChestClaimGUI(onlinePlayer);
+		}
+
         List<GrantedItem> items = unclaimed.getOrDefault(player.getUniqueId(), new ArrayList<>());
 
         items.add(new GrantedItem(id, amount, player.getUniqueId()));
@@ -155,6 +162,11 @@ public final class ItemManagerImpl implements ItemManager {
 	public int revokeItem(OfflinePlayer player, NamespacedKey id) {
 		if(!isValidId(id)) {
 			throw new IllegalArgumentException("Unknown item " + id);
+		}
+
+		// Prevent further claiming of items before revoke
+		if(player instanceof Player onlinePlayer) {
+			chestManager.closeChestClaimGUI(onlinePlayer);
 		}
 
 		AtomicInteger amount = new AtomicInteger(0);

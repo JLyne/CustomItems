@@ -19,6 +19,7 @@ import uk.co.notnull.messageshelper.Message;
 import uk.co.notnull.messageshelper.MessagesHelper;
 
 import java.util.List;
+import java.util.logging.Level;
 
 
 @SuppressWarnings("UnstableApiUsage")
@@ -289,7 +290,7 @@ public class CommandHandler {
 		    plugin.initConfig();
             messagesHelper.send(source.getSender(), Message.builder("command.reload-success").prefixed().build());
         } catch(Exception ex) {
-            plugin.getLogger().warning("Error while reloading config" + ex.getMessage());
+            plugin.getLogger().log(Level.WARNING, "Error while reloading config: " + ex.getMessage(), ex);
             messagesHelper.send(source.getSender(), Message.builder("command.reload-error")
                     .prefixed()
                     .type(Message.MessageType.ERROR)

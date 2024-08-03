@@ -37,8 +37,8 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
 		ConfigurationSerialization.registerClass(GrantedItem.class, "GrantedItem");
 
         lootManager = new LootManagerImpl(this);
-        itemManager = new ItemManagerImpl(this, lootManager);
         chestManager = new ChestManager(this);
+        itemManager = new ItemManagerImpl(this, lootManager, chestManager);
 		getServer().getPluginManager().registerEvents(new Inventories(this), this);
 		getServer().getPluginManager().registerEvents(new Wearables(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
@@ -87,6 +87,7 @@ public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener
         createFile("messages.yml");
         messagesHelper.loadMessages(new File(getDataFolder(), "messages.yml"));
 
+        chestManager.closeAllGUIS();
         lootManager.loadLootConfig(getConfig().getConfigurationSection("loot"));
         itemManager.loadItemConfig(getConfig().getConfigurationSection("items"));
 
