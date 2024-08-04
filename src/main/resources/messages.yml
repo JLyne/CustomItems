@@ -4,7 +4,7 @@ prefix:
   error: '<bold><red>Custom Items > <reset><yellow>'
 join:
   unclaimed-items-available: |-
-    You have some unclaimed items to collect.
+    <bold><green>Unclaimed Items > <reset><light_purple>You have <green><amount><light_purple> unclaimed items to collect.
     Please visit the Item Distribution Point at spawn.
 command:
   invalid-item: <input> is not a valid item

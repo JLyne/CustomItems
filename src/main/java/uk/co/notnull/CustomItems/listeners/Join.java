@@ -17,10 +17,6 @@ public class Join implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-        if(plugin.getItemManager().hasUnclaimedItems(player)) {
-            plugin.getMessagesHelper().send(player, Message.builder("join.unclaimed-items-available").build());
-		}
+        plugin.getItemManager().sendUnclaimedItemsNotification(event.getPlayer());
     }
 }

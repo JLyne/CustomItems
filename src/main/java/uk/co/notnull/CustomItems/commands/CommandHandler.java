@@ -256,10 +256,6 @@ public class CommandHandler {
                 .replacement("amount", String.valueOf(amount))
                 .replacement("item", item.getDisplayName())
                 .build());
-
-        if(target.isConnected()) {
-            messagesHelper.send((Player) target, Message.builder("join.unclaimed-items-available").build());
-        }
     }
 
     private void onGivePool(CommandSourceStack source, PlayerSelectorArgumentResolver target, LootPool pool) throws CommandSyntaxException {

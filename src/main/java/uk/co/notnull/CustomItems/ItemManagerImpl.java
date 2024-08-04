@@ -21,6 +21,7 @@ import uk.co.notnull.CustomItems.api.items.CustomItemProvider;
 import uk.co.notnull.CustomItems.items.ConfigCustomItem;
 import uk.co.notnull.CustomItems.items.CreationContextImpl;
 import uk.co.notnull.CustomItems.loot.LootManagerImpl;
+import uk.co.notnull.messageshelper.Message;
 import uk.co.notnull.messageshelper.MessagesHelper;
 
 import java.io.File;
@@ -181,6 +182,10 @@ public final class ItemManagerImpl implements ItemManager {
 
 		Map<NamespacedKey, Integer> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
 		items.compute(id, (key, oldAmount) -> oldAmount != null ? amount + oldAmount : amount);
+
+		if(player instanceof Player onlinePlayer) {
+			plugin.getItemManager().sendUnclaimedItemsNotification(onlinePlayer);
+		}
 	}
 
 	public int revokeItem(OfflinePlayer player, NamespacedKey id) {
@@ -275,6 +280,16 @@ public final class ItemManagerImpl implements ItemManager {
 	public boolean hasUnclaimedItems(@NotNull OfflinePlayer player) {
 		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).keySet().stream()
 				.anyMatch(key -> isValidId(key) || Util.isVanillaItem(key));
+	}
+
+	public void sendUnclaimedItemsNotification(Player player) {
+		int amount = getUnclaimedItems(player).values().stream().mapToInt(i -> i).sum();
+
+		if(amount > 0) {
+            plugin.getMessagesHelper().send(player, Message.builder("join.unclaimed-items-available")
+					.replacement("amount", String.valueOf(amount))
+					.build());
+		}
 	}
 
 	public void claimItem(@NotNull OfflinePlayer player, NamespacedKey item, int amount) {
