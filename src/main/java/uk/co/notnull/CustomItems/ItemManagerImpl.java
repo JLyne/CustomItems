@@ -12,6 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.api.ItemManager;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.CreationReason;
@@ -112,11 +113,13 @@ public final class ItemManagerImpl implements ItemManager {
 	}
 
 	public ItemStack createItem(NamespacedKey id, CreationContext context, int amount) {
-		if(!isValidId(id)) {
-			throw new IllegalArgumentException("Item id " + id + " is not registered");
+		CustomItem customItem = getItem(id);
+
+		if(customItem == null) {
+			throw new IllegalArgumentException("Unknown item " + id);
 		}
 
-		return items.get(id).createItem(context, amount);
+		return customItem.createItem(context, amount);
 	}
 
 	public void giveItem(Player player, NamespacedKey id, int amount) {
@@ -151,13 +154,7 @@ public final class ItemManagerImpl implements ItemManager {
 			throw new IllegalArgumentException("Unknown item " + id);
 		}
 
-		// Prevent further claiming of items before grant
-		if(player instanceof Player onlinePlayer) {
-			chestManager.closeChestClaimGUI(onlinePlayer);
-		}
-
-        Map<NamespacedKey, Integer> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
-		items.compute(id, (key, oldAmount) -> oldAmount != null ? amount + oldAmount : amount);
+		addUnclaimedItem(player, id, amount);
     }
 
 	public void grantItem(OfflinePlayer player, CustomItem item, int amount) {
@@ -165,14 +162,28 @@ public final class ItemManagerImpl implements ItemManager {
 			throw new IllegalArgumentException("Item id " + item.getId() + " is not registered");
 		}
 
-		grantItem(player, item.getId(), amount);
+		addUnclaimedItem(player, item.getId(), amount);
+	}
+
+	public void grantVanillaItem(OfflinePlayer player, @NotNull NamespacedKey key, int amount) {
+        if(!Util.isVanillaItem(key)) {
+			throw new IllegalArgumentException(key + " is not a vanilla item");
+		}
+
+		addUnclaimedItem(player, key, amount);
+    }
+
+	private void addUnclaimedItem(OfflinePlayer player, NamespacedKey id, int amount) {
+		// Prevent further claiming of items before grant
+		if(player instanceof Player onlinePlayer) {
+			chestManager.closeChestClaimGUI(onlinePlayer);
+		}
+
+		Map<NamespacedKey, Integer> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
+		items.compute(id, (key, oldAmount) -> oldAmount != null ? amount + oldAmount : amount);
 	}
 
 	public int revokeItem(OfflinePlayer player, NamespacedKey id) {
-		if(!isValidId(id)) {
-			throw new IllegalArgumentException("Unknown item " + id);
-		}
-
 		// Prevent further claiming of items before revoke
 		if(player instanceof Player onlinePlayer) {
 			chestManager.closeChestClaimGUI(onlinePlayer);
@@ -255,15 +266,15 @@ public final class ItemManagerImpl implements ItemManager {
 		return null;
 	}
 
-	public Map<NamespacedKey, Integer> getUnclaimedItems(OfflinePlayer player) {
+	public Map<NamespacedKey, Integer> getUnclaimedItems(@NotNull OfflinePlayer player) {
 		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).entrySet().stream()
-				.filter(entry -> isValidId(entry.getKey()))
+				.filter(entry -> isValidId(entry.getKey()) || Util.isVanillaItem(entry.getKey()))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	public boolean hasUnclaimedItems(@NotNull OfflinePlayer player) {
 		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).keySet().stream()
-				.anyMatch(this::isValidId);
+				.anyMatch(key -> isValidId(key) || Util.isVanillaItem(key));
 	}
 
 	public void claimItem(@NotNull OfflinePlayer player, NamespacedKey item, int amount) {

@@ -25,6 +25,7 @@
 package uk.co.notnull.CustomItems.commands;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -34,31 +35,29 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
-import uk.co.notnull.CustomItems.ItemManagerImpl;
-import uk.co.notnull.CustomItems.api.items.CustomItem;
+import uk.co.notnull.CustomItems.Util;
 import uk.co.notnull.messageshelper.Message;
 
 /**
- * Argument parser for {@link CustomItem CustomItems}
+ * Argument parser for {@link NamespacedKey NamespacedKeys} for vanilla items
  *
  * @since 1.1.0
  */
 @SuppressWarnings("UnstableApiUsage")
-public final class CustomItemArgumentType implements CustomArgumentType.Converted<NamespacedKey, NamespacedKey> {
+public final class VanillaItemArgumentType implements CustomArgumentType.Converted<NamespacedKey, NamespacedKey> {
 	private final CustomItemsImpl plugin;
-	private final ItemManagerImpl itemManager;
 
-	public CustomItemArgumentType(CustomItemsImpl plugin) {
+	public VanillaItemArgumentType(CustomItemsImpl plugin) {
 		this.plugin = plugin;
-		this.itemManager = plugin.getItemManager();
 	}
 
 	@Override
 	public @NotNull NamespacedKey convert(@NotNull NamespacedKey key) throws CommandSyntaxException {
-		if(!itemManager.isValidId(key)) {
+		if(!Util.isVanillaItem(key)) {
 			Message message = Message.builder("command.invalid-item")
 					.replacement("<input>", String.valueOf(key))
 					.build();
@@ -80,8 +79,10 @@ public final class CustomItemArgumentType implements CustomArgumentType.Converte
 			com.mojang.brigadier.context.@NotNull CommandContext<S> context, @NotNull SuggestionsBuilder builder) {
 		String search = builder.getRemainingLowerCase();
 
-        itemManager.getItemIds().stream()
-				.filter(id -> id.toString().startsWith(search) || id.getKey().startsWith(search))
+		Stream.of(Material.values())
+				.filter(material -> !material.isLegacy() && material.isItem())
+				.map(Material::getKey)
+				.filter(item -> item.toString().startsWith(search) || item.getKey().startsWith(search))
 				.map(NamespacedKey::toString)
 				.forEach(builder::suggest);
 

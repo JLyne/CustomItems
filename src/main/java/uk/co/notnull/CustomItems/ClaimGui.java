@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.CreationReason;
+import uk.co.notnull.CustomItems.api.items.CustomItem;
 import uk.co.notnull.CustomItems.items.CreationContextImpl;
 
 import java.util.*;
@@ -40,13 +41,14 @@ public final class ClaimGui implements InventoryHolder, Listener {
 		for (Map.Entry<NamespacedKey, Integer> entry : unclaimedItems.entrySet()) {
 			NamespacedKey id = entry.getKey();
 			Integer amount = entry.getValue();
+			CustomItem customItem = Util.isVanillaItem(id) ? Util.getVanillaCustomItem(id) : itemManager.getItem(id);
 
 			while (amount > 0) {
 				if(initialContents.size() == inventory.getSize()) {
 					break;
 				}
 
-				ItemStack item = itemManager.createItem(id, context, amount);
+				ItemStack item = customItem.createItem(context, amount);
 				amount -= item.getAmount();
 				itemMapping.put(item, id);
 				initialContents.add(item);

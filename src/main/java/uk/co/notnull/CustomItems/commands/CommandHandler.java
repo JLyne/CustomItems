@@ -4,15 +4,18 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
+import uk.co.notnull.CustomItems.Util;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
 import uk.co.notnull.CustomItems.loot.LootPool;
 import uk.co.notnull.messageshelper.Message;
@@ -28,6 +31,7 @@ public class CommandHandler {
     private final MessagesHelper messagesHelper;
 
     private final CustomItemArgumentType itemArgumentType;
+    private final VanillaItemArgumentType vanillaItemArgumentType;
     private final LootPoolArgumentType lootPoolArgumentType;
     private final IntegerArgumentType amountArgumentType = IntegerArgumentType.integer(0, 6400);
     private final OfflinePlayerArgumentType offlinePlayerArgumentType;
@@ -36,6 +40,7 @@ public class CommandHandler {
         this.plugin = plugin;
         this.messagesHelper = plugin.getMessagesHelper();
         this.itemArgumentType = new CustomItemArgumentType(plugin);
+        this.vanillaItemArgumentType = new VanillaItemArgumentType(plugin);
         this.lootPoolArgumentType = new LootPoolArgumentType(plugin);
         this.offlinePlayerArgumentType = new OfflinePlayerArgumentType(plugin);
 
@@ -54,12 +59,12 @@ public class CommandHandler {
                               .then(Commands.argument("item", itemArgumentType).executes(ctx -> {
                                   onGiveItem(ctx.getSource(),
                                              ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
-                                             ctx.getArgument("item", CustomItem.class), 1);
+                                             ctx.getArgument("item", NamespacedKey.class), 1);
                                   return Command.SINGLE_SUCCESS;
                               }).then(Commands.argument("amount", amountArgumentType).executes(ctx -> {
                                   onGiveItem(ctx.getSource(),
                                              ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
-                                             ctx.getArgument("item", CustomItem.class),
+                                             ctx.getArgument("item", NamespacedKey.class),
                                              ctx.getArgument("amount", Integer.class));
                                   return Command.SINGLE_SUCCESS;
                               }))))
@@ -67,42 +72,56 @@ public class CommandHandler {
     }
 
     private LiteralCommandNode<CommandSourceStack> createGrantItem() {
-        // customitems:grantitem <player> <item> [amount]
+        Command<CommandSourceStack> noAmountExecutor = (CommandContext<CommandSourceStack> ctx) -> {
+            onGrantItem(ctx.getSource(),
+                        ctx.getArgument("player", Object.class),
+                        ctx.getArgument("item", NamespacedKey.class), 1);
+
+            return Command.SINGLE_SUCCESS;
+        };
+
+        Command<CommandSourceStack> withAmountExecutor = (CommandContext<CommandSourceStack> ctx) -> {
+            onGrantItem(ctx.getSource(),
+                        ctx.getArgument("player", Object.class),
+                        ctx.getArgument("item", NamespacedKey.class),
+                        ctx.getArgument("amount", Integer.class));
+
+            return Command.SINGLE_SUCCESS;
+        };
+
+        // customitems:grantitem <player>
         RequiredArgumentBuilder<CommandSourceStack, PlayerSelectorArgumentResolver> onlinePlayer =
                 Commands.argument("player", ArgumentTypes.players())
-                        .then(Commands.argument("item", itemArgumentType).executes(ctx -> {
-                            onGrantItem(ctx.getSource(),
-                                        ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
-                                        ctx.getArgument("item", CustomItem.class), 1);
-                            return Command.SINGLE_SUCCESS;
-                        }).then(Commands.argument("amount", amountArgumentType).executes(ctx -> {
-                            onGrantItem(ctx.getSource(),
-                                        ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
-                                        ctx.getArgument("item", CustomItem.class),
-                                        ctx.getArgument("amount", Integer.class));
-                            return Command.SINGLE_SUCCESS;
-                        })));
+                        // customitems:grantitem <player> <item> [amount]
+                        .then(Commands.argument("item", itemArgumentType)
+                                      .executes(noAmountExecutor)
+                                      .then(Commands.argument("amount", amountArgumentType)
+                                                    .executes(withAmountExecutor)))
+                        // customitems:grantitem <player> vanilla <item> [amount]
+                        .then(Commands.literal("vanilla")
+                                      .then(Commands.argument("item", vanillaItemArgumentType)
+                                                    .executes(noAmountExecutor)
+                                                    .then(Commands.argument("amount", amountArgumentType)
+                                                                  .executes(withAmountExecutor))));
 
-        // customitems:grantitem offline <offline-player> <item> [amount]
+        // customitems:grantitem offline <player>
         LiteralArgumentBuilder<CommandSourceStack> offlinePlayer =
                 Commands.literal("offline").then(
-                    Commands.argument("offline-player", offlinePlayerArgumentType)
-                            .then(Commands.argument("item", itemArgumentType).executes(ctx -> {
-                                 onGrantItem(ctx.getSource(),
-                                             ctx.getArgument("offline-player", OfflinePlayer.class),
-                                             ctx.getArgument("item", CustomItem.class), 1);
-                                 return Command.SINGLE_SUCCESS;
-                            }).then(Commands.argument("amount", amountArgumentType).executes(ctx -> {
-                                onGrantItem(ctx.getSource(),
-                                            ctx.getArgument("offline-player", OfflinePlayer.class),
-                                            ctx.getArgument("item", CustomItem.class),
-                                            ctx.getArgument("amount", Integer.class));
-                                return Command.SINGLE_SUCCESS;
-                            }))));
+                    Commands.argument("player", offlinePlayerArgumentType)
+                            // customitems:grantitem offline <player> <item> [amount]
+                            .then(Commands.argument("item", itemArgumentType)
+                                          .executes(noAmountExecutor)
+                                          .then(Commands.argument("amount", amountArgumentType)
+                                                        .executes(withAmountExecutor)))
+                            // customitems:grantitem offline <player> vanilla <item> [amount]
+                            .then(Commands.literal("vanilla")
+                                          .then(Commands.argument("item", vanillaItemArgumentType)
+                                                        .executes(noAmountExecutor)
+                                                        .then(Commands.argument("amount", amountArgumentType)
+                                                                      .executes(withAmountExecutor)))));
 
         return Commands.literal("grantitem")
-                .requires(commandSourceStack ->
-                                  commandSourceStack.getSender().hasPermission("customitems.grant"))
+                .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission("customitems.grant"))
                 .then(onlinePlayer)
                 .then(offlinePlayer)
                 .build();
@@ -110,8 +129,7 @@ public class CommandHandler {
 
     private LiteralCommandNode<CommandSourceStack> createGivePool() {
         return Commands.literal("givepool")
-                .requires(commandSourceStack ->
-                                  commandSourceStack.getSender().hasPermission("customitems.givepool"))
+                .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission("customitems.givepool"))
                 .then(Commands.argument("player", ArgumentTypes.players())
                               .then(Commands.argument("pool", lootPoolArgumentType).executes(ctx -> {
                                   onGivePool(ctx.getSource(),
@@ -123,26 +141,34 @@ public class CommandHandler {
     }
 
     private LiteralCommandNode<CommandSourceStack> createRevokeItem() {
-        // customitems:revokeitem <player> <item>
+        Command<CommandSourceStack> executor = (CommandContext<CommandSourceStack> ctx) -> {
+            onRevokeItem(ctx.getSource(),
+                                        ctx.getArgument("player", Object.class),
+                                        ctx.getArgument("item", NamespacedKey.class));
+
+            return Command.SINGLE_SUCCESS;
+        };
+
+        // customitems:revokeitem <player>
         RequiredArgumentBuilder<CommandSourceStack, PlayerSelectorArgumentResolver> onlinePlayer =
                 Commands.argument("player", ArgumentTypes.players())
-                        .then(Commands.argument("item", itemArgumentType).executes(ctx -> {
-                            onRevokeItem(ctx.getSource(),
-                                        ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
-                                        ctx.getArgument("item", CustomItem.class));
-                            return Command.SINGLE_SUCCESS;
-                        }));
+                        // customitems:grantitem <player> <item>
+                        .then(Commands.argument("item", itemArgumentType).executes(executor))
+                        // customitems:grantitem <player> vanilla <item>
+                        .then(Commands.literal("vanilla")
+                                      .then(Commands.argument("item", vanillaItemArgumentType)
+                                                    .executes(executor)));
 
-        // customitems:revokeitem offline <offline-player> <item>
+        // customitems:revokeitem offline <player>
         LiteralArgumentBuilder<CommandSourceStack> offlinePlayer =
                 Commands.literal("offline").then(
-                    Commands.argument("offline-player", offlinePlayerArgumentType)
-                            .then(Commands.argument("item", itemArgumentType).executes(ctx -> {
-                                 onRevokeItem(ctx.getSource(),
-                                             ctx.getArgument("offline-player", OfflinePlayer.class),
-                                             ctx.getArgument("item", CustomItem.class));
-                                 return Command.SINGLE_SUCCESS;
-                            })));
+                    Commands.argument("player", offlinePlayerArgumentType)
+                            // customitems:revokeitem offline <player> <item>
+                            .then(Commands.argument("item", itemArgumentType).executes(executor))
+                            // customitems:grantitem offline <player> vanilla <item>
+                            .then(Commands.literal("vanilla")
+                                          .then(Commands.argument("item", vanillaItemArgumentType)
+                                                        .executes(executor))));
 
         return Commands.literal("revokeitem")
                 .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission("customitems.revoke"))
@@ -183,8 +209,9 @@ public class CommandHandler {
                 .build();
     }
 
-    private void onGiveItem(CommandSourceStack source, PlayerSelectorArgumentResolver target, CustomItem item, int amount) throws CommandSyntaxException {
+    private void onGiveItem(CommandSourceStack source, PlayerSelectorArgumentResolver target, NamespacedKey key, int amount) throws CommandSyntaxException {
         List<Player> players = target.resolve(source);
+        CustomItem item = plugin.getItemManager().getItem(key);
 
         for (Player player : players) {
             plugin.getItemManager().giveItem(player, item, amount);
@@ -198,18 +225,30 @@ public class CommandHandler {
         }
     }
 
-    // customitems:grantitem <player> <item> [amount]
-    private void onGrantItem(CommandSourceStack source, PlayerSelectorArgumentResolver target, CustomItem item, int amount) throws CommandSyntaxException {
-        List<Player> players = target.resolve(source);
+    private void onGrantItem(CommandSourceStack source, Object target, NamespacedKey key, int amount) throws CommandSyntaxException {
+        if(target instanceof OfflinePlayer offlinePlayer) {
+             onGrantItem(source, offlinePlayer, key, amount);
+        } else if(target instanceof PlayerSelectorArgumentResolver selector) {
+            List<Player> players = selector.resolve(source);
 
-        for (Player player : players) {
-            onGrantItem(source, player, item, amount);
+            for (Player player : players) {
+                onGrantItem(source, player, key, amount);
+            }
+        } else {
+            throw new IllegalArgumentException("target must be an OfflinePlayer or PlayerSelectorArgumentResolver");
         }
     }
 
-    // customitems:grantitem <offline-player> <item> [amount]
-    private void onGrantItem(CommandSourceStack source, OfflinePlayer target, CustomItem item, int amount) {
-        plugin.getItemManager().grantItem(target, item, amount);
+    private void onGrantItem(CommandSourceStack source, OfflinePlayer target, NamespacedKey key, int amount) {
+        CustomItem item;
+
+        if(Util.isVanillaItem(key)) {
+            item = Util.getVanillaCustomItem(key);
+            plugin.getItemManager().grantVanillaItem(target, key, amount);
+        } else {
+            plugin.getItemManager().grantItem(target, key, amount);
+            item = plugin.getItemManager().getItem(key);
+        }
 
         messagesHelper.send(source.getSender(), Message.builder("command.grant-success")
                 .prefixed()
@@ -237,17 +276,24 @@ public class CommandHandler {
 	}
 
     // customitems:revokeitem <player> <item>
-    private void onRevokeItem(CommandSourceStack source, PlayerSelectorArgumentResolver target, CustomItem item) throws CommandSyntaxException {
-        List<Player> players = target.resolve(source);
+    private void onRevokeItem(CommandSourceStack source, Object target, NamespacedKey key) throws CommandSyntaxException {
+        if(target instanceof OfflinePlayer offlinePlayer) {
+             onRevokeItem(source, offlinePlayer, key);
+        } else if(target instanceof PlayerSelectorArgumentResolver selector) {
+            List<Player> players = selector.resolve(source);
 
-        for (Player player : players) {
-            onRevokeItem(source, player, item);
+            for (Player player : players) {
+                onRevokeItem(source, player, key);
+            }
+        } else {
+            throw new IllegalArgumentException("target must be an OfflinePlayer or PlayerSelectorArgumentResolver");
         }
     }
 
     // customitems:revokeitem <offline-player> <item>
-    private void onRevokeItem(CommandSourceStack source, OfflinePlayer target, CustomItem item) {
-        int amount = plugin.getItemManager().revokeItem(target, item);
+    private void onRevokeItem(CommandSourceStack source, OfflinePlayer target, NamespacedKey key) {
+        int amount = plugin.getItemManager().revokeItem(target, key);
+        CustomItem item = Util.isVanillaItem(key) ? Util.getVanillaCustomItem(key) : plugin.getItemManager().getItem(key);
 
         if(amount > 0) {
             messagesHelper.send(source.getSender(), Message.builder("command.revoke-success")
