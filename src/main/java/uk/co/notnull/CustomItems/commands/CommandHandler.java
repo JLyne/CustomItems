@@ -24,6 +24,11 @@ import uk.co.notnull.messageshelper.MessagesHelper;
 import java.util.List;
 import java.util.logging.Level;
 
+import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.Commands.literal;
+import static io.papermc.paper.command.brigadier.argument.ArgumentTypes.players;
+
 
 @SuppressWarnings("UnstableApiUsage")
 public class CommandHandler {
@@ -33,7 +38,7 @@ public class CommandHandler {
     private final CustomItemArgumentType itemArgumentType;
     private final VanillaItemArgumentType vanillaItemArgumentType;
     private final LootPoolArgumentType lootPoolArgumentType;
-    private final IntegerArgumentType amountArgumentType = IntegerArgumentType.integer(0, 6400);
+    private final IntegerArgumentType amountArgumentType = integer(0, 6400);
     private final OfflinePlayerArgumentType offlinePlayerArgumentType;
 
     public CommandHandler(CustomItemsImpl plugin, Commands commandManager) {
@@ -53,15 +58,15 @@ public class CommandHandler {
     }
 
     private LiteralCommandNode<CommandSourceStack> createGiveItem() {
-        return Commands.literal("giveitem")
+        return literal("giveitem")
                 .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission("customitems.give"))
-                .then(Commands.argument("player", ArgumentTypes.players())
-                              .then(Commands.argument("item", itemArgumentType).executes(ctx -> {
+                .then(argument("player", players())
+                              .then(argument("item", itemArgumentType).executes(ctx -> {
                                   onGiveItem(ctx.getSource(),
                                              ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
                                              ctx.getArgument("item", NamespacedKey.class), 1);
                                   return Command.SINGLE_SUCCESS;
-                              }).then(Commands.argument("amount", amountArgumentType).executes(ctx -> {
+                              }).then(argument("amount", amountArgumentType).executes(ctx -> {
                                   onGiveItem(ctx.getSource(),
                                              ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
                                              ctx.getArgument("item", NamespacedKey.class),
@@ -91,36 +96,36 @@ public class CommandHandler {
 
         // customitems:grantitem <player>
         RequiredArgumentBuilder<CommandSourceStack, PlayerSelectorArgumentResolver> onlinePlayer =
-                Commands.argument("player", ArgumentTypes.players())
+                argument("player", players())
                         // customitems:grantitem <player> <item> [amount]
-                        .then(Commands.argument("item", itemArgumentType)
+                        .then(argument("item", itemArgumentType)
                                       .executes(noAmountExecutor)
-                                      .then(Commands.argument("amount", amountArgumentType)
+                                      .then(argument("amount", amountArgumentType)
                                                     .executes(withAmountExecutor)))
                         // customitems:grantitem <player> vanilla <item> [amount]
-                        .then(Commands.literal("vanilla")
-                                      .then(Commands.argument("item", vanillaItemArgumentType)
+                        .then(literal("vanilla")
+                                      .then(argument("item", vanillaItemArgumentType)
                                                     .executes(noAmountExecutor)
-                                                    .then(Commands.argument("amount", amountArgumentType)
+                                                    .then(argument("amount", amountArgumentType)
                                                                   .executes(withAmountExecutor))));
 
         // customitems:grantitem offline <player>
         LiteralArgumentBuilder<CommandSourceStack> offlinePlayer =
-                Commands.literal("offline").then(
-                    Commands.argument("player", offlinePlayerArgumentType)
+                literal("offline").then(
+                    argument("player", offlinePlayerArgumentType)
                             // customitems:grantitem offline <player> <item> [amount]
-                            .then(Commands.argument("item", itemArgumentType)
+                            .then(argument("item", itemArgumentType)
                                           .executes(noAmountExecutor)
-                                          .then(Commands.argument("amount", amountArgumentType)
+                                          .then(argument("amount", amountArgumentType)
                                                         .executes(withAmountExecutor)))
                             // customitems:grantitem offline <player> vanilla <item> [amount]
-                            .then(Commands.literal("vanilla")
-                                          .then(Commands.argument("item", vanillaItemArgumentType)
+                            .then(literal("vanilla")
+                                          .then(argument("item", vanillaItemArgumentType)
                                                         .executes(noAmountExecutor)
-                                                        .then(Commands.argument("amount", amountArgumentType)
+                                                        .then(argument("amount", amountArgumentType)
                                                                       .executes(withAmountExecutor)))));
 
-        return Commands.literal("grantitem")
+        return literal("grantitem")
                 .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission("customitems.grant"))
                 .then(onlinePlayer)
                 .then(offlinePlayer)
@@ -128,10 +133,10 @@ public class CommandHandler {
     }
 
     private LiteralCommandNode<CommandSourceStack> createGivePool() {
-        return Commands.literal("givepool")
+        return literal("givepool")
                 .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission("customitems.givepool"))
-                .then(Commands.argument("player", ArgumentTypes.players())
-                              .then(Commands.argument("pool", lootPoolArgumentType).executes(ctx -> {
+                .then(argument("player", players())
+                              .then(argument("pool", lootPoolArgumentType).executes(ctx -> {
                                   onGivePool(ctx.getSource(),
                                              ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
                                              ctx.getArgument("pool", LootPool.class));
@@ -151,26 +156,26 @@ public class CommandHandler {
 
         // customitems:revokeitem <player>
         RequiredArgumentBuilder<CommandSourceStack, PlayerSelectorArgumentResolver> onlinePlayer =
-                Commands.argument("player", ArgumentTypes.players())
+                argument("player", players())
                         // customitems:grantitem <player> <item>
-                        .then(Commands.argument("item", itemArgumentType).executes(executor))
+                        .then(argument("item", itemArgumentType).executes(executor))
                         // customitems:grantitem <player> vanilla <item>
-                        .then(Commands.literal("vanilla")
-                                      .then(Commands.argument("item", vanillaItemArgumentType)
+                        .then(literal("vanilla")
+                                      .then(argument("item", vanillaItemArgumentType)
                                                     .executes(executor)));
 
         // customitems:revokeitem offline <player>
         LiteralArgumentBuilder<CommandSourceStack> offlinePlayer =
-                Commands.literal("offline").then(
-                    Commands.argument("player", offlinePlayerArgumentType)
+                literal("offline").then(
+                    argument("player", offlinePlayerArgumentType)
                             // customitems:revokeitem offline <player> <item>
-                            .then(Commands.argument("item", itemArgumentType).executes(executor))
+                            .then(argument("item", itemArgumentType).executes(executor))
                             // customitems:grantitem offline <player> vanilla <item>
-                            .then(Commands.literal("vanilla")
-                                          .then(Commands.argument("item", vanillaItemArgumentType)
+                            .then(literal("vanilla")
+                                          .then(argument("item", vanillaItemArgumentType)
                                                         .executes(executor))));
 
-        return Commands.literal("revokeitem")
+        return literal("revokeitem")
                 .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission("customitems.revoke"))
                 .then(onlinePlayer)
                 .then(offlinePlayer)
@@ -178,19 +183,19 @@ public class CommandHandler {
     }
 
     private LiteralCommandNode<CommandSourceStack> createViewUnclaimed() {
-        return Commands.literal("viewunclaimed")
+        return literal("viewunclaimed")
                 .requires(commandSourceStack ->
                                   commandSourceStack.getSender() instanceof Player
                                           && commandSourceStack.getSender().hasPermission("customitems.view"))
                 // customitems:viewunclaimed <player>
-                .then(Commands.argument("player", ArgumentTypes.player()).executes(ctx -> {
+                .then(argument("player", ArgumentTypes.player()).executes(ctx -> {
                     onViewUnclaimed(ctx.getSource(),
                                     ctx.getArgument("player", PlayerSelectorArgumentResolver.class));
                     return Command.SINGLE_SUCCESS;
                 }))
                 // customitems:viewunclaimed offline <offline-player>
-                .then(Commands.literal("offline")
-                              .then(Commands.argument("offline-player", offlinePlayerArgumentType).executes(ctx -> {
+                .then(literal("offline")
+                              .then(argument("offline-player", offlinePlayerArgumentType).executes(ctx -> {
                                   onViewUnclaimed(ctx.getSource(),
                                                   ctx.getArgument("offline-player", OfflinePlayer.class));
                                   return Command.SINGLE_SUCCESS;
@@ -199,7 +204,7 @@ public class CommandHandler {
     }
 
     private LiteralCommandNode<CommandSourceStack> createReload() {
-        return Commands.literal("reload")
+        return literal("reload")
                 .requires(commandSourceStack ->
                                   commandSourceStack.getSender().hasPermission("customitems.reload"))
                 .executes(ctx -> {
