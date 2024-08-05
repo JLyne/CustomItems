@@ -24,11 +24,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 
 public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener {
+public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener {
     private static CustomItemsImpl instance;
     ItemManagerImpl itemManager;
     LootManagerImpl lootManager;
     ChestManager chestManager;
-    MessagesHelper messagesHelper = MessagesHelper.getInstance();
+    MessagesHelper messagesHelper = MessagesHelper.getInstance(this);
 
     @Override
     public void onEnable() {
