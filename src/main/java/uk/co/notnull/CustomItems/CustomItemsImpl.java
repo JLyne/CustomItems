@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-public class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener {
+@SuppressWarnings("UnstableApiUsage")
 public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener {
     private static CustomItemsImpl instance;
     ItemManagerImpl itemManager;

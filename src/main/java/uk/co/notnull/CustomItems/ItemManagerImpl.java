@@ -17,7 +17,7 @@ import uk.co.notnull.CustomItems.api.ItemManager;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.CreationReason;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
-import uk.co.notnull.CustomItems.api.items.CustomItemProvider;
+import uk.co.notnull.CustomItems.api.items.provider.CustomItemProvider;
 import uk.co.notnull.CustomItems.items.ConfigCustomItem;
 import uk.co.notnull.CustomItems.items.CreationContextImpl;
 import uk.co.notnull.CustomItems.loot.LootManagerImpl;

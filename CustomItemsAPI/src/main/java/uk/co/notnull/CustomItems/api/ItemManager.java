@@ -6,13 +6,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
-import uk.co.notnull.CustomItems.api.items.CustomItemProvider;
+import uk.co.notnull.CustomItems.api.items.provider.CustomItemProvider;
 
 import java.util.Set;
 
 @SuppressWarnings("unused")
 public interface ItemManager {
+	@Deprecated(forRemoval = true)
+	default void registerProvider(uk.co.notnull.CustomItems.api.items.CustomItemProvider provider) {
+		registerProvider((CustomItemProvider) provider);
+	}
+
 	void registerProvider(CustomItemProvider provider);
+
+	@Deprecated(forRemoval = true)
+	default void unregisterProvider(uk.co.notnull.CustomItems.api.items.CustomItemProvider provider) {
+		unregisterProvider((CustomItemProvider) provider);
+	}
 
 	void unregisterProvider(CustomItemProvider provider);
 

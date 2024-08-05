@@ -5,7 +5,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public abstract class CustomItemProvider {
+@Deprecated(forRemoval = true)
+public abstract class CustomItemProvider implements uk.co.notnull.CustomItems.api.items.provider.CustomItemProvider {
 	public abstract List<CustomItem> provideItems();
 	public abstract @Nullable CustomItem identifyItem(ItemStack item);
 }
