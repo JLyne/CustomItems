@@ -36,13 +36,19 @@ allprojects {
 dependencies {
     implementation project(':CustomItemsAPI')
 
-    compileOnly 'uk.co.notnull:MessagesHelper-paper:1.1-SNAPSHOT'
+    compileOnly messagesHelperDependency
     compileOnly 'org.jetbrains:annotations:24.0.1'
     compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
+
+task processSource(type: Sync) {
+    from sourceSets.main.java
+    filter(ReplaceTokens, tokens: [('messagesHelperDependency'): messagesHelperDependency])
+    into "${layout.buildDirectory.get()}/src"
+}
 
 tasks {
     processResources {
@@ -56,6 +62,13 @@ tasks {
                     }
             }
         }
+    }
+
+    compileJava {
+        dependsOn(clean)
+        source = processSource.outputs
+        options.compilerArgs += ["-Xlint:all", "-Xlint:-processing"]
+        options.encoding = 'UTF-8'
     }
 
     // Include API classes in jar
