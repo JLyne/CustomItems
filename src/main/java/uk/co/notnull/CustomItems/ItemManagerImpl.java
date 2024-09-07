@@ -78,10 +78,15 @@ public final class ItemManagerImpl implements ItemManager {
 				return;
 			}
 
-			Material material = Material.getMaterial(materialName);
+			Material material = Material.matchMaterial(materialName);
 
 			if(material == null) {
 				plugin.getLogger().warning("Material " + materialName + " specified for " + id + " does not exist, skipping.");
+				return;
+			}
+
+			if(!material.isItem()) {
+				plugin.getLogger().warning("Material " + materialName + " specified for " + id + " is not an item. Skipping.");
 				return;
 			}
 
