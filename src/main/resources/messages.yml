@@ -6,6 +6,8 @@ join:
   unclaimed-items-available: |-
     <bold><green>Unclaimed Items > <reset><light_purple>You have <green><amount><light_purple> unclaimed items to collect.
     Please visit the Item Distribution Point at spawn.
+gui:
+  unclaimed-title: 'Unclaimed items'
 command:
   invalid-item: <input> is not a valid item
   invalid-pool: <input> is not a valid loot pool

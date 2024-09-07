@@ -1,5 +1,6 @@
 package uk.co.notnull.CustomItems;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
@@ -13,12 +14,13 @@ import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.CreationReason;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
 import uk.co.notnull.CustomItems.items.CreationContextImpl;
+import uk.co.notnull.messageshelper.Message;
 
 import java.util.*;
 
 public final class ClaimGui implements InventoryHolder, Listener {
 	private final CustomItemsImpl plugin;
-	private final Inventory inventory = Bukkit.getServer().createInventory(this, InventoryType.CHEST);
+	private final Inventory inventory;
 	private final Map<ItemStack, NamespacedKey> itemMapping = new HashMap<>();
 	private final List<ItemStack> initialContents = new ArrayList<>();
 	private final ItemManagerImpl itemManager;
@@ -28,6 +30,9 @@ public final class ClaimGui implements InventoryHolder, Listener {
 		this.player = player;
 		this.plugin = plugin;
 		itemManager = plugin.getItemManager();
+
+		Component title = plugin.messagesHelper.getComponent(Message.builder("gui.unclaimed-title").build());
+		inventory = Bukkit.getServer().createInventory(this, InventoryType.CHEST, title);
 
 		updateContents();
 	}
