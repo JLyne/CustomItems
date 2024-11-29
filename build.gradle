@@ -37,8 +37,8 @@ dependencies {
     implementation project(':CustomItemsAPI')
 
     compileOnly messagesHelperDependency
-    compileOnly 'org.jetbrains:annotations:24.0.1'
-    compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
+    compileOnly 'org.jetbrains:annotations:26.0.1'
+    compileOnly "io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT"
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_21
