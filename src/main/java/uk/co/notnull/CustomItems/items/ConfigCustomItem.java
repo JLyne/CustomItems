@@ -84,6 +84,8 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 			Component replacedName = itemName.replaceText(replacementConfig);
 
 			components.put(DataComponentTypes.ITEM_NAME, replacedName);
+		} else {
+			components.put(DataComponentTypes.ITEM_NAME, displayName);
 		}
 
 		components.forEach((type, value) -> {
