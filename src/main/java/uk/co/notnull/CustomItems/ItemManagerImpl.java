@@ -1,5 +1,6 @@
 package uk.co.notnull.CustomItems;
 
+import io.papermc.paper.datacomponent.DataComponentType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -18,11 +19,11 @@ import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.CreationReason;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
 import uk.co.notnull.CustomItems.api.items.provider.CustomItemProvider;
+import uk.co.notnull.CustomItems.datacomponents.DataComponentParser;
 import uk.co.notnull.CustomItems.items.ConfigCustomItem;
 import uk.co.notnull.CustomItems.items.CreationContextImpl;
 import uk.co.notnull.CustomItems.loot.LootManagerImpl;
 import uk.co.notnull.messageshelper.Message;
-import uk.co.notnull.messageshelper.MessagesHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,14 +68,25 @@ public final class ItemManagerImpl implements ItemManager {
 
 		config.getKeys(false).forEach(id -> {
 			String materialName = config.getString(id + ".material");
-			int model = config.getInt(id + ".custom-model-data", 0);
-			Component name = MessagesHelper.miniMessage.deserialize(config.getString(id + ".name", ""));
-			List<String> lore = config.getStringList(id + ".lore");
-			boolean wearable = config.getBoolean(id + ".wearable", false);
+			Component name = config.getRichMessage(id + ".name");
+			ConfigurationSection componentConfig = config.getConfigurationSection(id + ".components");
 			boolean stamp = config.getBoolean(id + ".stamp", false);
+			Map<DataComponentType, Object> components;
+
+			try {
+				components = DataComponentParser.parse(componentConfig, id);
+			} catch(RuntimeException e) {
+				plugin.getLogger().warning("Failed to parse components for " + id + ": " + e.getMessage());
+				return;
+			}
 
 			if(materialName == null) {
 				plugin.getLogger().warning("No material specified for " + id + ", skipping.");
+				return;
+			}
+
+			if(name == null) {
+				plugin.getLogger().warning("No name specified for " + id + ", skipping.");
 				return;
 			}
 
@@ -95,7 +107,7 @@ public final class ItemManagerImpl implements ItemManager {
 				return;
 			}
 
-			addItem(new ConfigCustomItem(id, material, model, name, lore, wearable, stamp));
+			addItem(new ConfigCustomItem(id, material, name, components, stamp));
 		});
 	}
 
@@ -107,6 +119,8 @@ public final class ItemManagerImpl implements ItemManager {
 		if(!(item instanceof ConfigCustomItem)) {
 			externalItems.put(item.getId(), item);
 		}
+
+		plugin.getLogger().info("Registered item " + item.getId());
 
 		items.put(item.getId(), item);
 		lootManager.addItem(item);

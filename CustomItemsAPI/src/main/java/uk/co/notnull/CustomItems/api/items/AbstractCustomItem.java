@@ -4,15 +4,17 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
+
 public abstract class AbstractCustomItem implements CustomItem {
 	protected final NamespacedKey id;
 	protected final Component displayName;
-	protected final boolean wearable;
 	protected final boolean stamp;
 
-	public AbstractCustomItem(NamespacedKey id, Component displayName, boolean wearable, boolean stamp) {
+	public AbstractCustomItem(NamespacedKey id, Component displayName, boolean stamp) {
+		Objects.requireNonNull(id, "id cannot be null");
+		Objects.requireNonNull(displayName, "name cannot be null");
 		this.id = id;
-		this.wearable = wearable;
 		this.displayName = displayName;
 		this.stamp = stamp;
 	}
@@ -29,8 +31,9 @@ public abstract class AbstractCustomItem implements CustomItem {
 		return stamp;
 	}
 
+	@Deprecated(forRemoval = true)
 	public boolean isWearable() {
-		return wearable;
+		return false;
 	}
 
 	public ItemStack createItem(CreationContext context) {
@@ -43,7 +46,6 @@ public abstract class AbstractCustomItem implements CustomItem {
 	public String toString() {
 		return "AbstractCustomItem{" +
 				"id='" + id + '\'' +
-				", wearable=" + wearable +
 				", stamp=" + stamp +
 				'}';
 	}

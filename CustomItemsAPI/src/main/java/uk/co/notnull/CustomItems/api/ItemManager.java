@@ -46,9 +46,11 @@ public interface ItemManager {
 
 	int revokeItem(OfflinePlayer player, CustomItem item);
 
+	@Deprecated(forRemoval = true)
     Set<NamespacedKey> getItemIds();
 
 	boolean isValidId(NamespacedKey id);
 
+	@Deprecated(forRemoval = true)
 	boolean isWearable(ItemStack item);
 }

@@ -16,6 +16,7 @@ public interface CustomItem {
 
 	boolean isStamp();
 
+	@Deprecated(forRemoval = true)
 	boolean isWearable();
 
 	ItemStack createItem(CreationContext context);

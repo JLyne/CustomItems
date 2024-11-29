@@ -14,7 +14,6 @@ import uk.co.notnull.CustomItems.commands.CommandHandler;
 import uk.co.notnull.CustomItems.listeners.Inventories;
 import uk.co.notnull.CustomItems.listeners.Join;
 import uk.co.notnull.CustomItems.listeners.Loot;
-import uk.co.notnull.CustomItems.listeners.Wearables;
 import uk.co.notnull.CustomItems.loot.LootManagerImpl;
 import uk.co.notnull.messageshelper.MessagesHelper;
 
@@ -41,7 +40,6 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
         chestManager = new ChestManager(this);
         itemManager = new ItemManagerImpl(this, lootManager, chestManager);
 		getServer().getPluginManager().registerEvents(new Inventories(this), this);
-		getServer().getPluginManager().registerEvents(new Wearables(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
 		getServer().getPluginManager().registerEvents(new Loot(this), this);
 

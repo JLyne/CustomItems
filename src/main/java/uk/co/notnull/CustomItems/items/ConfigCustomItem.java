@@ -1,11 +1,12 @@
 package uk.co.notnull.CustomItems.items;
 
+import io.papermc.paper.datacomponent.DataComponentType;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
@@ -14,43 +15,22 @@ import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.AbstractCustomItem;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
+@SuppressWarnings("UnstableApiUsage")
 public final class ConfigCustomItem extends AbstractCustomItem {
 	private final Material item;
-	private final int model;
-	private final List<String> lore;
-	private static final MiniMessage miniMessage = MiniMessage.builder().build();
+	private final Map<DataComponentType, Object> components;
 
-	public ConfigCustomItem(String id, Material item, int model, Component name, List<String> lore, boolean wearable, boolean stamp) {
-		super(new NamespacedKey(CustomItemsImpl.getInstance(), id), name, wearable, stamp);
+	public ConfigCustomItem(String id, Material item, Component name, Map<DataComponentType, Object> components, boolean stamp) {
+		super(new NamespacedKey(CustomItemsImpl.getInstance(), id), name, stamp);
 		this.item = item;
-		this.model = model;
-		this.lore = lore;
+		this.components = components;
 	}
 
 	public Material getItem() {
 		return item;
-	}
-
-	public int getModel() {
-		return model;
-	}
-
-	public List<Component> getLore() {
-		return lore.stream().map(miniMessage::deserialize).collect(Collectors.toList());
-	}
-
-	public List<Component> getLore(OfflinePlayer player) {
-		if(player != null && player.getName() != null) {
-			return lore.stream().map(line -> {
-				line = line.replace("<player>", player.getName());
-				return miniMessage.deserialize(line);
-			}).collect(Collectors.toList());
-		} else {
-			return getLore();
-		}
 	}
 
 	@Override
@@ -59,8 +39,6 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 				"id='" + id + '\'' +
 				", displayName='" + displayName + '\'' +
 				", item=" + item +
-				", model=" + model +
-				", wearable=" + wearable +
 				", stamp=" + stamp +
 				'}';
 	}
@@ -70,31 +48,56 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ConfigCustomItem that = (ConfigCustomItem) o;
-		return getModel() == that.getModel() && isWearable() == that.isWearable() && isStamp() == that.isStamp() && Objects.equals(
-				getId(), that.getId()) && getItem() == that.getItem() &&
-				Objects.equals(getDisplayName(), that.getDisplayName()) && Objects.equals(
-				getLore(), that.getLore());
+		return isStamp() == that.isStamp() && Objects.equals(
+						getId(), that.getId()) && getItem() == that.getItem() &&
+						Objects.equals(getDisplayName(), that.getDisplayName());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getId(), getItem(), getModel(), getDisplayName(), getLore(), isWearable(), isStamp());
+		return Objects.hash(getId(), getItem(), getDisplayName(), isStamp());
 	}
 
 	@Override
 	public ItemStack createItem(CreationContext context, int amount) {
 		ItemStack item = new ItemStack(getItem(), amount);
 		ItemMeta meta = item.getItemMeta();
-		meta.setUnbreakable(true);
-
-		meta.setCustomModelData(getModel());
-
 		ItemDataManager.populateItemData(meta.getPersistentDataContainer(), this, context.player());
-
-		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-		meta.displayName(getDisplayName());
-		meta.lore(getLore(context.player()));
 		item.setItemMeta(meta);
+
+		TextReplacementConfig replacementConfig = TextReplacementConfig.builder()
+				.matchLiteral("<player>")
+				.replacement(context.player().getName())
+				.build();
+
+		if(components.containsKey(DataComponentTypes.LORE)) {
+			ItemLore lore = (ItemLore) components.get(DataComponentTypes.LORE);
+			List<Component> replacedLines = lore.lines().stream()
+					.map(l -> l.replaceText(replacementConfig)).toList();
+			ItemLore replaced = ItemLore.lore().lines(replacedLines).build();
+
+			components.put(DataComponentTypes.LORE, replaced);
+		}
+
+		if(components.containsKey(DataComponentTypes.ITEM_NAME)) {
+			Component itemName = (Component) components.get(DataComponentTypes.ITEM_NAME);
+			Component replacedName = itemName.replaceText(replacementConfig);
+
+			components.put(DataComponentTypes.ITEM_NAME, replacedName);
+		}
+
+		components.forEach((type, value) -> {
+			if(type instanceof DataComponentType.Valued valued) {
+				item.setData(valued, value);
+			} else if (type instanceof DataComponentType.NonValued nonvalued) {
+				if((boolean) value) {
+					item.setData(nonvalued);
+				} else {
+					item.unsetData(nonvalued); //TODO: Useful?
+				}
+			}
+		});
+
 		item.setAmount(Math.min(item.getMaxStackSize(), amount));
 
 		return item;

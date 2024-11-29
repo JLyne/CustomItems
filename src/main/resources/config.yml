@@ -5,29 +5,33 @@ claimChestLocation:
   z: -75
 items:
   detailing_participant:
-    item: FEATHER
-    model: 1
-    name: 'Detailing Contest Participant'
-    lore:
-      - Awarded to <player> for
-      - Participating in the Chunk Detailing
-      - Contest
+    material: "minecraft:feather"
+    components:
+      custom_model_data: 1
+      item_name: 'Detailing Contest Participant'
+      lore:
+        - Awarded to <player> for
+        - Participating in the Chunk Detailing
+        - Contest
   detailing_winner:
-    item: FEATHER
-    model: 2
-    name: 'Detailing Contest Winner'
-    lore:
-      - Awarded to <player> for
-      - submitting a winning entry
-      - in the Chunk Detailing Contest
+    material: "minecraft:feather"
+    components:
+      custom_model_data: 2
+      item_name: 'Detailing Contest Winner'
+      lore:
+        - Awarded to <player> for
+        - submitting a winning entry
+        - in the Chunk Detailing Contest
   cano3:
-    item: FEATHER
-    model: 1037
-    name: 'Cano3'
-    wearable: true
-    lore:
-      - By whoever made cano3
+    material: "minecraft:feather"
     stamp: false
+    components:
+      custom_model_data: 1037
+      item_name: 'Cano3'
+      lore:
+        - By whoever made cano3
+      equippable:
+        slot: head
 
 loot:
   emotes:

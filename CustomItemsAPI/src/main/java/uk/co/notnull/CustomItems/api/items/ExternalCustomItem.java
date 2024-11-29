@@ -9,8 +9,14 @@ import java.util.function.BiFunction;
 final class ExternalCustomItem extends AbstractCustomItem {
 	private final BiFunction<CreationContext, Integer, ItemStack> generator;
 
+	public ExternalCustomItem(NamespacedKey id, Component displayName, BiFunction<CreationContext, Integer, ItemStack> generator, boolean stamp) {
+		super(id, displayName, stamp);
+		this.generator = generator;
+	}
+
+	@Deprecated(forRemoval = true)
 	public ExternalCustomItem(NamespacedKey id, Component displayName, BiFunction<CreationContext, Integer, ItemStack> generator, boolean wearable, boolean stamp) {
-		super(id, displayName, wearable, stamp);
+		super(id, displayName, stamp);
 		this.generator = generator;
 	}
 

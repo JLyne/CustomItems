@@ -12,7 +12,7 @@ public final class VanillaCustomItem extends AbstractCustomItem {
 	private final Material item;
 
 	public VanillaCustomItem(Material item) {
-		super(item.getKey(), Component.translatable(item.translationKey()), false, false);
+		super(item.getKey(), Component.translatable(item.translationKey()), false);
 		this.item = item;
 	}
 
