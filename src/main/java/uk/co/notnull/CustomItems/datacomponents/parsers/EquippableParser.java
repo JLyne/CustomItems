@@ -38,7 +38,7 @@ public class EquippableParser extends DataComponentTypeParser<ConfigurationSecti
 		}
 
 		if(model != null) {
-			builder.model(model);
+			builder.assetId(model);
 		}
 
 		if(dispensable != null) {

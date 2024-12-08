@@ -1,13 +1,11 @@
 package uk.co.notnull.CustomItems.datacomponents.parsers.simple;
 
 import org.jetbrains.annotations.NotNull;
-import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.datacomponents.parsers.DataComponentTypeParser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
-import java.util.logging.Level;
 
 public class EnumParser<T extends Enum> extends DataComponentTypeParser<String, T> {
 	private final Class<T> clazz;

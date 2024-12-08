@@ -2,7 +2,7 @@ name: CustomItems
 version: @project.version@
 author: Jim (AnEnragedPigeon)
 description: Custom Items
-api-version: '1.21'
+api-version: '1.21.4'
 
 main: uk.co.notnull.CustomItems.CustomItemsImpl
 loader: uk.co.notnull.CustomItems.CustomItemsLoader
