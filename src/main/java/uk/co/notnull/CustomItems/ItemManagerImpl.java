@@ -27,12 +27,7 @@ import uk.co.notnull.messageshelper.Message;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class ItemManagerImpl implements ItemManager {
@@ -244,10 +239,10 @@ public final class ItemManagerImpl implements ItemManager {
 			throw new IllegalArgumentException("Provider already registered");
 		}
 
-		List<CustomItem> items = provider.provideItems();
+		Collection<CustomItem> items = provider.provideItems();
 		items.forEach(this::addItem);
 
-		providers.put(provider, items);
+		providers.put(provider, new ArrayList<>(items));
 	}
 
 	public void unregisterProvider(CustomItemProvider provider) {
