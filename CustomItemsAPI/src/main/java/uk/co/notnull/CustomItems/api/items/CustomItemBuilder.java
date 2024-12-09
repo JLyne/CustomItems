@@ -25,10 +25,16 @@ public final class CustomItemBuilder {
 	}
 
 	public interface BuildStep {
-		BuildStep wearable();
-		BuildStep wearable(boolean wearable);
+		@Deprecated(forRemoval = true)
+		default BuildStep wearable() {
+			return this;
+		}
+		@Deprecated(forRemoval = true)
+		default BuildStep wearable(boolean wearable) {
+			return this;
+		}
 		BuildStep stamp();
-		BuildStep stamp(boolean wearable);
+		BuildStep stamp(boolean stamp);
 		CustomItem build();
 	}
 
@@ -36,11 +42,10 @@ public final class CustomItemBuilder {
 		private NamespacedKey id;
 		private Component displayName;
 		private BiFunction<CreationContext, Integer, ItemStack> generator;
-		private boolean wearable = false;
 		private boolean stamp = false;
 
 		public CustomItem build() {
-			return new ExternalCustomItem(id, displayName, generator, wearable, stamp);
+			return new ExternalCustomItem(id, displayName, generator, stamp);
 		}
 
 		public DisplayNameStep id(NamespacedKey id) {
@@ -55,16 +60,6 @@ public final class CustomItemBuilder {
 
 		public BuildStep generator(BiFunction<CreationContext, Integer, ItemStack> generator) {
 			this.generator = generator;
-			return this;
-		}
-
-		public BuildStep wearable() {
-			this.wearable = true;
-			return this;
-		}
-
-		public BuildStep wearable(boolean wearable) {
-			this.wearable = wearable;
 			return this;
 		}
 

@@ -52,5 +52,7 @@ public interface ItemManager {
 	boolean isValidId(NamespacedKey id);
 
 	@Deprecated(forRemoval = true)
-	boolean isWearable(ItemStack item);
+	default boolean isWearable(ItemStack item) {
+		return false;
+	}
 }

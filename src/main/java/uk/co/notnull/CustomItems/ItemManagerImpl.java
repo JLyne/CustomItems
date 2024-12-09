@@ -363,10 +363,4 @@ public final class ItemManagerImpl implements ItemManager {
 			return false;
 		}
 	}
-
-	public boolean isWearable(ItemStack item) {
-		CustomItem customItem = getItem(item);
-
-		return customItem != null && customItem.isWearable();
-	}
 }

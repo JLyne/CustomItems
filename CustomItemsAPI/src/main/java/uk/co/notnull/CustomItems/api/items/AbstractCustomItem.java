@@ -31,11 +31,6 @@ public abstract class AbstractCustomItem implements CustomItem {
 		return stamp;
 	}
 
-	@Deprecated(forRemoval = true)
-	public boolean isWearable() {
-		return false;
-	}
-
 	public ItemStack createItem(CreationContext context) {
 		return createItem(context, 1);
 	}
