@@ -23,7 +23,7 @@ allprojects {
             url 'https://repo.not-null.co.uk/snapshots/'
         }
         maven {
-            url "https://papermc.io/repo/repository/maven-public/"
+            url "https://repo.papermc.io/repository/maven-public/"
         }
     }
 
