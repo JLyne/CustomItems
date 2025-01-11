@@ -225,7 +225,7 @@ public class CommandHandler {
                     .prefixed()
                     .replacement("player", player.displayName())
                     .replacement("amount", String.valueOf(amount))
-                    .replacement("item", item.getDisplayName())
+                    .replacement("item", item.getDisplayName()) //TODO: Replace with item preview
                     .build());
         }
     }
