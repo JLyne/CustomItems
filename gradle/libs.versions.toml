@@ -1,6 +1,6 @@
 [versions]
 messagesHelper = "1.1-SNAPSHOT"
-pluginYmlPaper = "0.6.0"
+pluginYmlPaper = "0.7.1"
 paperApi = "1.21.4-R0.1-SNAPSHOT"
 jetbrainsAnnotations = "26.0.1"
 
@@ -10,4 +10,4 @@ paperApi = { group = "io.papermc.paper", name = "paper-api", version.ref = "pape
 jetbrainsAnnoations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsAnnotations" }
 
 [plugins]
-pluginYmlPaper = { id = "net.minecrell.plugin-yml.paper", version.ref = "pluginYmlPaper" }
+pluginYmlPaper = { id = "de.eldoria.plugin-yml.paper", version.ref = "pluginYmlPaper" }
