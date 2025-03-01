@@ -1,5 +1,6 @@
 package uk.co.notnull.CustomItems;
 
+import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -22,7 +23,7 @@ public final class ItemDataManager {
 		}
 	}
 
-	public static NamespacedKey getItemId(PersistentDataContainer data) {
+	public static NamespacedKey getItemId(PersistentDataContainerView data) {
 		if(!data.has(customItemKey, PersistentDataType.STRING)) {
 			return null;
 		}

@@ -1,6 +1,7 @@
 package uk.co.notnull.CustomItems;
 
 import io.papermc.paper.datacomponent.DataComponentType;
+import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -11,8 +12,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.api.ItemManager;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
@@ -258,15 +257,12 @@ public final class ItemManagerImpl implements ItemManager {
 	}
 
 	public CustomItem getItem(ItemStack item) {
-		if(item == null || !item.hasItemMeta()) {
+		if(item == null) {
             return null;
         }
 
-        ItemMeta meta = item.getItemMeta();
-		PersistentDataContainer data = meta.getPersistentDataContainer();
-
-		ItemDataManager.updateItemData(data);
-		item.setItemMeta(meta);
+		item.editPersistentDataContainer(ItemDataManager::updateItemData);
+		PersistentDataContainerView data = item.getPersistentDataContainer();
 
 		NamespacedKey id = ItemDataManager.getItemId(data);
 

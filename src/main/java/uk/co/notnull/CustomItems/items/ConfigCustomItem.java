@@ -8,7 +8,6 @@ import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.ItemDataManager;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
@@ -61,9 +60,8 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 	@Override
 	public ItemStack createItem(CreationContext context, int amount) {
 		ItemStack item = new ItemStack(getItem(), amount);
-		ItemMeta meta = item.getItemMeta();
-		ItemDataManager.populateItemData(meta.getPersistentDataContainer(), this, context.player());
-		item.setItemMeta(meta);
+		item.editPersistentDataContainer(
+				data -> ItemDataManager.populateItemData(data, this, context.player()));
 
 		TextReplacementConfig replacementConfig = TextReplacementConfig.builder()
 				.matchLiteral("<player>")

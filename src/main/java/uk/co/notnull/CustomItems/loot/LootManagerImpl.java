@@ -1,12 +1,11 @@
 package uk.co.notnull.CustomItems.loot;
 
+import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.ItemDataManager;
@@ -75,7 +74,7 @@ public class LootManagerImpl implements LootManager {
 	}
 
 	public boolean isPlaceholder(ItemStack item) {
-        if(item == null || !item.hasItemMeta()) {
+        if(item == null) {
             return false;
         }
 
@@ -85,11 +84,8 @@ public class LootManagerImpl implements LootManager {
 			return false;
 		}
 
-        ItemMeta meta = item.getItemMeta();
-		PersistentDataContainer data = meta.getPersistentDataContainer();
-
-		ItemDataManager.updateItemData(data);
-		item.setItemMeta(meta);
+		item.editPersistentDataContainer(ItemDataManager::updateItemData);
+		PersistentDataContainerView data = item.getPersistentDataContainer();
 
 		return data.has(placeholderPool, PersistentDataType.STRING)
 				|| data.has(placeholderItem, PersistentDataType.STRING);
@@ -100,8 +96,7 @@ public class LootManagerImpl implements LootManager {
 			return null;
 		}
 
-		ItemMeta meta = item.getItemMeta();
-		PersistentDataContainer data = meta.getPersistentDataContainer();
+		PersistentDataContainerView data = item.getPersistentDataContainer();
 
 		if(data.has(placeholderPool, PersistentDataType.STRING)) {
 			return data.get(placeholderPool, PersistentDataType.STRING);
@@ -115,8 +110,7 @@ public class LootManagerImpl implements LootManager {
 			return null;
 		}
 
-		ItemMeta meta = placeholder.getItemMeta();
-		PersistentDataContainer data = meta.getPersistentDataContainer();
+		PersistentDataContainerView data = placeholder.getPersistentDataContainer();
 
 		if(data.has(placeholderPool, PersistentDataType.STRING)) {
 			String pool = data.get(placeholderPool, PersistentDataType.STRING);
