@@ -44,6 +44,8 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
         lootManager = new LootManagerImpl(this);
         chestManager = new ChestManager(this);
         itemManager = new ItemManagerImpl(this, lootManager, chestManager);
+
+        getServer().getPluginManager().registerEvents(this, this);
 		getServer().getPluginManager().registerEvents(new Inventories(this), this);
 		getServer().getPluginManager().registerEvents(new Join(this), this);
 		getServer().getPluginManager().registerEvents(new Loot(this), this);
