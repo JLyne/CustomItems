@@ -2,11 +2,11 @@ package uk.co.notnull.CustomItems;
 
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Nullable;
+import uk.co.notnull.CustomItems.api.items.CreationContext;
+import uk.co.notnull.CustomItems.api.items.CreationReason;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
 
 public final class ItemDataManager {
@@ -15,12 +15,12 @@ public final class ItemDataManager {
     private static final NamespacedKey dataVersion = new NamespacedKey("customitems", "version"); //Version of persistant data schema
 	private static final Integer currentVersion = 1;
 
-	public static void populateItemData(PersistentDataContainer data, CustomItem item, @Nullable OfflinePlayer granted) {
+	public static void populateItemData(PersistentDataContainer data, CustomItem item, CreationContext context) {
 		data.set(dataVersion, PersistentDataType.INTEGER, 1);
 		data.set(customItemKey, PersistentDataType.STRING, item.getId().getKey());
 
-		if(granted != null && item.isStamp()) {
-			data.set(grantedToKey, PersistentDataType.STRING, granted.getUniqueId().toString());
+		if(context.reason() != CreationReason.CREATIVE && item.isStamp()) {
+			data.set(grantedToKey, PersistentDataType.STRING, context.player().getUniqueId().toString());
 		}
 	}
 

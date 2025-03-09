@@ -10,6 +10,10 @@ public enum CreationReason {
 	 */
 	GRANTED,
 	/**
+	 * Item was created by a player in creative mode
+	 */
+	CREATIVE,
+	/**
 	 * Item is being generated as part of a loot table
 	 */
 	LOOT,

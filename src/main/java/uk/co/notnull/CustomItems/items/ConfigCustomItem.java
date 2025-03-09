@@ -7,11 +7,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.ItemDataManager;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.AbstractCustomItem;
+import uk.co.notnull.CustomItems.api.items.CreationReason;
 
 import java.util.Collections;
 import java.util.List;
@@ -66,14 +69,24 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 	}
 
 	@Override
-	public ItemStack createItem(CreationContext context, int amount) {
+	public ItemStack createItem(@NotNull CreationContext context, int amount) {
 		ItemStack item = new ItemStack(getItem(), amount);
 		item.editPersistentDataContainer(
-				data -> ItemDataManager.populateItemData(data, this, context.player()));
+				data -> ItemDataManager.populateItemData(data, this, context));
+
+		String name = "no one";
+
+		if(context.reason() != CreationReason.CREATIVE && context.player() != null) {
+			OfflinePlayer player = context.player();
+
+			if(player != null && player.getName() != null) {
+				name = player.getName();
+			}
+		}
 
 		TextReplacementConfig replacementConfig = TextReplacementConfig.builder()
 				.matchLiteral("<player>")
-				.replacement(context.player().getName())
+				.replacement(name)
 				.build();
 
 		if(components.containsKey(DataComponentTypes.LORE)) {
