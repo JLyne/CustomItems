@@ -13,19 +13,23 @@ import uk.co.notnull.CustomItems.ItemDataManager;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.AbstractCustomItem;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class ConfigCustomItem extends AbstractCustomItem {
 	private final Material item;
 	private final Map<DataComponentType, Object> components;
+	private final Set<DataComponentType> componentTypes;
 
 	public ConfigCustomItem(String id, Material item, Component name, Map<DataComponentType, Object> components, boolean stamp) {
 		super(new NamespacedKey(CustomItemsImpl.getInstance(), id), name, stamp);
 		this.item = item;
 		this.components = components;
+		this.componentTypes = Collections.unmodifiableSet(components.keySet());
 	}
 
 	public Material getItem() {
@@ -55,6 +59,10 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 	@Override
 	public int hashCode() {
 		return Objects.hash(getId(), getItem(), getDisplayName(), isStamp());
+	}
+
+	public Set<DataComponentType> getComponentTypes() {
+		return componentTypes;
 	}
 
 	@Override

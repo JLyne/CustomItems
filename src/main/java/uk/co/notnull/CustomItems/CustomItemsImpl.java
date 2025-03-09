@@ -5,12 +5,16 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import uk.co.notnull.CustomItems.api.CustomItems;
 import uk.co.notnull.CustomItems.commands.CommandHandler;
+import uk.co.notnull.CustomItems.creativeitemfilter.CreativeItemFilterHandler;
 import uk.co.notnull.CustomItems.listeners.Inventories;
 import uk.co.notnull.CustomItems.listeners.Join;
 import uk.co.notnull.CustomItems.listeners.Loot;
@@ -29,6 +33,7 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
     LootManagerImpl lootManager;
     ChestManager chestManager;
     MessagesHelper messagesHelper = MessagesHelper.getInstance(this);
+    private CreativeItemFilterHandler creativeItemFilterHandler;
 
     @Override
     public void onEnable() {
@@ -61,6 +66,24 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
     public void onDisable() {
         HandlerList.unregisterAll((JavaPlugin) this);
         getItemManager().saveUnclaimedItems();
+    }
+
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent event) {
+		if (event.getPlugin().getName().equals("CreativeItemFilter")) {
+			getLogger().info("Initialising CreativeItemFilter handler");
+			creativeItemFilterHandler = new CreativeItemFilterHandler(this);
+		}
+    }
+
+    @EventHandler
+    public void onPluginDisable(PluginDisableEvent event) {
+		if (event.getPlugin().getName().equals("CreativeItemFilter")) {
+			if (creativeItemFilterHandler != null) {
+				getLogger().info("Disabling CreativeItemFilter handler");
+				creativeItemFilterHandler = null;
+			}
+		}
     }
 
     public ItemManagerImpl getItemManager() {

@@ -3,11 +3,13 @@ messagesHelper = "1.1-SNAPSHOT"
 pluginYmlPaper = "0.7.1"
 paperApi = "1.21.4-R0.1-SNAPSHOT"
 jetbrainsAnnotations = "26.0.1"
+creativeItemFilter = "3.0-SNAPSHOT"
 
 [libraries]
 messagesHelper = { group = "uk.co.notnull", name= "MessagesHelper-paper", version.ref = "messagesHelper" }
 paperApi = { group = "io.papermc.paper", name = "paper-api", version.ref = "paperApi" }
 jetbrainsAnnoations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsAnnotations" }
+creativeItemFilter = { group = "org.hurricanegames", name = "CreativeItemFilter", version.ref = "creativeItemFilter" }
 
 [plugins]
 pluginYmlPaper = { id = "de.eldoria.plugin-yml.paper", version.ref = "pluginYmlPaper" }

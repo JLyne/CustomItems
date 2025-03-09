@@ -3,6 +3,7 @@ package uk.co.notnull.CustomItems;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +22,25 @@ public final class ItemDataManager {
 		if(granted != null && item.isStamp()) {
 			data.set(grantedToKey, PersistentDataType.STRING, granted.getUniqueId().toString());
 		}
+	}
+
+	@SuppressWarnings("DataFlowIssue")
+	public static void copyItemData(ItemStack oldItem, ItemStack newItem) {
+		PersistentDataContainerView oldData = oldItem.getItemMeta().getPersistentDataContainer();
+
+		newItem.editPersistentDataContainer(pdc -> {
+			if(oldData.has(customItemKey, PersistentDataType.STRING)) {
+				pdc.set(customItemKey, PersistentDataType.STRING, oldData.get(customItemKey, PersistentDataType.STRING));
+			}
+
+			if(oldData.has(dataVersion, PersistentDataType.INTEGER)) {
+				pdc.set(dataVersion, PersistentDataType.INTEGER, oldData.get(dataVersion, PersistentDataType.INTEGER));
+			}
+
+			if(oldData.has(grantedToKey, PersistentDataType.STRING)) {
+				pdc.set(grantedToKey, PersistentDataType.STRING, oldData.get(grantedToKey, PersistentDataType.STRING));
+			}
+		});
 	}
 
 	public static NamespacedKey getItemId(PersistentDataContainerView data) {

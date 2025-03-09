@@ -1,4 +1,5 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
     java
@@ -31,6 +32,7 @@ dependencies {
 
     compileOnly(libs.paperApi)
     compileOnly(libs.jetbrainsAnnoations)
+    compileOnly(libs.creativeItemFilter)
     paperLibrary(libs.messagesHelper)
 }
 
@@ -78,6 +80,13 @@ paper {
         register("customitems.view") {
             description = "Access to /viewunclaimed"
             default = BukkitPluginDescription.Permission.Default.OP
+        }
+    }
+
+    serverDependencies {
+        register("CreativeItemFilter") {
+            required = false
+            load = PaperPluginDescription.RelativeLoadOrder.AFTER
         }
     }
 }
