@@ -13,8 +13,8 @@ import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryKeySetPar
 
 @SuppressWarnings("UnstableApiUsage")
 public class EquippableParser extends DataComponentTypeParser<ConfigurationSection, Equippable> {
-	EquipmentSlotGroupParser slotGroupParser = new EquipmentSlotGroupParser();
-	RegistryKeySetParser<EntityType> keySetParser = new RegistryKeySetParser<>(RegistryKey.ENTITY_TYPE, true);
+	private static final EquipmentSlotGroupParser slotGroupParser = new EquipmentSlotGroupParser();
+	private static final RegistryKeySetParser<EntityType> keySetParser = new RegistryKeySetParser<>(RegistryKey.ENTITY_TYPE, true);
 
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

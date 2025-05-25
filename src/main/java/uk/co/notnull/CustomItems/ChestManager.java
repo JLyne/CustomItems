@@ -2,7 +2,6 @@ package uk.co.notnull.CustomItems;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Lidded;
 import org.bukkit.entity.HumanEntity;

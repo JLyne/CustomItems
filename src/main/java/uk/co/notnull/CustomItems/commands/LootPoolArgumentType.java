@@ -38,7 +38,6 @@ import uk.co.notnull.CustomItems.loot.LootManagerImpl;
 import uk.co.notnull.CustomItems.loot.LootPool;
 import uk.co.notnull.messageshelper.Message;
 
-import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
 /**

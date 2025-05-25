@@ -32,7 +32,7 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
     ItemManagerImpl itemManager;
     LootManagerImpl lootManager;
     ChestManager chestManager;
-    MessagesHelper messagesHelper = MessagesHelper.getInstance(this);
+    final MessagesHelper messagesHelper = MessagesHelper.getInstance(this);
     private CreativeItemFilterHandler creativeItemFilterHandler;
 
     @Override

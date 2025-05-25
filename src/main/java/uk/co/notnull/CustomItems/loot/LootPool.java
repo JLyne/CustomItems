@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class LootPool extends ArrayList<CustomItem> {
-	String name;
+	private final String name;
 	private static final Random random = new Random();
 
 	public LootPool(String name) {

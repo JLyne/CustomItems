@@ -1,12 +1,10 @@
 package uk.co.notnull.CustomItems.listeners;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
-import uk.co.notnull.messageshelper.Message;
 
 public class Join implements Listener {
     private final CustomItemsImpl plugin;
