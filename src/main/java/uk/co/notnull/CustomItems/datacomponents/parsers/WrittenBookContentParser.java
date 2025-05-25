@@ -42,7 +42,7 @@ public class WrittenBookContentParser extends DataComponentTypeParser<Configurat
 			builder.resolved(resolved);
 		}
 
-		for (Object page : value.getList("writable_book_content", Collections.emptyList())) {
+		for (Object page : value.getList("pages", Collections.emptyList())) {
 			if(page instanceof ConfigurationSection section) {
 				Component raw = requiredField("raw", DataComponentParsers.COMPONENT, section);
 				Component filtered = optionalField("filtered", DataComponentParsers.COMPONENT, section);

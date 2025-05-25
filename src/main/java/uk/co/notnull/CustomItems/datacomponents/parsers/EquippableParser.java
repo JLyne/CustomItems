@@ -24,7 +24,7 @@ public class EquippableParser extends DataComponentTypeParser<ConfigurationSecti
 	protected Equippable doParse(ConfigurationSection value) {
 		EquipmentSlotGroup slotGroup = requiredField("slot", slotGroupParser, value);
 		NamespacedKey equipSound = optionalField("equip_sound", DataComponentParsers.NAMESPACED_KEY, value);
-		NamespacedKey model = optionalField("model", DataComponentParsers.NAMESPACED_KEY, value);
+		NamespacedKey assetId = optionalField("asset_id", DataComponentParsers.NAMESPACED_KEY, value);
 		Boolean dispensable = optionalField("dispensable", DataComponentParsers.BOOLEAN, value);
 		Boolean swappable = optionalField("swappable", DataComponentParsers.BOOLEAN, value);
 		Boolean damageOnHurt = optionalField("damage_on_hurt", DataComponentParsers.BOOLEAN, value);
@@ -37,8 +37,8 @@ public class EquippableParser extends DataComponentTypeParser<ConfigurationSecti
 			builder.equipSound(equipSound);
 		}
 
-		if(model != null) {
-			builder.assetId(model);
+		if(assetId != null) {
+			builder.assetId(assetId);
 		}
 
 		if(dispensable != null) {
