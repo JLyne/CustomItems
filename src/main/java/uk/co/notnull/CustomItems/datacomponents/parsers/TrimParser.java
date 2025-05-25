@@ -7,7 +7,6 @@ import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.jetbrains.annotations.NotNull;
-import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupParser;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -27,8 +26,6 @@ public class TrimParser extends DataComponentTypeParser<ConfigurationSection, It
 		TrimPattern pattern = requiredField("pattern", patternParser, value);
 
 		ItemArmorTrim.Builder builder = ItemArmorTrim.itemArmorTrim(new ArmorTrim(material, pattern));
-
-		builder.showInTooltip(DataComponentParsers.SHOW_IN_TOOLTIP.parse(value));
 
 		return builder.build();
 	}

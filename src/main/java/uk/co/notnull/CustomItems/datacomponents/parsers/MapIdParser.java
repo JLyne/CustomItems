@@ -1,7 +1,6 @@
 package uk.co.notnull.CustomItems.datacomponents.parsers;
 
 import io.papermc.paper.datacomponent.item.MapId;
-import java.lang.Object;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 

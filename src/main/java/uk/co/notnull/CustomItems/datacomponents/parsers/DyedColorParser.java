@@ -1,7 +1,6 @@
 package uk.co.notnull.CustomItems.datacomponents.parsers;
 
 import io.papermc.paper.datacomponent.item.DyedItemColor;
-import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
@@ -14,8 +13,6 @@ public class DyedColorParser extends DataComponentTypeParser<ConfigurationSectio
 	}
 
 	protected DyedItemColor doParse(ConfigurationSection value) {
-		Color color = requiredField("rgb", DataComponentParsers.COLOR, value);
-
-		return DyedItemColor.dyedItemColor(color, DataComponentParsers.SHOW_IN_TOOLTIP.parse(value));
+		return DyedItemColor.dyedItemColor(DataComponentParsers.COLOR.parse(value));
 	}
 }

@@ -25,8 +25,6 @@ public class EnchantmentsParser extends DataComponentTypeParser<ConfigurationSec
 											   builder.add(registryParser.parse(k),
 														   requiredField(k, DataComponentParsers.INT, value)));
 
-		builder.showInTooltip(DataComponentParsers.SHOW_IN_TOOLTIP.parse(value));
-
 		return builder.build();
 	}
 }

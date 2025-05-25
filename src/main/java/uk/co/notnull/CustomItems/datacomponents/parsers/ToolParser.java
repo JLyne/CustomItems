@@ -24,6 +24,7 @@ public class ToolParser extends DataComponentTypeParser<ConfigurationSection, To
 	protected Tool doParse(ConfigurationSection value) {
 		Float defaultMiningSpeed = optionalField("default_mining_speed", DataComponentParsers.FLOAT, value);
 		Integer damagePerBlock = optionalField("damage_per_block", DataComponentParsers.INT, value);
+		Boolean canDestroyBlocksInCreative = optionalField("can_destroy_blocks_in_creative", DataComponentParsers.BOOLEAN, value);
 		List<Tool.Rule> rules = requiredListField("rules", ruleParser, value);
 
 		Tool.Builder builder = Tool.tool();
@@ -34,6 +35,10 @@ public class ToolParser extends DataComponentTypeParser<ConfigurationSection, To
 
 		if(damagePerBlock != null) {
 			builder.damagePerBlock(damagePerBlock);
+		}
+
+		if(canDestroyBlocksInCreative != null) {
+			builder.canDestroyBlocksInCreative(canDestroyBlocksInCreative);
 		}
 
 		builder.addRules(rules);

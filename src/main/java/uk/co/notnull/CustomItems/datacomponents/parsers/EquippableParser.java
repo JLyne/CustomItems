@@ -28,6 +28,7 @@ public class EquippableParser extends DataComponentTypeParser<ConfigurationSecti
 		Boolean dispensable = optionalField("dispensable", DataComponentParsers.BOOLEAN, value);
 		Boolean swappable = optionalField("swappable", DataComponentParsers.BOOLEAN, value);
 		Boolean damageOnHurt = optionalField("damage_on_hurt", DataComponentParsers.BOOLEAN, value);
+		Boolean equipOnInteract = optionalField("equip_on_interact", DataComponentParsers.BOOLEAN, value);
 		NamespacedKey cameraOverlay = optionalField("camera_overlay", DataComponentParsers.NAMESPACED_KEY, value);
 		RegistryKeySet<EntityType> allowedEntities = optionalField("allowedEntities", keySetParser, value);
 
@@ -51,6 +52,10 @@ public class EquippableParser extends DataComponentTypeParser<ConfigurationSecti
 
 		if(damageOnHurt != null) {
 			builder.damageOnHurt(damageOnHurt);
+		}
+
+		if(equipOnInteract != null) {
+			builder.equipOnInteract(equipOnInteract);
 		}
 
 		if(cameraOverlay != null) {

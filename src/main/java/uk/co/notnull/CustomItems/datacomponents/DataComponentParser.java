@@ -25,6 +25,8 @@ public class DataComponentParser {
 		//TODO: BEES - Not implemented by paper
 		//TODO: BLOCK_ENTITY_DATA - Not implemented by paper
 		//TODO: BLOCK_STATE - Builder not implemented by paper
+		parsers.put(DataComponentTypes.BLOCKS_ATTACKS, DataComponentParsers.BLOCKS_ATTACKS);
+		parsers.put(DataComponentTypes.BREAK_SOUND, DataComponentParsers.NAMESPACED_KEY);
 		//TODO: BUCKET_ENTITY_DATA - Not implemented by paper
 		//TODO: BUNDLE_CONTENTS - Need ItemStack parser
 		parsers.put(DataComponentTypes.CAN_PLACE_ON, DataComponentParsers.ADVENTURE_PREDICATE);
@@ -68,7 +70,10 @@ public class DataComponentParser {
 		parsers.put(DataComponentTypes.OMINOUS_BOTTLE_AMPLIFIER, DataComponentParsers.OMINOUS_BOTTLE_AMPLIFIER);
 		parsers.put(DataComponentTypes.POT_DECORATIONS, DataComponentParsers.POT_DECORATIONS);
 		parsers.put(DataComponentTypes.POTION_CONTENTS, DataComponentParsers.POTION_CONTENTS);
+		parsers.put(DataComponentTypes.POTION_DURATION_SCALE, DataComponentParsers.FLOAT);
 		parsers.put(DataComponentTypes.PROFILE, DataComponentParsers.PROFILE);
+		parsers.put(DataComponentTypes.PROVIDES_BANNER_PATTERNS, DataComponentParsers.PROVIDES_BANNER_PATTERNS);
+		parsers.put(DataComponentTypes.PROVIDES_TRIM_MATERIAL, DataComponentParsers.PROVIDES_TRIM_MATERIAL);
 		parsers.put(DataComponentTypes.RARITY, DataComponentParsers.RARITY);
 		//parsers.put(DataComponentTypes.RECIPES, DataComponentParsers.NAMESPACED_KEY_LIST); //FIXME
 		parsers.put(DataComponentTypes.REPAIRABLE, DataComponentParsers.REPAIRABLE);
@@ -76,11 +81,13 @@ public class DataComponentParser {
 		parsers.put(DataComponentTypes.STORED_ENCHANTMENTS, DataComponentParsers.ENCHANTMENTS);
 		parsers.put(DataComponentTypes.SUSPICIOUS_STEW_EFFECTS, DataComponentParsers.SUSPICIOUS_STEW_CONTENTS);
 		parsers.put(DataComponentTypes.TOOL, DataComponentParsers.TOOL);
+		parsers.put(DataComponentTypes.TOOLTIP_DISPLAY, DataComponentParsers.TOOLTIP_DISPLAY);
 		parsers.put(DataComponentTypes.TOOLTIP_STYLE, DataComponentParsers.NAMESPACED_KEY);
 		parsers.put(DataComponentTypes.TRIM, DataComponentParsers.TRIM);
-		parsers.put(DataComponentTypes.UNBREAKABLE, DataComponentParsers.UNBREAKABLE);
+		// UNBREAKABLE - Unvalued
 		parsers.put(DataComponentTypes.USE_COOLDOWN, DataComponentParsers.USE_COOLDOWN);
 		//TODO: USE_REMAINDER - Need ItemStack parser
+		parsers.put(DataComponentTypes.WEAPON, DataComponentParsers.WEAPON);
 		parsers.put(DataComponentTypes.WRITABLE_BOOK_CONTENT, DataComponentParsers.WRITABLE_BOOK_CONTENT);
 		parsers.put(DataComponentTypes.WRITTEN_BOOK_CONTENT, DataComponentParsers.WRITTEN_BOOK_CONTENT);
 	}

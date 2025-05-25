@@ -4,7 +4,9 @@ import io.papermc.paper.item.MapPostProcessing;
 import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.DyeColor;
 import org.bukkit.MusicInstrument;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemRarity;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
 import uk.co.notnull.CustomItems.datacomponents.parsers.*;
 import uk.co.notnull.CustomItems.datacomponents.parsers.simple.*;
 
@@ -21,10 +23,8 @@ public class DataComponentParsers {
 	public static final NamespacedKeyParser NAMESPACED_KEY = new NamespacedKeyParser();
 	public static final ColorParser COLOR = new ColorParser();
 
-	public static final ShowInTooltipParser SHOW_IN_TOOLTIP = new ShowInTooltipParser();
 	public static final ConsumeEffectListParser CONSUME_EFFECT = new ConsumeEffectListParser();
 
-	public static final UnbreakableParser UNBREAKABLE = new UnbreakableParser();
 	public static final LoreParser LORE = new LoreParser();
 	public static final EnumParser<ItemRarity> RARITY = new EnumParser<>(ItemRarity.class);
 	public static final EnchantmentsParser ENCHANTMENTS = new EnchantmentsParser();
@@ -61,4 +61,9 @@ public class DataComponentParsers {
 	public static final EnumParser<DyeColor> BASE_COLOR = new EnumParser<>(DyeColor.class);
 	public static final PotDecorationsParser POT_DECORATIONS = new PotDecorationsParser();
 	public static final ContainerLootParser CONTAINER_LOOT = new ContainerLootParser();
+	public static final BlocksAttacksParser BLOCKS_ATTACKS = new BlocksAttacksParser();
+	public static final RegistryLookupParser<TrimMaterial> PROVIDES_TRIM_MATERIAL = new RegistryLookupParser<>(RegistryKey.TRIM_MATERIAL);
+	public static final TagKeyParser<PatternType> PROVIDES_BANNER_PATTERNS = new TagKeyParser<>(RegistryKey.BANNER_PATTERN);
+	public static final TooltipDisplayParser TOOLTIP_DISPLAY = new TooltipDisplayParser();
+	public static final WeaponParser WEAPON = new WeaponParser();
 }

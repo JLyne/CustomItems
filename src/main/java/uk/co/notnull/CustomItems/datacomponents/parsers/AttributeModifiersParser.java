@@ -12,8 +12,10 @@ import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 import uk.co.notnull.CustomItems.datacomponents.parsers.simple.EnumParser;
 import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupParser;
 
+import java.util.List;
+
 @SuppressWarnings("UnstableApiUsage")
-public class AttributeModifiersParser extends DataComponentTypeParser<ConfigurationSection, ItemAttributeModifiers> {
+public class AttributeModifiersParser extends ListParser<ConfigurationSection, ItemAttributeModifiers> {
 	private static final EquippableParser.EquipmentSlotGroupParser slotGroupParser =
 			new EquippableParser.EquipmentSlotGroupParser();
 	private static final EnumParser<AttributeModifier.Operation> operationParser =
@@ -23,23 +25,22 @@ public class AttributeModifiersParser extends DataComponentTypeParser<Configurat
 			new RegistryLookupParser<>(RegistryKey.ATTRIBUTE);
 
 	@Override
-	protected @NotNull Class<ConfigurationSection> getConfigType() {
+	protected @NotNull Class<ConfigurationSection> getListItemType() {
 		return ConfigurationSection.class;
 	}
 
-	protected ItemAttributeModifiers doParse(ConfigurationSection value) {
+	protected ItemAttributeModifiers doParse(List<ConfigurationSection> value) {
 		ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.itemAttributes();
 
-		for (String key : value.getKeys(false)) {
-			EquipmentSlotGroup slot = optionalField(key + ".slot", slotGroupParser, value, EquipmentSlotGroup.ANY);
-			NamespacedKey id = requiredField(key + ".id", DataComponentParsers.NAMESPACED_KEY, value);
-			double amount = requiredField(key + ".amount", DataComponentParsers.DOUBLE, value);
-			AttributeModifier.Operation operation = requiredField(key + ".operation", operationParser, value);
+		for (ConfigurationSection attribute: value) {
+			Attribute type = requiredField("type", attributeParser, attribute);
+			EquipmentSlotGroup slot = optionalField("slot", slotGroupParser, attribute, EquipmentSlotGroup.ANY);
+			NamespacedKey id = requiredField("id", DataComponentParsers.NAMESPACED_KEY, attribute);
+			double amount = requiredField("amount", DataComponentParsers.DOUBLE, attribute);
+			AttributeModifier.Operation operation = requiredField("operation", operationParser, attribute);
 
-			builder.addModifier(attributeParser.parse(key), new AttributeModifier(id, amount, operation, slot));
+			builder.addModifier(type, new AttributeModifier(id, amount, operation, slot));
 		}
-
-		builder.showInTooltip(DataComponentParsers.SHOW_IN_TOOLTIP.parse(value));
 
 		return builder.build();
 	}
