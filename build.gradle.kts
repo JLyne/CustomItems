@@ -16,22 +16,19 @@ java {
 }
 
 repositories {
-	mavenLocal()
-	mavenCentral()
 	maven {
 		url = uri("https://repo.papermc.io/repository/maven-public/")
 	}
     maven {
         url = uri("https://repo.not-null.co.uk/snapshots/")
     }
+    mavenLocal()
 }
-
 
 dependencies {
     implementation(project(":CustomItemsAPI"))
 
     compileOnly(libs.paperApi)
-    compileOnly(libs.jetbrainsAnnoations)
     compileOnly(libs.creativeItemFilter)
     paperLibrary(libs.messagesHelper)
 }

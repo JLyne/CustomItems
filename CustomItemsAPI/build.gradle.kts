@@ -6,7 +6,6 @@ plugins {
 description = "CustomItems API"
 
 dependencies {
-    compileOnly(libs.jetbrainsAnnoations)
 	compileOnly(libs.paperApi)
 }
 
