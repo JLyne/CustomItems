@@ -30,7 +30,9 @@ public class EquippableParser extends DataComponentTypeParser<ConfigurationSecti
 		Boolean damageOnHurt = optionalField("damage_on_hurt", DataComponentParsers.BOOLEAN, value);
 		Boolean equipOnInteract = optionalField("equip_on_interact", DataComponentParsers.BOOLEAN, value);
 		NamespacedKey cameraOverlay = optionalField("camera_overlay", DataComponentParsers.NAMESPACED_KEY, value);
-		RegistryKeySet<EntityType> allowedEntities = optionalField("allowedEntities", keySetParser, value);
+		RegistryKeySet<EntityType> allowedEntities = optionalField("allowed_entities", keySetParser, value);
+		Boolean canBeSheared = optionalField("can_be_sheared", DataComponentParsers.BOOLEAN, value);
+		NamespacedKey shearingSound = optionalField("shearing_sound", DataComponentParsers.NAMESPACED_KEY, value);
 
 		Equippable.Builder builder = Equippable.equippable(slotGroup.getExample()); //FIXME: Hack since API seems to be using the wrong class atm?
 
@@ -64,6 +66,14 @@ public class EquippableParser extends DataComponentTypeParser<ConfigurationSecti
 
 		if(allowedEntities != null) {
 			builder.allowedEntities(allowedEntities);
+		}
+
+		if(canBeSheared != null) {
+			builder.canBeSheared(canBeSheared);
+		}
+
+		if(shearingSound != null) {
+			builder.shearSound(shearingSound);
 		}
 
 		return builder.build();

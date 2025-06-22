@@ -1,6 +1,7 @@
 package uk.co.notnull.CustomItems.datacomponents.parsers;
 
 import io.papermc.paper.datacomponent.item.ItemAttributeModifiers;
+import io.papermc.paper.datacomponent.item.attribute.AttributeModifierDisplay;
 import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -39,7 +40,16 @@ public class AttributeModifiersParser extends ListParser<ConfigurationSection, I
 			double amount = requiredField("amount", DataComponentParsers.DOUBLE, attribute);
 			AttributeModifier.Operation operation = requiredField("operation", operationParser, attribute);
 
-			builder.addModifier(type, new AttributeModifier(id, amount, operation, slot));
+			String displayField = optionalField("display", DataComponentParsers.STRING, attribute, "default");
+			AttributeModifierDisplay display;
+
+			switch (displayField) {
+				case "default" -> display = AttributeModifierDisplay.reset();
+				case "hidden" -> display = AttributeModifierDisplay.hidden();
+				default -> display = AttributeModifierDisplay.override(DataComponentParsers.COMPONENT.parse(displayField));
+			}
+
+			builder.addModifier(type, new AttributeModifier(id, amount, operation, slot), display);
 		}
 
 		return builder.build();
