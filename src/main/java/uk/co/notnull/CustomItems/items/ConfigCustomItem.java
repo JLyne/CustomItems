@@ -70,7 +70,7 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 
 	@Override
 	public ItemStack createItem(@NotNull CreationContext context, int amount) {
-		ItemStack item = new ItemStack(getItem(), amount);
+		ItemStack item = ItemStack.of(getItem(), amount);
 		item.editPersistentDataContainer(
 				data -> ItemDataManager.populateItemData(data, this, context));
 

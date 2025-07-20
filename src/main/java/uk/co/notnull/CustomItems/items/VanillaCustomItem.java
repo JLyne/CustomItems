@@ -42,7 +42,7 @@ public final class VanillaCustomItem extends AbstractCustomItem {
 
 	@Override
 	public ItemStack createItem(CreationContext context, int amount) {
-		ItemStack item = new ItemStack(getItem(), amount);
+		ItemStack item = ItemStack.of(getItem(), amount);
 		item.setAmount(Math.min(item.getMaxStackSize(), amount));
 
 		return item;
