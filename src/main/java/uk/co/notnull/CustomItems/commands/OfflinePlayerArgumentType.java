@@ -49,7 +49,6 @@ import java.util.concurrent.CompletableFuture;
  *
  * @since 1.1.0
  */
-@SuppressWarnings("UnstableApiUsage")
 public final class OfflinePlayerArgumentType implements CustomArgumentType.Converted<OfflinePlayer, String> {
 	private final CustomItemsImpl plugin;
 

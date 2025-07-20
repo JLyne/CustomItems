@@ -45,7 +45,6 @@ import java.util.concurrent.CompletableFuture;
  *
  * @since 1.1.0
  */
-@SuppressWarnings("UnstableApiUsage")
 public final class LootPoolArgumentType implements CustomArgumentType.Converted<LootPool, String> {
 	private final CustomItemsImpl plugin;
 	private final LootManagerImpl lootManager;

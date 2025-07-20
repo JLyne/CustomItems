@@ -44,7 +44,7 @@ public class AdventurePredicateParser extends DataComponentTypeParser<Object, It
 
 		@Override
 		protected BlockPredicate doParse(ConfigurationSection value) {
-			RegistryKeySet<BlockType> blocks = requiredField("blocks", keySetParser, value);
+			RegistryKeySet<@NotNull BlockType> blocks = requiredField("blocks", keySetParser, value);
 			return BlockPredicate.predicate().blocks(blocks).build();
 		}
 	}

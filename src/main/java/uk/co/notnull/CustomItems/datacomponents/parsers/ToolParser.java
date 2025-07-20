@@ -57,7 +57,7 @@ public class ToolParser extends DataComponentTypeParser<ConfigurationSection, To
 
 		@Override
 		protected Tool.Rule doParse(ConfigurationSection value) {
-			RegistryKeySet<BlockType> keySet = requiredField("blocks", keySetParser, value);
+			RegistryKeySet<@NotNull BlockType> keySet = requiredField("blocks", keySetParser, value);
 			Float speed = optionalField("speed", DataComponentParsers.FLOAT, value);
 			Boolean correctForDrops = optionalField("correct_for_drops", DataComponentParsers.BOOLEAN, value);
 

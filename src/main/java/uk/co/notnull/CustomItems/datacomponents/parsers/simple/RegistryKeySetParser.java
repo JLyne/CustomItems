@@ -16,9 +16,9 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
-public class RegistryKeySetParser<T extends Keyed> extends DataComponentTypeParser<Object, RegistryKeySet<T>> {
+public class RegistryKeySetParser<T extends Keyed> extends DataComponentTypeParser<Object, RegistryKeySet<@NotNull T>> {
 	private final RegistryKey<T> registryKey;
-	private final Registry<T> registry;
+	private final Registry<@NotNull T> registry;
 	private final boolean allowTags;
 
 	public RegistryKeySetParser(RegistryKey<T> registryKey, boolean allowTags) {
@@ -32,7 +32,7 @@ public class RegistryKeySetParser<T extends Keyed> extends DataComponentTypePars
 		return Object.class;
 	}
 
-	protected RegistryKeySet<T> doParse(Object value) {
+	protected RegistryKeySet<@NotNull T> doParse(Object value) {
 		switch (value) {
 			case null -> {
 				return RegistrySet.keySet(registryKey, Collections.emptyList());
@@ -40,6 +40,7 @@ public class RegistryKeySetParser<T extends Keyed> extends DataComponentTypePars
 			case List list -> {
 				List<T> items = new ArrayList<>();
 
+				//noinspection unchecked
 				for (String block : (List<String>) list) {
 					items.add(registry.getOrThrow(DataComponentParsers.NAMESPACED_KEY.parse(block)));
 				}

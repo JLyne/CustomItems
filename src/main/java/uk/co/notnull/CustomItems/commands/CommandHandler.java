@@ -30,7 +30,6 @@ import static io.papermc.paper.command.brigadier.Commands.literal;
 import static io.papermc.paper.command.brigadier.argument.ArgumentTypes.players;
 
 
-@SuppressWarnings("UnstableApiUsage")
 public class CommandHandler {
     private final CustomItemsImpl plugin;
     private final MessagesHelper messagesHelper;

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("UnstableApiUsage")
 public final class ItemManagerImpl implements ItemManager {
 	private final Map<NamespacedKey, CustomItem> items;
 	private final Map<NamespacedKey, CustomItem> externalItems;

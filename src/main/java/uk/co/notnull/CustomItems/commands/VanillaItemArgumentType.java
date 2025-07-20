@@ -47,7 +47,6 @@ import uk.co.notnull.messageshelper.Message;
  *
  * @since 1.1.0
  */
-@SuppressWarnings("UnstableApiUsage")
 public final class VanillaItemArgumentType implements CustomArgumentType.Converted<NamespacedKey, NamespacedKey> {
 	private final CustomItemsImpl plugin;
 

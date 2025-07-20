@@ -30,7 +30,7 @@ public class EquippableParser extends DataComponentTypeParser<ConfigurationSecti
 		Boolean damageOnHurt = optionalField("damage_on_hurt", DataComponentParsers.BOOLEAN, value);
 		Boolean equipOnInteract = optionalField("equip_on_interact", DataComponentParsers.BOOLEAN, value);
 		NamespacedKey cameraOverlay = optionalField("camera_overlay", DataComponentParsers.NAMESPACED_KEY, value);
-		RegistryKeySet<EntityType> allowedEntities = optionalField("allowed_entities", keySetParser, value);
+		RegistryKeySet<@NotNull EntityType> allowedEntities = optionalField("allowed_entities", keySetParser, value);
 		Boolean canBeSheared = optionalField("can_be_sheared", DataComponentParsers.BOOLEAN, value);
 		NamespacedKey shearingSound = optionalField("shearing_sound", DataComponentParsers.NAMESPACED_KEY, value);
 

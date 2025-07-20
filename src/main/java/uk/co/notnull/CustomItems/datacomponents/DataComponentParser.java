@@ -93,7 +93,7 @@ public class DataComponentParser {
 	}
 
 	public static Map<DataComponentType, Object> parse(ConfigurationSection componentConfig, String name) {
-		Registry<DataComponentType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.DATA_COMPONENT_TYPE);
+		Registry<@org.jetbrains.annotations.NotNull DataComponentType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.DATA_COMPONENT_TYPE);
 		Map<DataComponentType, Object> result = new HashMap<>();
 
 		if(componentConfig == null) {

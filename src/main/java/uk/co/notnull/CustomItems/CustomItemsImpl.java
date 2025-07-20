@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-@SuppressWarnings("UnstableApiUsage")
 public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener {
     private static CustomItemsImpl instance;
     ItemManagerImpl itemManager;
@@ -50,7 +49,7 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
 		getServer().getPluginManager().registerEvents(new Join(this), this);
 		getServer().getPluginManager().registerEvents(new Loot(this), this);
 
-        LifecycleEventManager<Plugin> manager = getLifecycleManager();
+        LifecycleEventManager<@org.jetbrains.annotations.NotNull Plugin> manager = getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> new CommandHandler(this, event.registrar()));
 
         try {

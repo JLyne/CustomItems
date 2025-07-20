@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 import uk.co.notnull.CustomItems.datacomponents.parsers.DataComponentTypeParser;
 
-@SuppressWarnings("UnstableApiUsage")
 public class TagKeyParser<T extends Keyed> extends DataComponentTypeParser<Object, TagKey<T>> {
 	private final RegistryKey<T> registryKey;
 

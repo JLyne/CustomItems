@@ -9,7 +9,7 @@ import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 import uk.co.notnull.CustomItems.datacomponents.parsers.DataComponentTypeParser;
 
 public class RegistryLookupParser<T extends Keyed> extends DataComponentTypeParser<String, T> {
-	private final Registry<T> registry;
+	private final Registry<@NotNull T> registry;
 
 	public RegistryLookupParser(RegistryKey<T> registryKey) {
 		this.registry = RegistryAccess.registryAccess().getRegistry(registryKey);

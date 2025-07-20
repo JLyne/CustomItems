@@ -108,7 +108,9 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 		}
 
 		components.forEach((type, value) -> {
+			//noinspection rawtypes
 			if(type instanceof DataComponentType.Valued valued) {
+				//noinspection unchecked
 				item.setData(valued, value);
 			} else if (type instanceof DataComponentType.NonValued nonvalued) {
 				if((boolean) value) {
