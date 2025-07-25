@@ -1,21 +1,27 @@
 package uk.co.notnull.CustomItems.listeners;
 
+import org.bukkit.block.Vault;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDispenseLootEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.block.VaultDisplayItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.loot.LootManagerImpl;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Loot implements Listener {
@@ -41,6 +47,52 @@ public class Loot implements Listener {
         Player player = (Player) event.getLootContext().getKiller();
 
         event.setLoot(event.getLoot().stream().map((ItemStack item) -> {
+            if(manager.isPlaceholder(item)) {
+                return manager.generateLoot(item, player);
+            }
+
+            return item;
+        }).collect(Collectors.toList()));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onVaultDisplayItem(VaultDisplayItemEvent event) {
+        ItemStack item = event.getDisplayItem();
+
+        if (!manager.isPlaceholder(item)) {
+            return;
+        }
+
+        if (!(event.getBlock().getState(false) instanceof Vault vault)) {
+            CustomItemsImpl.getInstance().getLogger().info("Not a vault???");
+            return;
+        }
+
+        // We need a player in order to generate the loot item, this event being fired means
+        // there should be one anyway
+        Set<UUID> players = vault.getConnectedPlayers();
+
+        if (players.isEmpty()) {
+            CustomItemsImpl.getInstance().getLogger().info("No players???");
+            return;
+        }
+
+        Player player = CustomItemsImpl.getInstance().getServer().getPlayer(players.iterator().next());
+
+        if (player == null) {
+            CustomItemsImpl.getInstance().getLogger().info("No first player???");
+            return;
+        }
+
+        CustomItemsImpl.getInstance().getLogger().info("Doing thing");
+        event.setDisplayItem(manager.generateLoot(item, player));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockDispenseLoot(BlockDispenseLootEvent event) {
+        Player player = event.getPlayer();
+
+        event.setDispensedLoot(event.getDispensedLoot().stream().map((ItemStack item) -> {
             if(manager.isPlaceholder(item)) {
                 return manager.generateLoot(item, player);
             }
