@@ -64,7 +64,6 @@ public class Loot implements Listener {
         }
 
         if (!(event.getBlock().getState(false) instanceof Vault vault)) {
-            CustomItemsImpl.getInstance().getLogger().info("Not a vault???");
             return;
         }
 
@@ -73,18 +72,15 @@ public class Loot implements Listener {
         Set<UUID> players = vault.getConnectedPlayers();
 
         if (players.isEmpty()) {
-            CustomItemsImpl.getInstance().getLogger().info("No players???");
             return;
         }
 
         Player player = CustomItemsImpl.getInstance().getServer().getPlayer(players.iterator().next());
 
         if (player == null) {
-            CustomItemsImpl.getInstance().getLogger().info("No first player???");
             return;
         }
 
-        CustomItemsImpl.getInstance().getLogger().info("Doing thing");
         event.setDisplayItem(manager.generateLoot(item, player));
     }
 
