@@ -1,7 +1,7 @@
 [versions]
 messagesHelper = "1.1-SNAPSHOT"
 pluginYmlPaper = "0.7.1"
-paperApi = "1.21.8-R0.1-SNAPSHOT"
+paperApi = "1.21.10-R0.1-SNAPSHOT"
 creativeItemFilter = "3.0-SNAPSHOT"
 
 [libraries]
