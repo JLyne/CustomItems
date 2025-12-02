@@ -3,6 +3,8 @@ plugins {
 	`maven-publish`
 }
 
+group = rootProject.group
+version = rootProject.version
 description = "CustomItems API"
 
 dependencies {
