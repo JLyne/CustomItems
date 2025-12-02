@@ -62,6 +62,10 @@ paper {
             description = "Access to /givepool"
             default = BukkitPluginDescription.Permission.Default.OP
         }
+        register("customitems.giveplugin") {
+            description = "Access to /giveplugin"
+            default = BukkitPluginDescription.Permission.Default.OP
+        }
         register("customitems.grant") {
             description = "Access to /grantitem"
             default = BukkitPluginDescription.Permission.Default.OP

@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.api.ItemManager;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
@@ -27,6 +28,7 @@ public final class ItemManagerImpl implements ItemManager {
 	private final Map<NamespacedKey, CustomItem> items;
 	private final Map<UUID, Map<NamespacedKey, Integer>> unclaimed;
 	private final Map<CustomItemProvider, List<CustomItem>> providers;
+	private final Map<Plugin, Set<CustomItemProvider>> pluginProviders;
 
 	private final CustomItemsImpl plugin;
 	private final LootManagerImpl lootManager;
@@ -40,6 +42,7 @@ public final class ItemManagerImpl implements ItemManager {
 		items = new HashMap<>();
 		unclaimed = new HashMap<>();
 		providers = new HashMap<>();
+		pluginProviders = new HashMap<>();
 
 		loadUnclaimedItems();
 	}
@@ -121,6 +124,20 @@ public final class ItemManagerImpl implements ItemManager {
 		addUnclaimedItem(player, key, amount);
     }
 
+	public void givePluginItems(Player player, Plugin plugin) {
+		if (!pluginProviders.containsKey(plugin)) {
+			return;
+		}
+
+		for (CustomItemProvider provider : pluginProviders.get(plugin)) {
+			if (!providers.containsKey(provider)) { // Shouldn't happen
+				continue;
+			}
+
+			providers.get(provider).forEach(item -> giveItem(player, item, 1));
+		}
+	}
+
 	private void addUnclaimedItem(OfflinePlayer player, NamespacedKey id, int amount) {
 		// Prevent further claiming of items before grant
 		if(player instanceof Player onlinePlayer) {
@@ -159,6 +176,10 @@ public final class ItemManagerImpl implements ItemManager {
 		return items.keySet();
 	}
 
+	public Set<Plugin> getProviderPlugins() {
+		return pluginProviders.keySet();
+	}
+
 	public boolean isValidId(NamespacedKey id) {
 		return items.containsKey(id);
 	}
@@ -169,7 +190,8 @@ public final class ItemManagerImpl implements ItemManager {
 
 	public void registerProvider(CustomItemProvider provider) {
 		List<CustomItem> addedItems = new ArrayList<>();
-		String name = provider.getPlugin().getName();
+		Plugin thePlugin = provider.getPlugin();
+		String name = thePlugin.getName();
 
 		try {
 			if(providers.containsKey(provider)) {
@@ -184,10 +206,16 @@ public final class ItemManagerImpl implements ItemManager {
 			});
 
 			providers.put(provider, addedItems);
+			pluginProviders.computeIfAbsent(thePlugin, _ -> new HashSet<>());
+			pluginProviders.get(thePlugin).add(provider);
+
 			plugin.getLogger().info("Registered item provider for " + name);
 		} catch (Exception e) {
 			plugin.getLogger().log(Level.SEVERE, "Exception while registering item provider for " + name, e);
-			addedItems.forEach(this::removeItem); // Remove already added items on failure
+			// Undo changes on failure
+			addedItems.forEach(this::removeItem);
+			unregisterProvider(provider);
+
 			throw e;
 		}
 	}
@@ -197,6 +225,7 @@ public final class ItemManagerImpl implements ItemManager {
 			return;
 		}
 
+		pluginProviders.forEach((_, providers) -> providers.remove(provider));
 		providers.remove(provider).forEach(this::removeItem);
 	}
 

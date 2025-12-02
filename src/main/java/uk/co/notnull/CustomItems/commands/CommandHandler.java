@@ -14,6 +14,8 @@ import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSele
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.Util;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
@@ -37,6 +39,7 @@ public class CommandHandler {
     private final CustomItemArgumentType itemArgumentType;
     private final VanillaItemArgumentType vanillaItemArgumentType;
     private final LootPoolArgumentType lootPoolArgumentType;
+    private final ProviderPluginArgumentType providerPluginArgumentType;
     private final IntegerArgumentType amountArgumentType = integer(0, 6400);
     private final OfflinePlayerArgumentType offlinePlayerArgumentType;
 
@@ -46,11 +49,13 @@ public class CommandHandler {
         this.itemArgumentType = new CustomItemArgumentType(plugin);
         this.vanillaItemArgumentType = new VanillaItemArgumentType(plugin);
         this.lootPoolArgumentType = new LootPoolArgumentType(plugin);
+        this.providerPluginArgumentType = new ProviderPluginArgumentType(plugin);
         this.offlinePlayerArgumentType = new OfflinePlayerArgumentType(plugin);
 
         commandManager.register(this.createGiveItem(), "Immediately gives a custom item to a player");
         commandManager.register(this.createGrantItem(), "Grants a custom item to a player, which they must collect themselves");
         commandManager.register(this.createGivePool(), "Immediately gives all custom items in a loot pool to a player");
+        commandManager.register(this.createGivePlugin(), "Immediately gives all custom items provided by a plugin to a player");
         commandManager.register(this.createRevokeItem(), "Revokes previously granted unclaimed items from a player");
         commandManager.register(this.createViewUnclaimed(), "View the unclaimed items for a player");
         commandManager.register(this.createReload(), "Reloads the config");
@@ -139,6 +144,19 @@ public class CommandHandler {
                                   onGivePool(ctx.getSource(),
                                              ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
                                              ctx.getArgument("pool", LootPool.class));
+                                  return Command.SINGLE_SUCCESS;
+                              })))
+                .build();
+    }
+
+	private LiteralCommandNode<CommandSourceStack> createGivePlugin() {
+        return literal("giveplugin")
+                .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission("customitems.giveplugin"))
+                .then(argument("player", players())
+                              .then(argument("plugin", providerPluginArgumentType).executes(ctx -> {
+                                  onGivePlugin(ctx.getSource(),
+                                             ctx.getArgument("player", PlayerSelectorArgumentResolver.class),
+                                             ctx.getArgument("plugin", Plugin.class));
                                   return Command.SINGLE_SUCCESS;
                               })))
                 .build();
@@ -271,6 +289,19 @@ public class CommandHandler {
                     .prefixed()
                     .replacement("player", player.getName())
                     .replacement("pool", pool.getName())
+                    .build());
+        }
+	}
+
+	private void onGivePlugin(CommandSourceStack source, PlayerSelectorArgumentResolver target, Plugin thePlugin) throws CommandSyntaxException {
+		List<Player> players = target.resolve(source);
+
+        for(Player player: players) {
+			plugin.getItemManager().givePluginItems(player, thePlugin);
+            messagesHelper.send(source.getSender(), Message.builder("command.give-plugin-success")
+                    .prefixed()
+                    .replacement("player", player.getName())
+                    .replacement("plugin", thePlugin.getName())
                     .build());
         }
 	}
