@@ -7,6 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import uk.co.notnull.CustomItems.api.items.CustomItem;
@@ -27,7 +29,12 @@ class ConfigItemProvider implements CustomItemProvider {
 	}
 
 	@Override
-	public Collection<CustomItem> provideItems() {
+	public @NotNull JavaPlugin getPlugin() {
+		return plugin;
+	}
+
+	@Override
+	public @NotNull Collection<CustomItem> provideItems() {
 		return items.values();
 	}
 

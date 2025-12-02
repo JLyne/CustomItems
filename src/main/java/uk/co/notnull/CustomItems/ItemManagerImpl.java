@@ -20,6 +20,7 @@ import uk.co.notnull.messageshelper.Message;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public final class ItemManagerImpl implements ItemManager {
@@ -167,14 +168,28 @@ public final class ItemManagerImpl implements ItemManager {
 	}
 
 	public void registerProvider(CustomItemProvider provider) {
-		if(providers.containsKey(provider)) {
-			throw new IllegalArgumentException("Provider already registered");
+		List<CustomItem> addedItems = new ArrayList<>();
+		String name = provider.getPlugin().getName();
+
+		try {
+			if(providers.containsKey(provider)) {
+				throw new IllegalArgumentException("Provider already registered");
+			}
+
+			Collection<CustomItem> items = provider.provideItems();
+
+			items.forEach(i -> {
+				this.addItem(i);
+				addedItems.add(i);
+			});
+
+			providers.put(provider, addedItems);
+			plugin.getLogger().info("Registered item provider for " + name);
+		} catch (Exception e) {
+			plugin.getLogger().log(Level.SEVERE, "Exception while registering item provider for " + name, e);
+			addedItems.forEach(this::removeItem); // Remove already added items on failure
+			throw e;
 		}
-
-		Collection<CustomItem> items = provider.provideItems();
-		items.forEach(this::addItem);
-
-		providers.put(provider, new ArrayList<>(items));
 	}
 
 	public void unregisterProvider(CustomItemProvider provider) {
@@ -195,11 +210,13 @@ public final class ItemManagerImpl implements ItemManager {
         }
 
 		for(CustomItemProvider provider: providers.keySet()) {
-			CustomItem identified = provider.identifyItem(item);
+			try {
+				CustomItem identified = provider.identifyItem(item);
 
-			if(identified != null) {
-				return identified;
-			}
+				if(identified != null) {
+					return identified;
+				}
+			} catch (Exception ignored) {} // Can't do much about this
 		}
 
 		return null;
@@ -280,12 +297,15 @@ public final class ItemManagerImpl implements ItemManager {
 	}
 
 	public void reload() {
-		providers.keySet().forEach((provider ->
-				providers.compute(provider, (p, items) -> {
-					items.forEach(this::removeItem);
-					Collection<CustomItem> newItems = provider.provideItems();
-					newItems.forEach(this::addItem);
-					return new ArrayList<>(items);
-				})));
+		List<CustomItemProvider> providers = new ArrayList<>(this.providers.keySet());
+
+		// Re-register all providers
+		providers.forEach((provider -> {
+			unregisterProvider(provider);
+
+			try {
+				registerProvider(provider);
+			} catch (Exception ignored) {} // Can't do much about this
+		}));
 	}
 }
