@@ -144,7 +144,7 @@ public final class ItemManagerImpl implements ItemManager {
 			chestManager.closeChestClaimGUI(onlinePlayer);
 		}
 
-		Map<NamespacedKey, Integer> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
+		Map<NamespacedKey, Integer> items = unclaimed.computeIfAbsent(player.getUniqueId(), _ -> new HashMap<>());
 		items.compute(id, (key, oldAmount) -> oldAmount != null ? amount + oldAmount : amount);
 
 		if(player instanceof Player onlinePlayer) {
@@ -158,7 +158,7 @@ public final class ItemManagerImpl implements ItemManager {
 			chestManager.closeChestClaimGUI(onlinePlayer);
 		}
 
-       	Map<NamespacedKey, Integer> items = unclaimed.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>());
+       	Map<NamespacedKey, Integer> items = unclaimed.computeIfAbsent(player.getUniqueId(), _ -> new HashMap<>());
 		Integer amount = items.remove(id);
 
 		return amount != null ? amount : 0;
@@ -252,13 +252,13 @@ public final class ItemManagerImpl implements ItemManager {
 	}
 
 	public Map<NamespacedKey, Integer> getUnclaimedItems(@NotNull OfflinePlayer player) {
-		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).entrySet().stream()
+		return unclaimed.computeIfAbsent(player.getUniqueId(), _ -> new HashMap<>()).entrySet().stream()
 				.filter(entry -> isValidId(entry.getKey()) || Util.isVanillaItem(entry.getKey()))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	public boolean hasUnclaimedItems(@NotNull OfflinePlayer player) {
-		return unclaimed.computeIfAbsent(player.getUniqueId(), uuid -> new HashMap<>()).keySet().stream()
+		return unclaimed.computeIfAbsent(player.getUniqueId(), _ -> new HashMap<>()).keySet().stream()
 				.anyMatch(key -> isValidId(key) || Util.isVanillaItem(key));
 	}
 
@@ -274,7 +274,7 @@ public final class ItemManagerImpl implements ItemManager {
 
 	public void claimItem(@NotNull OfflinePlayer player, NamespacedKey item, int amount) {
 		Map<NamespacedKey, Integer> playerItems = unclaimed.computeIfAbsent(
-				player.getUniqueId(), uuid -> new HashMap<>());
+				player.getUniqueId(), _ -> new HashMap<>());
 
 		playerItems.computeIfPresent(item, (key, oldAmount) -> oldAmount - amount <= 0 ? null : oldAmount - amount);
 	}
@@ -290,10 +290,10 @@ public final class ItemManagerImpl implements ItemManager {
 			for (Object item : pending) {
 				if(item instanceof GrantedItem grantedItem) {
 					Map<NamespacedKey, Integer> playerItems = unclaimed.computeIfAbsent(grantedItem.getPlayer(),
-																						key -> new HashMap<>());
+																						_ -> new HashMap<>());
 
 					// Add amount to existing GrantedItem if it exists
-					playerItems.compute(grantedItem.getItem(), (key, oldAmount) -> {
+					playerItems.compute(grantedItem.getItem(), (_, oldAmount) -> {
 						if(oldAmount != null) {
 							return oldAmount + grantedItem.getAmount();
 						}
