@@ -12,6 +12,7 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import uk.co.notnull.CustomItems.api.CustomItems;
 import uk.co.notnull.CustomItems.commands.CommandHandler;
 import uk.co.notnull.CustomItems.creativeitemfilter.CreativeItemFilterHandler;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.logging.Level;
 
 public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Listener {
     private static CustomItemsImpl instance;
@@ -108,7 +110,11 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
         saveDefaultConfig();
 
         createFile("messages.yml");
-        messagesHelper.loadMessages(new File(getDataFolder(), "messages.yml"));
+		try {
+			messagesHelper.loadMessages(new File(getDataFolder(), "messages.yml"));
+		} catch (IOException e) {
+			getLogger().log(Level.SEVERE, "Failed to load messages", e);
+		}
 
         chestManager.closeAllGUIS();
         lootManager.loadLootConfig(getConfig().getConfigurationSection("loot"));
