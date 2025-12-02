@@ -136,6 +136,8 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
         } catch (IllegalArgumentException e) {
             getLogger().warning("Invalid claim chest location: " + e.getMessage());
         }
+
+		itemManager.reload();
 	}
 
     /**

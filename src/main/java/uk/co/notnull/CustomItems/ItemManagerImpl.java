@@ -278,4 +278,14 @@ public final class ItemManagerImpl implements ItemManager {
 			return false;
 		}
 	}
+
+	public void reload() {
+		providers.keySet().forEach((provider ->
+				providers.compute(provider, (p, items) -> {
+					items.forEach(this::removeItem);
+					Collection<CustomItem> newItems = provider.provideItems();
+					newItems.forEach(this::addItem);
+					return new ArrayList<>(items);
+				})));
+	}
 }
