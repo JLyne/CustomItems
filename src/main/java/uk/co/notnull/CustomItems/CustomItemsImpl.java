@@ -33,6 +33,7 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
     ItemManagerImpl itemManager;
     LootManagerImpl lootManager;
     ChestManager chestManager;
+	ConfigItemProvider configItemProvider = new ConfigItemProvider(this);
     final MessagesHelper messagesHelper = MessagesHelper.getInstance(this);
     private CreativeItemFilterHandler creativeItemFilterHandler;
 
@@ -59,6 +60,8 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+		itemManager.registerProvider(configItemProvider);
     }
 
     public static CustomItemsImpl getInstance() {
@@ -116,9 +119,9 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
 			getLogger().log(Level.SEVERE, "Failed to load messages", e);
 		}
 
-        chestManager.closeAllGUIS();
+		chestManager.closeAllGUIS();
         lootManager.loadLootConfig(getConfig().getConfigurationSection("loot"));
-        itemManager.loadItemConfig(getConfig().getConfigurationSection("items"));
+        configItemProvider.loadItemConfig(getConfig().getConfigurationSection("items"));
 
         try {
             ConfigurationSection chestLocationConfig = getConfig().getConfigurationSection("claimChestLocation");

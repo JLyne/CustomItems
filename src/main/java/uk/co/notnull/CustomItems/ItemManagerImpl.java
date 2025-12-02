@@ -1,12 +1,7 @@
 package uk.co.notnull.CustomItems;
 
-import io.papermc.paper.datacomponent.DataComponentType;
-import io.papermc.paper.persistence.PersistentDataContainerView;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -18,8 +13,6 @@ import uk.co.notnull.CustomItems.api.items.CreationContext;
 import uk.co.notnull.CustomItems.api.items.CreationReason;
 import uk.co.notnull.CustomItems.api.items.CustomItem;
 import uk.co.notnull.CustomItems.api.items.provider.CustomItemProvider;
-import uk.co.notnull.CustomItems.datacomponents.DataComponentParser;
-import uk.co.notnull.CustomItems.items.ConfigCustomItem;
 import uk.co.notnull.CustomItems.items.CreationContextImpl;
 import uk.co.notnull.CustomItems.loot.LootManagerImpl;
 import uk.co.notnull.messageshelper.Message;
@@ -29,10 +22,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("UnstableApiUsage")
 public final class ItemManagerImpl implements ItemManager {
 	private final Map<NamespacedKey, CustomItem> items;
-	private final Map<NamespacedKey, CustomItem> externalItems;
 	private final Map<UUID, Map<NamespacedKey, Integer>> unclaimed;
 	private final Map<CustomItemProvider, List<CustomItem>> providers;
 
@@ -46,73 +37,15 @@ public final class ItemManagerImpl implements ItemManager {
 		this.chestManager = chestManager;
 
 		items = new HashMap<>();
-		externalItems = new HashMap<>();
 		unclaimed = new HashMap<>();
 		providers = new HashMap<>();
 
 		loadUnclaimedItems();
 	}
 
-	public void loadItemConfig(ConfigurationSection config) {
-		items.clear();
-		items.putAll(externalItems);
-
-		if(config == null) {
-			return;
-		}
-
-		config.getKeys(false).forEach(id -> {
-			String materialName = config.getString(id + ".material");
-			Component name = config.getRichMessage(id + ".name");
-			ConfigurationSection componentConfig = config.getConfigurationSection(id + ".components");
-			boolean stamp = config.getBoolean(id + ".stamp", false);
-			Map<DataComponentType, Object> components;
-
-			try {
-				components = DataComponentParser.parse(componentConfig, id);
-			} catch(RuntimeException e) {
-				plugin.getLogger().warning("Failed to parse components for " + id + ": " + e.getMessage());
-				return;
-			}
-
-			if(materialName == null) {
-				plugin.getLogger().warning("No material specified for " + id + ", skipping.");
-				return;
-			}
-
-			if(name == null) {
-				plugin.getLogger().warning("No name specified for " + id + ", skipping.");
-				return;
-			}
-
-			Material material = Material.matchMaterial(materialName);
-
-			if(material == null) {
-				plugin.getLogger().warning("Material " + materialName + " specified for " + id + " does not exist, skipping.");
-				return;
-			}
-
-			if(!material.isItem()) {
-				plugin.getLogger().warning("Material " + materialName + " specified for " + id + " is not an item. Skipping.");
-				return;
-			}
-
-			if(material.isBlock()) {
-				plugin.getLogger().warning("Material " + materialName + " specified for " + id + " is a placeable block. This would cause item data to be lost. Skipping.");
-				return;
-			}
-
-			addItem(new ConfigCustomItem(id, material, name, components, stamp));
-		});
-	}
-
 	private void addItem(CustomItem item) {
 		if(isValidId(item.getId())) {
 			throw new IllegalArgumentException("An item with id " + item.getId() + " is already registered");
-		}
-
-		if(!(item instanceof ConfigCustomItem)) {
-			externalItems.put(item.getId(), item);
 		}
 
 		plugin.getLogger().info("Registered item " + item.getId());
@@ -123,7 +56,6 @@ public final class ItemManagerImpl implements ItemManager {
 
 	private void removeItem(CustomItem item) {
 		items.remove(item.getId());
-		externalItems.remove(item.getId());
 		lootManager.removeItem(item);
 	}
 
@@ -261,15 +193,6 @@ public final class ItemManagerImpl implements ItemManager {
 		if(item == null) {
             return null;
         }
-
-		item.editPersistentDataContainer(ItemDataManager::updateItemData);
-		PersistentDataContainerView data = item.getPersistentDataContainer();
-
-		NamespacedKey id = ItemDataManager.getItemId(data);
-
-		if(id != null) {
-			return items.get(id);
-		}
 
 		for(CustomItemProvider provider: providers.keySet()) {
 			CustomItem identified = provider.identifyItem(item);
