@@ -5,6 +5,7 @@ import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.DyeColor;
 import org.bukkit.MusicInstrument;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.damage.DamageType;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import uk.co.notnull.CustomItems.datacomponents.parsers.*;
@@ -66,4 +67,10 @@ public class DataComponentParsers {
 	public static final TagKeyParser<PatternType> PROVIDES_BANNER_PATTERNS = new TagKeyParser<>(RegistryKey.BANNER_PATTERN);
 	public static final TooltipDisplayParser TOOLTIP_DISPLAY = new TooltipDisplayParser();
 	public static final WeaponParser WEAPON = new WeaponParser();
+	public static final AttackRangeParser ATTACK_RANGE = new AttackRangeParser();
+	public static final RegistryLookupParser<DamageType> DAMAGE_TYPE = new RegistryLookupParser<>(RegistryKey.DAMAGE_TYPE);
+	public static final KineticWeaponParser KINETIC_WEAPON = new KineticWeaponParser();
+	public static final PiercingWeaponParser PIERCING_WEAPON = new PiercingWeaponParser();
+	public static final SwingAnimationParser SWING_ANIMATION = new SwingAnimationParser();
+	public static final UseEffectsParser USE_EFFECTS = new UseEffectsParser();
 }

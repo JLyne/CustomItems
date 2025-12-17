@@ -19,6 +19,7 @@ public class DataComponentParser {
 	private static final Map<DataComponentType, DataComponentTypeParser<?, ?>> parsers = new HashMap<>();
 
 	static {
+		parsers.put(DataComponentTypes.ATTACK_RANGE, DataComponentParsers.ATTACK_RANGE);
 		parsers.put(DataComponentTypes.ATTRIBUTE_MODIFIERS, DataComponentParsers.ATTRIBUTE_MODIFIERS);
 		parsers.put(DataComponentTypes.BANNER_PATTERNS, DataComponentParsers.BANNER_PATTERNS);
 		parsers.put(DataComponentTypes.BASE_COLOR, DataComponentParsers.BASE_COLOR);
@@ -39,6 +40,7 @@ public class DataComponentParser {
 		parsers.put(DataComponentTypes.CUSTOM_MODEL_DATA, DataComponentParsers.CUSTOM_MODEL_DATA);
 		parsers.put(DataComponentTypes.CUSTOM_NAME, DataComponentParsers.COMPONENT);
 		parsers.put(DataComponentTypes.DAMAGE, DataComponentParsers.INT);
+		parsers.put(DataComponentTypes.DAMAGE_TYPE, DataComponentParsers.DAMAGE_TYPE);
 		parsers.put(DataComponentTypes.DAMAGE_RESISTANT, DataComponentParsers.DAMAGE_RESISTANT);
 		//TODO: DEBUG_STICK_STATE - Not implemented by paper
 		parsers.put(DataComponentTypes.DEATH_PROTECTION, DataComponentParsers.DEATH_PROTECTION);
@@ -57,6 +59,7 @@ public class DataComponentParser {
 		parsers.put(DataComponentTypes.ITEM_MODEL, DataComponentParsers.NAMESPACED_KEY);
 		parsers.put(DataComponentTypes.ITEM_NAME, DataComponentParsers.COMPONENT);
 		parsers.put(DataComponentTypes.JUKEBOX_PLAYABLE, DataComponentParsers.JUKEBOX_PLAYABLE);
+		parsers.put(DataComponentTypes.KINETIC_WEAPON, DataComponentParsers.KINETIC_WEAPON);
 		//TODO: LOCK - Not implemented by paper
 		parsers.put(DataComponentTypes.LODESTONE_TRACKER, DataComponentParsers.LODESTONE_TRACKER);
 		parsers.put(DataComponentTypes.LORE, DataComponentParsers.LORE);
@@ -66,8 +69,10 @@ public class DataComponentParser {
 		parsers.put(DataComponentTypes.MAP_POST_PROCESSING, DataComponentParsers.MAP_POST_PROCESSING);
 		parsers.put(DataComponentTypes.MAX_DAMAGE, DataComponentParsers.INT);
 		parsers.put(DataComponentTypes.MAX_STACK_SIZE, DataComponentParsers.INT);
+		parsers.put(DataComponentTypes.MINIMUM_ATTACK_CHARGE, DataComponentParsers.FLOAT);
 		parsers.put(DataComponentTypes.NOTE_BLOCK_SOUND, DataComponentParsers.NAMESPACED_KEY);
 		parsers.put(DataComponentTypes.OMINOUS_BOTTLE_AMPLIFIER, DataComponentParsers.OMINOUS_BOTTLE_AMPLIFIER);
+		parsers.put(DataComponentTypes.PIERCING_WEAPON, DataComponentParsers.PIERCING_WEAPON);
 		parsers.put(DataComponentTypes.POT_DECORATIONS, DataComponentParsers.POT_DECORATIONS);
 		parsers.put(DataComponentTypes.POTION_CONTENTS, DataComponentParsers.POTION_CONTENTS);
 		parsers.put(DataComponentTypes.POTION_DURATION_SCALE, DataComponentParsers.FLOAT);
@@ -80,12 +85,14 @@ public class DataComponentParser {
 		parsers.put(DataComponentTypes.REPAIR_COST, DataComponentParsers.INT);
 		parsers.put(DataComponentTypes.STORED_ENCHANTMENTS, DataComponentParsers.ENCHANTMENTS);
 		parsers.put(DataComponentTypes.SUSPICIOUS_STEW_EFFECTS, DataComponentParsers.SUSPICIOUS_STEW_CONTENTS);
+		parsers.put(DataComponentTypes.SWING_ANIMATION, DataComponentParsers.SWING_ANIMATION);
 		parsers.put(DataComponentTypes.TOOL, DataComponentParsers.TOOL);
 		parsers.put(DataComponentTypes.TOOLTIP_DISPLAY, DataComponentParsers.TOOLTIP_DISPLAY);
 		parsers.put(DataComponentTypes.TOOLTIP_STYLE, DataComponentParsers.NAMESPACED_KEY);
 		parsers.put(DataComponentTypes.TRIM, DataComponentParsers.TRIM);
 		// UNBREAKABLE - Unvalued
 		parsers.put(DataComponentTypes.USE_COOLDOWN, DataComponentParsers.USE_COOLDOWN);
+		parsers.put(DataComponentTypes.USE_EFFECTS, DataComponentParsers.USE_EFFECTS);
 		//TODO: USE_REMAINDER - Need ItemStack parser
 		parsers.put(DataComponentTypes.WEAPON, DataComponentParsers.WEAPON);
 		parsers.put(DataComponentTypes.WRITABLE_BOOK_CONTENT, DataComponentParsers.WRITABLE_BOOK_CONTENT);
