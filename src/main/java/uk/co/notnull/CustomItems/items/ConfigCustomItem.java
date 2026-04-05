@@ -5,10 +5,10 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.ItemDataManager;
@@ -24,18 +24,18 @@ import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class ConfigCustomItem extends AbstractCustomItem {
-	private final Material item;
+	private final ItemType item;
 	private final Map<DataComponentType, Object> components;
 	private final Set<DataComponentType> componentTypes;
 
-	public ConfigCustomItem(String id, Material item, Component name, Map<DataComponentType, Object> components, boolean stamp) {
+	public ConfigCustomItem(String id, ItemType item, Component name, Map<DataComponentType, Object> components, boolean stamp) {
 		super(new NamespacedKey(CustomItemsImpl.getInstance(), id), name, stamp);
 		this.item = item;
 		this.components = components;
 		this.componentTypes = Collections.unmodifiableSet(components.keySet());
 	}
 
-	public Material getItem() {
+	public ItemType getItemType() {
 		return item;
 	}
 
@@ -55,13 +55,13 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 		if (o == null || getClass() != o.getClass()) return false;
 		ConfigCustomItem that = (ConfigCustomItem) o;
 		return isStamp() == that.isStamp() && Objects.equals(
-						getId(), that.getId()) && getItem() == that.getItem() &&
+						getId(), that.getId()) && getItemType() == that.getItemType() &&
 						Objects.equals(getDisplayName(), that.getDisplayName());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getId(), getItem(), getDisplayName(), isStamp());
+		return Objects.hash(getId(), getItemType(), getDisplayName(), isStamp());
 	}
 
 	public Set<DataComponentType> getComponentTypes() {
@@ -70,7 +70,7 @@ public final class ConfigCustomItem extends AbstractCustomItem {
 
 	@Override
 	public ItemStack createItem(@NotNull CreationContext context, int amount) {
-		ItemStack item = ItemStack.of(getItem(), amount);
+		ItemStack item = this.item.createItemStack(amount);
 		item.editPersistentDataContainer(
 				data -> ItemDataManager.populateItemData(data, this, context));
 

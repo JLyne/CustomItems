@@ -5,7 +5,7 @@ claimChestLocation:
   z: -75
 items:
   detailing_participant:
-    material: "minecraft:feather"
+    type: "minecraft:feather"
     components:
       custom_model_data: 1
       item_name: 'Detailing Contest Participant'
@@ -14,7 +14,7 @@ items:
         - Participating in the Chunk Detailing
         - Contest
   detailing_winner:
-    material: "minecraft:feather"
+    type: "minecraft:feather"
     components:
       custom_model_data: 2
       item_name: 'Detailing Contest Winner'
@@ -23,7 +23,7 @@ items:
         - submitting a winning entry
         - in the Chunk Detailing Contest
   cano3:
-    material: "minecraft:feather"
+    type: "minecraft:feather"
     stamp: false
     components:
       custom_model_data: 1037

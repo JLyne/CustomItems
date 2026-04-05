@@ -25,7 +25,6 @@
 package uk.co.notnull.CustomItems.commands;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -35,8 +34,9 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.Util;
@@ -78,9 +78,8 @@ public final class VanillaItemArgumentType implements CustomArgumentType.Convert
 			com.mojang.brigadier.context.@NotNull CommandContext<S> context, @NotNull SuggestionsBuilder builder) {
 		String search = builder.getRemainingLowerCase();
 
-		Stream.of(Material.values())
-				.filter(material -> !material.isLegacy() && material.isItem())
-				.map(Material::getKey)
+		Registry.ITEM.stream()
+				.map(ItemType::getKey)
 				.filter(item -> item.toString().startsWith(search) || item.getKey().startsWith(search))
 				.map(NamespacedKey::toString)
 				.forEach(builder::suggest);

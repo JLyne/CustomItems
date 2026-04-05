@@ -1,11 +1,11 @@
 package uk.co.notnull.CustomItems.loot;
 
 import io.papermc.paper.persistence.PersistentDataContainerView;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.persistence.PersistentDataType;
 import uk.co.notnull.CustomItems.CustomItemsImpl;
 import uk.co.notnull.CustomItems.ItemDataManager;
@@ -24,7 +24,8 @@ public class LootManagerImpl implements LootManager {
 
     private final NamespacedKey placeholderItem;
 
-    private static final Material placeholderMaterial = Material.SEA_PICKLE;
+    @SuppressWarnings("UnstableApiUsage")
+	private static final ItemType placeholderType = ItemType.SEA_PICKLE;
 
 	private final Map<String, LootPool> pools = new HashMap<>();
 
@@ -78,9 +79,9 @@ public class LootManagerImpl implements LootManager {
             return false;
         }
 
-        Material material = item.getType();
+        ItemType itemType = item.getType().asItemType();
 
-        if(material != placeholderMaterial) {
+        if(itemType != placeholderType) {
 			return false;
 		}
 

@@ -1,22 +1,23 @@
 package uk.co.notnull.CustomItems.items;
 
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
+
 import uk.co.notnull.CustomItems.api.items.AbstractCustomItem;
 import uk.co.notnull.CustomItems.api.items.CreationContext;
 
 import java.util.Objects;
 
 public final class VanillaCustomItem extends AbstractCustomItem {
-	private final Material item;
+	private final ItemType item;
 
-	public VanillaCustomItem(Material item) {
+	public VanillaCustomItem(ItemType item) {
 		super(item.getKey(), Component.translatable(item.translationKey()), false);
 		this.item = item;
 	}
 
-	public Material getItem() {
+	public ItemType getItem() {
 		return item;
 	}
 
@@ -42,9 +43,6 @@ public final class VanillaCustomItem extends AbstractCustomItem {
 
 	@Override
 	public ItemStack createItem(CreationContext context, int amount) {
-		ItemStack item = ItemStack.of(getItem(), amount);
-		item.setAmount(Math.min(item.getMaxStackSize(), amount));
-
-		return item;
+		return this.item.createItemStack(Math.min(this.item.getMaxStackSize(), amount));
 	}
 }

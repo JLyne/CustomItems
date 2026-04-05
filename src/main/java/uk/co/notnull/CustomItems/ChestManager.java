@@ -1,7 +1,6 @@
 package uk.co.notnull.CustomItems;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Lidded;
 import org.bukkit.entity.HumanEntity;
@@ -119,7 +118,7 @@ public final class ChestManager implements Listener {
 
 		//Drop items that shouldn't be in inventory (player added etc.)
 		for (ItemStack item : inventory.getContents()) {
-			if(item == null || item.getType() == Material.AIR) {
+			if(item == null || item.isEmpty()) {
 				continue;
 			}
 

@@ -1,26 +1,22 @@
 package uk.co.notnull.CustomItems;
 
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.inventory.ItemType;
+
 import uk.co.notnull.CustomItems.items.VanillaCustomItem;
 
 public class Util {
 	public static VanillaCustomItem getVanillaCustomItem(NamespacedKey key) {
-		return new VanillaCustomItem(getVanillaItemMaterial(key));
+		return new VanillaCustomItem(getVanillaItemType(key));
 	}
 
-	public static Material getVanillaItemMaterial(NamespacedKey key) {
+	public static ItemType getVanillaItemType(NamespacedKey key) {
 		if(!key.getNamespace().equals(NamespacedKey.MINECRAFT_NAMESPACE)) {
 			throw new IllegalArgumentException(key + " is not a Vanilla item");
 		}
 
-		Material material = Material.matchMaterial(key.getKey());
-
-		if(material == null || !material.isItem()) {
-			throw new IllegalArgumentException(key + " is not a Vanilla item");
-		}
-
-		return material;
+		return Registry.ITEM.getOrThrow(key);
 	}
 
 	public static boolean isVanillaItem(NamespacedKey key) {
@@ -28,7 +24,6 @@ public class Util {
 			return false;
 		}
 
-		Material material = Material.matchMaterial(key.getKey());
-		return material != null && material.isItem();
+		return Registry.ITEM.get(key) != null;
 	}
 }

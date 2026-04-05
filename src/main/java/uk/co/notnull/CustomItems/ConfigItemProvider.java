@@ -3,10 +3,11 @@ package uk.co.notnull.CustomItems;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,7 +62,7 @@ class ConfigItemProvider implements CustomItemProvider {
 		}
 
 		config.getKeys(false).forEach(id -> {
-			String materialName = config.getString(id + ".material");
+			String typeName = config.getString(id + ".type", config.getString(id + ".material"));
 			Component name = config.getRichMessage(id + ".name");
 			ConfigurationSection componentConfig = config.getConfigurationSection(id + ".components");
 			boolean stamp = config.getBoolean(id + ".stamp", false);
@@ -74,8 +75,15 @@ class ConfigItemProvider implements CustomItemProvider {
 				return;
 			}
 
-			if(materialName == null) {
-				plugin.getLogger().warning("No material specified for " + id + ", skipping.");
+			if(typeName == null) {
+				plugin.getLogger().warning("No item type specified for " + id + ", skipping.");
+				return;
+			}
+
+			NamespacedKey typeKey = NamespacedKey.fromString(typeName);
+
+			if(typeKey == null) {
+				plugin.getLogger().warning("Invalid item type specified for " + id + ", skipping.");
 				return;
 			}
 
@@ -84,24 +92,14 @@ class ConfigItemProvider implements CustomItemProvider {
 				return;
 			}
 
-			Material material = Material.matchMaterial(materialName);
+			ItemType itemType = Registry.ITEM.get(typeKey);
 
-			if(material == null) {
-				plugin.getLogger().warning("Material " + materialName + " specified for " + id + " does not exist, skipping.");
+			if(itemType == null) {
+				plugin.getLogger().warning("Unknown item type " + typeName + " specified for " + id + ", skipping.");
 				return;
 			}
 
-			if(!material.isItem()) {
-				plugin.getLogger().warning("Material " + materialName + " specified for " + id + " is not an item. Skipping.");
-				return;
-			}
-
-			if(material.isBlock()) {
-				plugin.getLogger().warning("Material " + materialName + " specified for " + id + " is a placeable block. This would cause item data to be lost. Skipping.");
-				return;
-			}
-
-			items.put(id, new ConfigCustomItem(id, material, name, components, stamp));
+			items.put(id, new ConfigCustomItem(id, itemType, name, components, stamp));
 		});
 	}
 }
