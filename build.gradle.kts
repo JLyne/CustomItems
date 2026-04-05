@@ -49,7 +49,7 @@ paper {
     main = "uk.co.notnull.CustomItems.CustomItemsImpl"
     loader = "uk.co.notnull.CustomItems.CustomItemsLoader"
     generateLibrariesJson = true
-    apiVersion = libs.versions.paperApi.get().replace(Regex("\\-R\\d.\\d-SNAPSHOT"), "")
+    apiVersion = libs.versions.paperApi.get().replace(".build.+", "")
     authors = listOf("Jim (AnEnragedPigeon)")
     description = "Custom Items"
 

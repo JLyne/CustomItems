@@ -4,11 +4,13 @@ import io.papermc.paper.datacomponent.item.BlocksAttacks;
 import io.papermc.paper.datacomponent.item.blocksattacks.DamageReduction;
 import io.papermc.paper.datacomponent.item.blocksattacks.ItemDamageFunction;
 import io.papermc.paper.registry.RegistryKey;
-import io.papermc.paper.registry.tag.TagKey;
+import io.papermc.paper.registry.set.RegistryKeySet;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.damage.DamageType;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
+import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryKeySetParser;
 
 import java.util.List;
 
@@ -17,6 +19,8 @@ import java.util.List;
 public class BlocksAttacksParser extends DataComponentTypeParser<ConfigurationSection, BlocksAttacks> {
 	private static final DamageReductionParser damageReductionParser = new DamageReductionParser();
 	private static final ItemDamageFunctionParser itemDamageFunctionParser = new ItemDamageFunctionParser();
+	private static final RegistryKeySetParser<DamageType> damageTypeParser =
+			new RegistryKeySetParser<>(RegistryKey.DAMAGE_TYPE, true);
 
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {
@@ -32,7 +36,7 @@ public class BlocksAttacksParser extends DataComponentTypeParser<ConfigurationSe
 
 		NamespacedKey blockSound = optionalField("block_sound", DataComponentParsers.NAMESPACED_KEY, value);
 		NamespacedKey disabledSound = optionalField("disabled_sound", DataComponentParsers.NAMESPACED_KEY, value);
-		NamespacedKey bypassedBy = optionalField("bypassed_by", DataComponentParsers.NAMESPACED_KEY, value);
+		RegistryKeySet<DamageType> bypassedBy = optionalField("bypassed_by", damageTypeParser, value);
 
 		BlocksAttacks.Builder builder = BlocksAttacks.blocksAttacks();
 
@@ -61,7 +65,7 @@ public class BlocksAttacksParser extends DataComponentTypeParser<ConfigurationSe
 		}
 
 		if(bypassedBy != null) {
-			builder.bypassedBy(TagKey.create(RegistryKey.DAMAGE_TYPE, bypassedBy));
+			builder.bypassedBy(bypassedBy);
 		}
 
 		return builder.build();
