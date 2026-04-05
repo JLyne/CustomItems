@@ -11,6 +11,8 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -235,6 +237,14 @@ public class CommandHandler {
         List<Player> players = target.resolve(source);
         CustomItem item = plugin.getItemManager().getItem(key);
 
+        if (players.isEmpty()) {
+            source.getSender()
+                .sendMessage(Component.translatable("argument.entity.notfound.player")
+                    .color(NamedTextColor.RED));
+
+            return;
+        }
+
         for (Player player : players) {
             plugin.getItemManager().giveItem(player, item, amount);
 
@@ -252,6 +262,14 @@ public class CommandHandler {
              onGrantItem(source, offlinePlayer, key, amount);
         } else if(target instanceof PlayerSelectorArgumentResolver selector) {
             List<Player> players = selector.resolve(source);
+
+            if (players.isEmpty()) {
+                source.getSender()
+                        .sendMessage(Component.translatable("argument.entity.notfound.player")
+                                             .color(NamedTextColor.RED));
+
+                return;
+            }
 
             for (Player player : players) {
                 onGrantItem(source, player, key, amount);
@@ -283,6 +301,14 @@ public class CommandHandler {
     private void onGivePool(CommandSourceStack source, PlayerSelectorArgumentResolver target, LootPool pool) throws CommandSyntaxException {
 		List<Player> players = target.resolve(source);
 
+        if (players.isEmpty()) {
+            source.getSender()
+                .sendMessage(Component.translatable("argument.entity.notfound.player")
+                    .color(NamedTextColor.RED));
+
+            return;
+        }
+
         for(Player player: players) {
             pool.giveContents(player);
             messagesHelper.send(source.getSender(), Message.builder("command.give-pool-success")
@@ -295,6 +321,14 @@ public class CommandHandler {
 
 	private void onGivePlugin(CommandSourceStack source, PlayerSelectorArgumentResolver target, Plugin thePlugin) throws CommandSyntaxException {
 		List<Player> players = target.resolve(source);
+
+        if (players.isEmpty()) {
+            source.getSender()
+                .sendMessage(Component.translatable("argument.entity.notfound.player")
+                    .color(NamedTextColor.RED));
+
+            return;
+        }
 
         for(Player player: players) {
 			plugin.getItemManager().givePluginItems(player, thePlugin);
@@ -312,6 +346,14 @@ public class CommandHandler {
              onRevokeItem(source, offlinePlayer, key);
         } else if(target instanceof PlayerSelectorArgumentResolver selector) {
             List<Player> players = selector.resolve(source);
+
+            if (players.isEmpty()) {
+                source.getSender()
+                        .sendMessage(Component.translatable("argument.entity.notfound.player")
+                                             .color(NamedTextColor.RED));
+
+                return;
+            }
 
             for (Player player : players) {
                 onRevokeItem(source, player, key);
