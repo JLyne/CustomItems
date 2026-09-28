@@ -24,7 +24,6 @@ public final class ItemDataManager {
 		}
 	}
 
-	@SuppressWarnings("DataFlowIssue")
 	public static void copyItemData(ItemStack oldItem, ItemStack newItem) {
 		PersistentDataContainerView oldData = oldItem.getItemMeta().getPersistentDataContainer();
 
@@ -48,7 +47,6 @@ public final class ItemDataManager {
 			return null;
 		}
 
-		//noinspection DataFlowIssue
 		return NamespacedKey.fromString(data.get(customItemKey, PersistentDataType.STRING), CustomItemsImpl.getInstance());
 	}
 

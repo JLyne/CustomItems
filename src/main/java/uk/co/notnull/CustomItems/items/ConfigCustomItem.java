@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-@SuppressWarnings("UnstableApiUsage")
 public final class ConfigCustomItem extends AbstractCustomItem {
 	private final ItemType item;
 	private final Map<DataComponentType, Object> components;

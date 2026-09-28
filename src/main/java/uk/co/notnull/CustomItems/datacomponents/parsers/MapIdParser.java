@@ -4,7 +4,6 @@ import io.papermc.paper.datacomponent.item.MapId;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
-@SuppressWarnings("UnstableApiUsage")
 public class MapIdParser extends DataComponentTypeParser<Object, MapId> {
 	@Override
 	protected @NotNull Class<Object> getConfigType() {

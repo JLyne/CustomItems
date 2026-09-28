@@ -9,7 +9,6 @@ import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupParser;
 
-@SuppressWarnings("UnstableApiUsage")
 public class TrimParser extends DataComponentTypeParser<ConfigurationSection, ItemArmorTrim> {
 	private static final RegistryLookupParser<TrimMaterial> materialParser =
 			new RegistryLookupParser<>(RegistryKey.TRIM_MATERIAL);

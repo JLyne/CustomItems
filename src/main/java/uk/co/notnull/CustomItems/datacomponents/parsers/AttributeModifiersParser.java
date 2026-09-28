@@ -15,7 +15,6 @@ import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupPar
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class AttributeModifiersParser extends ListParser<ConfigurationSection, ItemAttributeModifiers> {
 	private static final EquippableParser.EquipmentSlotGroupParser slotGroupParser =
 			new EquippableParser.EquipmentSlotGroupParser();

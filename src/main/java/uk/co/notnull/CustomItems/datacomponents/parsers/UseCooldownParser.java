@@ -6,7 +6,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
-@SuppressWarnings("UnstableApiUsage")
 public class UseCooldownParser extends DataComponentTypeParser<ConfigurationSection, UseCooldown> {
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

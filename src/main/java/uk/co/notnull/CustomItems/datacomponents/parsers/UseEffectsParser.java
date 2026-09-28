@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
-@SuppressWarnings("UnstableApiUsage")
 public class UseEffectsParser extends DataComponentTypeParser<ConfigurationSection, UseEffects> {
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

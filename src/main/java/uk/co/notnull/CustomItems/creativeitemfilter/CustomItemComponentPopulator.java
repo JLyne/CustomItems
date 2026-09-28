@@ -19,7 +19,6 @@ public class CustomItemComponentPopulator implements ItemComponentPopulator {
 		this.itemManager = plugin.getItemManager();
 	}
 
-	@SuppressWarnings("UnstableApiUsage")
 	@Override
 	public void populateComponents(@NotNull ItemStack oldItem, @NotNull ItemStack newItem,
 								   CreativeItemFilterConfiguration creativeItemFilterConfiguration) {

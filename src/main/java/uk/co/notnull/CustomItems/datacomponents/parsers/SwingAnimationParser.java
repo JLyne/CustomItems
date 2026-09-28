@@ -7,9 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 import uk.co.notnull.CustomItems.datacomponents.parsers.simple.EnumParser;
 
-@SuppressWarnings("UnstableApiUsage")
 public class SwingAnimationParser extends DataComponentTypeParser<ConfigurationSection, SwingAnimation> {
-	EnumParser<SwingAnimation.Animation> animationParser = new EnumParser<>(SwingAnimation.Animation.class);
+	private static final EnumParser<SwingAnimation.Animation> animationParser = new EnumParser<>(SwingAnimation.Animation.class);
 
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

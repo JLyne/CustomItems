@@ -53,7 +53,6 @@ class ConfigItemProvider implements CustomItemProvider {
 		return null;
 	}
 
-	@SuppressWarnings("UnstableApiUsage")
 	void loadItemConfig(ConfigurationSection config) {
 		items.clear();
 

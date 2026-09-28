@@ -5,7 +5,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
-@SuppressWarnings("UnstableApiUsage")
 public class FoodParser extends DataComponentTypeParser<ConfigurationSection, FoodProperties> {
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

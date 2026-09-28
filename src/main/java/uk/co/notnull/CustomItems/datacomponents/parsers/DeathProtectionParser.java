@@ -8,7 +8,6 @@ import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class DeathProtectionParser extends DataComponentTypeParser<ConfigurationSection, DeathProtection> {
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

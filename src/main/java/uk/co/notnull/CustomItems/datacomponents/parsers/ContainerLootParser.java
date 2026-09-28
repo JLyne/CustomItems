@@ -6,7 +6,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
-@SuppressWarnings("UnstableApiUsage")
 public class ContainerLootParser extends DataComponentTypeParser<ConfigurationSection, SeededContainerLoot> {
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

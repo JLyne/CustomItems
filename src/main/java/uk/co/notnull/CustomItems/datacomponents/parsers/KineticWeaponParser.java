@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
-@SuppressWarnings("UnstableApiUsage")
 public class KineticWeaponParser extends DataComponentTypeParser<ConfigurationSection, KineticWeapon> {
 	private static final ConditionParser conditionParser = new ConditionParser();
 

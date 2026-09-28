@@ -12,7 +12,6 @@ import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupPar
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class BannerPatternsParser extends ListParser<ConfigurationSection, BannerPatternLayers> {
 	private static final PatternParser patternLayerParser = new PatternParser();
 

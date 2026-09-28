@@ -8,7 +8,6 @@ import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class CustomModelDataParser extends DataComponentTypeParser<Object, CustomModelData> {
 	@Override
 	protected @NotNull Class<Object> getConfigType() {

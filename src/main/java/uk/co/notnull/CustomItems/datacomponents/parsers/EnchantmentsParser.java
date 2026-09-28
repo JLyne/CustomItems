@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupParser;
 
-@SuppressWarnings("UnstableApiUsage")
 public class EnchantmentsParser extends DataComponentTypeParser<ConfigurationSection, ItemEnchantments> {
 	private static final RegistryLookupParser<Enchantment> registryParser =
 			new RegistryLookupParser<>(RegistryKey.ENCHANTMENT);

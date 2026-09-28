@@ -8,7 +8,6 @@ import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class FireworksParser extends DataComponentTypeParser<ConfigurationSection, Fireworks> {
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

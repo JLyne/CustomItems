@@ -8,7 +8,6 @@ import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupPar
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class PotDecorationsParser extends ListParser<String, PotDecorations> {
 	private static final RegistryLookupParser<ItemType> registryParser = new RegistryLookupParser<>(RegistryKey.ITEM);
 

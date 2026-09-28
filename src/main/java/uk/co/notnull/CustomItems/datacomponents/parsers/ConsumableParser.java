@@ -11,7 +11,6 @@ import uk.co.notnull.CustomItems.datacomponents.parsers.simple.EnumParser;
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class ConsumableParser extends DataComponentTypeParser<ConfigurationSection, Consumable> {
 	private static final EnumParser<ItemUseAnimation> animationParser = new EnumParser<>(ItemUseAnimation.class);
 

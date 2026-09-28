@@ -9,7 +9,6 @@ import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
 import java.util.Collections;
 
-@SuppressWarnings("UnstableApiUsage")
 public class WrittenBookContentParser extends DataComponentTypeParser<ConfigurationSection, WrittenBookContent> {
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

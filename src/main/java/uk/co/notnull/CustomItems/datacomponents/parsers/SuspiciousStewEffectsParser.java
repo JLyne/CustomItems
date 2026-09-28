@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupParser;
 
-@SuppressWarnings("UnstableApiUsage")
 public class SuspiciousStewEffectsParser extends DataComponentTypeParser<ConfigurationSection, SuspiciousStewEffects> {
 	private static final RegistryLookupParser<PotionEffectType> registryParser =
 			new RegistryLookupParser<>(RegistryKey.MOB_EFFECT);

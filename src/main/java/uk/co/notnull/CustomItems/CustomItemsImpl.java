@@ -3,7 +3,7 @@ package uk.co.notnull.CustomItems;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -33,7 +33,7 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
     ItemManagerImpl itemManager;
     LootManagerImpl lootManager;
     ChestManager chestManager;
-	ConfigItemProvider configItemProvider = new ConfigItemProvider(this);
+	final ConfigItemProvider configItemProvider = new ConfigItemProvider(this);
     final MessagesHelper messagesHelper = MessagesHelper.getInstance(this);
     private CreativeItemFilterHandler creativeItemFilterHandler;
 
@@ -124,15 +124,21 @@ public final class CustomItemsImpl extends JavaPlugin implements CustomItems, Li
         configItemProvider.loadItemConfig(getConfig().getConfigurationSection("items"));
 
         try {
-            ConfigurationSection chestLocationConfig = getConfig().getConfigurationSection("claimChestLocation");
-            Location location = new Location(
-                    getServer().getWorld(chestLocationConfig.getString("world", null)),
-                    chestLocationConfig.getInt("x", 0),
-                    chestLocationConfig.getInt("y", 0),
-                    chestLocationConfig.getInt("z", 0)
-            );
-
-            chestManager.setChestLocation(location);
+			NamespacedKey worldKey = NamespacedKey.fromString(
+					getConfig().getString("claimChestLocation.world", ""));
+			
+			if (worldKey != null) {
+				Location location = new Location(
+						getServer().getWorld(worldKey),
+						getConfig().getInt("claimChestLocation.x", 0),
+						getConfig().getInt("claimChestLocation.y", 0),
+						getConfig().getInt("claimChestLocation.z", 0)
+				);
+            	
+				chestManager.setChestLocation(location);
+			} else {
+				getLogger().warning("No claim chest location configured");
+			}
         } catch (IllegalArgumentException e) {
             getLogger().warning("Invalid claim chest location: " + e.getMessage());
         }

@@ -5,7 +5,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
-@SuppressWarnings("UnstableApiUsage")
 public class WeaponParser extends DataComponentTypeParser<ConfigurationSection, Weapon> {
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

@@ -41,11 +41,12 @@ public class DataComponentParsers {
 	public static final EquippableParser EQUIPPABLE = new EquippableParser();
 	public static final RepairableParser REPAIRABLE = new RepairableParser();
 	public static final DeathProtectionParser DEATH_PROTECTION = new DeathProtectionParser();
+	public static final EnumParser<DyeColor> DYE = new EnumParser<>(DyeColor.class);
 	public static final DyedColorParser DYED_COLOR = new DyedColorParser();
 	public static final MapIdParser MAP_ID = new MapIdParser();
-	public static final MapColorParser MAP_COLOR = new MapColorParser();
 	public static final MapDecorationsParser MAP_DECORATIONS = new MapDecorationsParser();
 	public static final EnumParser<MapPostProcessing> MAP_POST_PROCESSING = new EnumParser<>(MapPostProcessing.class);
+	public static final MobVisibilityParser MOB_VISIBILITY = new MobVisibilityParser();
 	public static final PotionContentsParser POTION_CONTENTS = new PotionContentsParser();
 	public static final SuspiciousStewEffectsParser SUSPICIOUS_STEW_CONTENTS = new SuspiciousStewEffectsParser();
 	public static final WritableBookContentParser WRITABLE_BOOK_CONTENT = new WritableBookContentParser();
@@ -73,4 +74,6 @@ public class DataComponentParsers {
 	public static final PiercingWeaponParser PIERCING_WEAPON = new PiercingWeaponParser();
 	public static final SwingAnimationParser SWING_ANIMATION = new SwingAnimationParser();
 	public static final UseEffectsParser USE_EFFECTS = new UseEffectsParser();
+	public static final SignTextParser SIGN_TEXT = new SignTextParser();
+	public static final VillagerFoodParser VILLAGER_FOOD = new VillagerFoodParser();
 }

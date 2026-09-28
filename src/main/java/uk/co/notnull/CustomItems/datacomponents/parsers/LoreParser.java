@@ -6,7 +6,6 @@ import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class LoreParser extends ListParser<String, ItemLore> {
 	protected ItemLore doParse(List<String> value) {
 		return ItemLore.lore()

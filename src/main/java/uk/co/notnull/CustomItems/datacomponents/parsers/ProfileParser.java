@@ -9,7 +9,6 @@ import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 import java.util.List;
 import java.util.UUID;
 
-@SuppressWarnings("UnstableApiUsage")
 public class ProfileParser extends DataComponentTypeParser<ConfigurationSection, ResolvableProfile> {
 	private static final PropertyParser propertyParser = new PropertyParser();
 

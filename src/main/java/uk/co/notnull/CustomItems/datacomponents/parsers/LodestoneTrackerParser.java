@@ -8,7 +8,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
-@SuppressWarnings("UnstableApiUsage")
 public class LodestoneTrackerParser extends DataComponentTypeParser<ConfigurationSection, LodestoneTracker> {
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

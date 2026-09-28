@@ -8,7 +8,6 @@ import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class WritableBookContentParser extends ListParser<Object, WritableBookContent> {
 	@Override
 	protected @NotNull Class<Object> getListItemType() {

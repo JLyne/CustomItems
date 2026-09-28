@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 
-@SuppressWarnings("UnstableApiUsage")
 public class AttackRangeParser extends DataComponentTypeParser<ConfigurationSection, AttackRange> {
 	@Override
 	protected @NotNull Class<ConfigurationSection> getConfigType() {

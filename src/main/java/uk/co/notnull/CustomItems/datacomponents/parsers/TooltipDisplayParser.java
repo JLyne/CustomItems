@@ -11,7 +11,6 @@ import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupPar
 import java.util.HashSet;
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class TooltipDisplayParser extends DataComponentTypeParser<ConfigurationSection, TooltipDisplay> {
 	private static final RegistryLookupParser<DataComponentType> patternParser =
 				new RegistryLookupParser<>(RegistryKey.DATA_COMPONENT_TYPE);

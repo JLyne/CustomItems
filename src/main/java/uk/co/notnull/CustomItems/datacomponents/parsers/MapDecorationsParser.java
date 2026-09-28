@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import uk.co.notnull.CustomItems.datacomponents.DataComponentParsers;
 import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupParser;
 
-@SuppressWarnings("UnstableApiUsage")
 public class MapDecorationsParser extends DataComponentTypeParser<ConfigurationSection, MapDecorations> {
 	private static final DecorationEntryParser entryParser = new DecorationEntryParser();
 

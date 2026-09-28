@@ -14,7 +14,6 @@ import uk.co.notnull.CustomItems.datacomponents.parsers.simple.RegistryLookupPar
 
 import java.util.List;
 
-@SuppressWarnings("UnstableApiUsage")
 public class PotionContentsParser extends DataComponentTypeParser<ConfigurationSection, PotionContents> {
 	private static final EnumParser<PotionType> potionTypeParser = new EnumParser<>(PotionType.class);
 	private static final RegistryLookupParser<PotionEffectType> registryParser =
